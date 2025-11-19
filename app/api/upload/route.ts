@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { createClient } from '@sanity/client'
+import crypto from 'node:crypto';
 
 // ---------- AWS S3 ----------
 const s3 = new S3Client({
@@ -19,17 +20,34 @@ const sanity = createClient({
 // ---------- CORS ----------
 const ALLOWED_ORIGIN = process.env.SANITY_STUDIO_ORIGIN
 
-const corsHeaders = {
+const headers = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGIN || '',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, x-upload-signature, x-upload-timestamp',
   'Access-Control-Max-Age': '86400',
+}
+
+const HMAC_SECRET = process.env.UPLOAD_HMAC_SECRET;
+
+// compare 2 hex strings but do it in constant timing to prvent timing based attacs
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false
+  const bufA = Buffer.from(a, 'hex')
+  const bufB = Buffer.from(b, 'hex')
+  if (bufA.length !== bufB.length) return false
+  return crypto.timingSafeEqual(bufA, bufB)
+}
+
+function signPayload(message: string): string {
+  const hmac = crypto.createHmac('sha256', HMAC_SECRET!)
+  hmac.update(message)
+  return hmac.digest('hex')
 }
 
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
-    headers: corsHeaders,
+    headers,
   })
 }
 
@@ -37,28 +55,60 @@ export async function OPTIONS() {
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
-    const wavFile = formData.get('wav') as File | null
-    const mp3File = formData.get('mp3') as File | null
     const documentId = formData.get('documentId') as string | null
-
-    if (!wavFile || !mp3File) {
-      return new NextResponse(
-        JSON.stringify({ error: 'Missing wav or mp3 file' }),
-        { status: 400, headers: corsHeaders },
-      )
-    }
 
     if (!documentId) {
       return new NextResponse(
         JSON.stringify({ error: 'Missing documentId' }),
-        { status: 400, headers: corsHeaders },
+        { status: 400, headers },
+      )
+    }
+
+    if (!HMAC_SECRET) {
+      return new NextResponse('Server misconfigured', { status: 500, headers })
+    }
+
+    const signature = req.headers.get('x-upload-signature')
+    const timestamp = req.headers.get('x-upload-timestamp')
+
+    if (!signature || !timestamp) {
+      return new NextResponse('Missing auth headers', { status: 401, headers })
+    }
+
+    const now = Date.now()
+    const tsNum = Number(timestamp)
+
+    if (!Number.isFinite(tsNum)) {
+      return new NextResponse('Invalid timestamp', { status: 401, headers })
+    }
+
+    const maxWindowMs = 5 * 60 * 1000
+    if (Math.abs(now - tsNum) > maxWindowMs) {
+      return new NextResponse('Request expired', { status: 401, headers })
+    }
+
+    const message = `${documentId}:${timestamp}`;
+    const expected = signPayload(message);
+
+    if (!timingSafeEqualHex(expected, signature)) {
+      return new NextResponse('Invalid signature', { status: 401, headers })
+    }
+    
+    const wavFile = formData.get('wav') as File | null
+    const mp3File = formData.get('mp3') as File | null
+
+
+    if (!wavFile || !mp3File) {
+      return new NextResponse(
+        JSON.stringify({ error: 'Missing wav or mp3 file' }),
+        { status: 400, headers },
       )
     }
 
     if (!wavFile.name.toLowerCase().endsWith('.wav')) {
       return new NextResponse(
         JSON.stringify({ error: 'Only .wav allowed for wav field' }),
-        { status: 400, headers: corsHeaders },
+        { status: 400, headers },
       )
     }
 
@@ -92,7 +142,7 @@ export async function POST(req: Request) {
       },
     )
 
-    // ----- 3. Patch draft + published documents -----
+    // ----- 3. Patch document -----
     const patch = {
       set: {
         highResFile: {
@@ -124,13 +174,13 @@ export async function POST(req: Request) {
         assetId: asset._id,
         url: asset.url,
       }),
-      { status: 200, headers: corsHeaders },
+      { status: 200, headers },
     )
   } catch (err: any) {
     console.error('[UPLOAD ERROR]', err)
     return new NextResponse(
       JSON.stringify({ error: err.message }),
-      { status: 500, headers: corsHeaders },
+      { status: 500, headers },
     )
   }
 }
