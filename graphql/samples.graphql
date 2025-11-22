@@ -1,0 +1,47 @@
+query AllSamples {
+  allSample(sort: [{ _createdAt: DESC }]) {
+    _id
+    title
+    slug {
+      current
+    }
+    highResFile {
+      mp3Url
+    }
+    previewFile {
+      asset {
+        url
+      }
+    }
+    categories {
+      _id
+      title
+      slug {
+        current
+      }
+    }
+  }
+}
+
+query SampleBySlug($slug: String!) {
+  allSample(where: { slug: { current: { eq: $slug } } }) {
+    _id
+    title
+    description
+    slug {
+      current
+    }
+    highResFile {
+      mp3Url
+    }
+    previewFile {
+      asset {
+        url
+      }
+    }
+    categories {
+      _id
+      title
+    }
+  }
+}

@@ -93,7 +93,7 @@ export async function POST(req: Request) {
     if (!timingSafeEqualHex(expected, signature)) {
       return new NextResponse('Invalid signature', { status: 401, headers })
     }
-    
+
     const wavFile = formData.get('wav') as File | null
     const mp3File = formData.get('mp3') as File | null
 
@@ -176,10 +176,11 @@ export async function POST(req: Request) {
       }),
       { status: 200, headers },
     )
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('[UPLOAD ERROR]', err)
+    const message = err instanceof Error ? err.message : 'Unknown error'
     return new NextResponse(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: message }),
       { status: 500, headers },
     )
   }
