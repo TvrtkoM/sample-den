@@ -1,20 +1,19 @@
 "use client";
 
-import { formatSecondsDuration } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 
 type SamplePlayerProps = {
   src: string;
+  onReady?: (duration: number) => void;
+  onTimeUpdate?: (seconds: number) => void;
 };
 
-const SamplePlayer = ({ src }: SamplePlayerProps) => {
+const SamplePlayer = ({ src, onReady, onTimeUpdate }: SamplePlayerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const wavesurferRef = useRef<WaveSurfer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -35,7 +34,7 @@ const SamplePlayer = ({ src }: SamplePlayerProps) => {
 
     ws.on("ready", () => {
       setIsReady(true);
-      setDuration(ws.getDuration());
+      onReady?.(ws.getDuration());
     });
 
     ws.on("play", () => {
@@ -44,14 +43,14 @@ const SamplePlayer = ({ src }: SamplePlayerProps) => {
     ws.on("pause", () => setIsPlaying(false));
 
     ws.on("timeupdate", (t) => {
-      setCurrentTime(t);
+      onTimeUpdate?.(t);
     });
 
     return () => {
       ws.destroy();
       wavesurferRef.current = null;
     };
-  }, [src]);
+  }, [src, onReady, onTimeUpdate]);
 
   const togglePlay = () => wavesurferRef.current?.playPause();
 
@@ -65,13 +64,7 @@ const SamplePlayer = ({ src }: SamplePlayerProps) => {
         {isPlaying ? "❚❚" : "▶"}
       </button>
 
-      <div className="flex-1">
-        <div ref={containerRef} className="select-none" />
-      </div>
-
-      <div className="text-sm text-gray-600 w-16 text-right leading-none">
-        {formatSecondsDuration(currentTime)} / {formatSecondsDuration(duration)}
-      </div>
+      <div className="flex-1 select-none" ref={containerRef} />
     </div>
   );
 };
