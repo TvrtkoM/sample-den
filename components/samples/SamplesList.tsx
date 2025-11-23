@@ -1,6 +1,7 @@
 "use client";
 
 import { useSamples } from "@/hooks/queries/useSamples";
+import SamplePlayer from "./SamplePlayer";
 
 export default function SamplesList() {
   const { isLoading, error, data } = useSamples();
@@ -18,11 +19,7 @@ export default function SamplesList() {
             <h2 className="text-lg font-medium">{sample.title}</h2>
 
             {sample.previewFile?.asset?.url && (
-              <audio
-                controls
-                src={sample.previewFile.asset.url}
-                className="mt-2 w-full"
-              />
+              <SamplePlayer src={sample.previewFile.asset.url} />
             )}
 
             {sample.categories?.length ? (
