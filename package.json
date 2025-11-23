@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "graphql-codegen": "graphql-codegen",
-    "cli:clean-assets:dry-run": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets --dry-run",
-    "cli:clean-assets": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets"
+    "cli:clean-assets:dry-run": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets --include-drafts --dry-run",
+    "cli:clean-assets": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets --include-drafts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.927.0",
