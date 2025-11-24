@@ -17,6 +17,7 @@ const SamplePlayer = ({ src, onReady, onTimeUpdate }: SamplePlayerProps) => {
 
   useEffect(() => {
     if (!containerRef.current) return;
+    if (wavesurferRef.current) return;
 
     const ws = WaveSurfer.create({
       container: containerRef.current,

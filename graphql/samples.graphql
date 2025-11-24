@@ -1,5 +1,5 @@
-query AllSamples {
-  allSample(sort: [{ _createdAt: DESC }]) {
+query SamplesPage($limit: Int!, $offset: Int) {
+  allSample(sort: [{ _createdAt: DESC }], limit: $limit, offset: $offset) {
     _id
     title
     slug {
@@ -8,13 +8,7 @@ query AllSamples {
     highResFile {
       mp3Url
     }
-    previewFile {
-      asset {
-        url
-      }
-    }
     categories {
-      _id
       title
       slug {
         current
@@ -23,25 +17,44 @@ query AllSamples {
   }
 }
 
-query SampleBySlug($slug: String!) {
-  allSample(where: { slug: { current: { eq: $slug } } }) {
-    _id
-    title
-    description
-    slug {
-      current
-    }
-    highResFile {
-      mp3Url
-    }
-    previewFile {
-      asset {
-        url
-      }
-    }
-    categories {
-      _id
-      title
-    }
-  }
-}
+# query AllSamples {
+#   allSample(sort: [{ _createdAt: DESC }]) {
+#     _id
+#     title
+#     slug {
+#       current
+#     }
+#     highResFile {
+#       mp3Url
+#     }
+#     categories {
+#       title
+#       slug {
+#         current
+#       }
+#     }
+#   }
+# }
+
+# query SampleBySlug($slug: String!) {
+#   allSample(where: { slug: { current: { eq: $slug } } }) {
+#     _id
+#     title
+#     description
+#     slug {
+#       current
+#     }
+#     highResFile {
+#       mp3Url
+#     }
+#     previewFile {
+#       asset {
+#         url
+#       }
+#     }
+#     categories {
+#       _id
+#       title
+#     }
+#   }
+# }
