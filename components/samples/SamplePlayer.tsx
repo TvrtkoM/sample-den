@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
+import { Pause, Play } from "react-feather";
 
 type SamplePlayerProps = {
   src: string;
@@ -60,9 +61,9 @@ const SamplePlayer = ({ src, onReady, onTimeUpdate }: SamplePlayerProps) => {
       <button
         onClick={togglePlay}
         disabled={!isReady}
-        className="w-10 h-10 flex items-center justify-center border rounded-full hover:bg-gray-100"
+        className="w-10 h-10 flex items-center justify-center border rounded-full cursor-pointer hover:bg-gray-100"
       >
-        {isPlaying ? "❚❚" : "▶"}
+        {isPlaying ? <Pause /> : <Play />}
       </button>
 
       <div className="flex-1 select-none" ref={containerRef} />

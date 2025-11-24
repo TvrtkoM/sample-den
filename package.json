@@ -29,6 +29,7 @@
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-feather": "^2.0.10",
     "wavesurfer.js": "^7.11.1"
   },
   "devDependencies": {

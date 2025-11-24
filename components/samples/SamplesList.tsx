@@ -4,10 +4,9 @@ import { useSamples } from "@/hooks/queries/useSamples";
 import SampleItem from "./SampleItem";
 
 export default function SamplesList() {
-  const { isLoading, error, data } = useSamples();
+  const { isLoading, data } = useSamples();
 
   if (isLoading) return <p>Loading…</p>;
-  if (error) return <p>Failed to load samples.</p>;
   if (!data?.allSample.length) return <p>No samples found.</p>;
 
   return (
