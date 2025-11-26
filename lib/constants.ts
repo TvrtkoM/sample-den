@@ -1,2 +1,2 @@
 
-export const defaultSamplesPageSize = 10;
+export const defaultSamplesPageSize = 12;
