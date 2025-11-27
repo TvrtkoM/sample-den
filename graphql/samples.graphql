@@ -8,6 +8,7 @@ query SamplesPage($limit: Int!, $offset: Int) {
     highResFile {
       mp3Url
     }
+    priceUsd
     categories {
       title
       slug {

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import { Pause, Play } from "react-feather";
+import { Button } from "../ui/button";
 
 type SamplePlayerProps = {
   src: string;
@@ -58,14 +59,13 @@ const SamplePlayer = ({ src, onReady, onTimeUpdate }: SamplePlayerProps) => {
 
   return (
     <div className="w-full flex items-center gap-4">
-      <button
+      <Button
         onClick={togglePlay}
         disabled={!isReady}
-        className="w-10 h-10 flex items-center justify-center border rounded-full cursor-pointer hover:bg-gray-100"
+        className="rounded-full size-8"
       >
         {isPlaying ? <Pause /> : <Play />}
-      </button>
-
+      </Button>
       <div className="flex-1 select-none" ref={containerRef} />
     </div>
   );

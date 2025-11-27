@@ -4,6 +4,9 @@ import { SamplesPageQuery } from "@/graphql-generated/graphql";
 import { formatSecondsDuration } from "@/lib/utils";
 import { useCallback, useState } from "react";
 import SamplePlayer from "./SamplePlayer";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { ShoppingCart } from "react-feather";
 
 type SampleItemProps = {
   sample: SamplesPageQuery["allSample"][number];
@@ -11,40 +14,43 @@ type SampleItemProps = {
 
 export default function SampleItem({ sample }: SampleItemProps) {
   const [duration, setDuration] = useState(0);
-  const [currentSecond, setCurrentSecond] = useState(0);
 
   const onReadyHandler = useCallback((duration: number) => {
     setDuration(duration);
   }, []);
 
-  const onTimeUpdateHandler = useCallback((t: number) => {
-    setCurrentSecond(t);
-  }, []);
-
   return (
-    <li className="border rounded p-4 shadow-sm bg-white">
-      <h2 className="text-lg font-medium mb-2">{sample.title}</h2>
+    <li className="card">
+      <div className="card-section gap-2">
+        {sample.categories?.map((c) => (
+          <Badge variant="secondary" key={c?.slug?.current}>
+            {c?.title}
+          </Badge>
+        ))}
+      </div>
 
       {sample.highResFile?.mp3Url && (
-        <SamplePlayer
-          src={sample.highResFile.mp3Url}
-          onReady={onReadyHandler}
-          onTimeUpdate={onTimeUpdateHandler}
-        />
+        <div className="card-section bg-gray-100">
+          <SamplePlayer
+            src={sample.highResFile.mp3Url}
+            onReady={onReadyHandler}
+          />
+        </div>
       )}
 
-      <div className="flex justify-between items-center mt-2 text-sm text-gray-600">
-        <span>
-          {sample.categories
-            ?.map((c) => c?.title)
-            .filter(Boolean)
-            .join(", ")}
-        </span>
+      <div className="card-section">
+        <h4>{sample.title}</h4>
+      </div>
 
-        <span>
-          {formatSecondsDuration(currentSecond)} /{" "}
-          {formatSecondsDuration(duration)}
-        </span>
+      <div className="card-section justify-between text-sm">
+        <div>{formatSecondsDuration(duration)}</div>
+        <div className="font-semibold">{sample.priceUsd} $</div>
+      </div>
+
+      <div className="card-section">
+        <Button className="w-full">
+          <ShoppingCart /> Add to Cart
+        </Button>
       </div>
     </li>
   );
