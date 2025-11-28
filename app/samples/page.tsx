@@ -13,7 +13,7 @@ export default async function SamplesPage() {
   const queryClient = getServerQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["samples", 0],
+    queryKey: ["samples", 1],
     queryFn: () =>
       graphqlClient.request(SamplesPageDocument, {
         limit: defaultSamplesPageSize
@@ -24,13 +24,17 @@ export default async function SamplesPage() {
 
   return (
     <HydrationBoundary state={dehydrated}>
-      <header className="border-b border-neutral-200">
-        <div className="container py-6">
-          <h1 className="mb-6">Sample den</h1>
-          <SampleSearch />
-        </div>
-      </header>
-      <SamplesList />
+      <section aria-labelledby="samples-heading">
+        <header className="border-b border-neutral-200">
+          <div className="container py-6">
+            <h1 className="mb-6" id="samples-heading">
+              Sample den
+            </h1>
+            <SampleSearch />
+          </div>
+        </header>
+        <SamplesList />
+      </section>
     </HydrationBoundary>
   );
 }

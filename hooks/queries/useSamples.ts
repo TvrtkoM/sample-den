@@ -3,15 +3,15 @@ import { defaultSamplesPageSize } from "@/lib/constants";
 import { graphqlClient } from "@/lib/graphql-client";
 import { useQuery } from "@tanstack/react-query";
 
-export function useSamples(pageIndex = 0) {
+export function useSamples(pageNumber = 1) {
   return useQuery({
-    queryKey: ['samples', pageIndex],
+    queryKey: ['samples', pageNumber],
     queryFn: async () => {
       return graphqlClient.request(
         SamplesPageDocument,
         {
           limit: defaultSamplesPageSize,
-          offset: defaultSamplesPageSize * pageIndex
+          offset: defaultSamplesPageSize * (pageNumber - 1)
         })
     }
   })
