@@ -20,7 +20,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
   }, []);
 
   return (
-    <li className="card">
+    <li className="card h-64 justify-between">
       <div className="card-section gap-2">
         {sample.categories?.map((c) => (
           <Badge variant="secondary" key={c?.slug?.current}>
