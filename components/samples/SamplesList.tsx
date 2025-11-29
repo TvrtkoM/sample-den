@@ -3,18 +3,37 @@
 import { useSamples } from "@/hooks/queries/useSamples";
 import SampleItem from "./SampleItem";
 import AppPagination from "../AppPagination";
-import { useState } from "react";
+import { FC } from "react";
 import { defaultSamplesPageSize } from "@/lib/constants";
 import { Skeleton } from "../ui/skeleton";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-export default function SamplesList() {
-  const [pageNum, setPageNum] = useState(1);
+type SamplesListProps = {
+  pageNum: number;
+};
+
+const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { data, isFetched } = useSamples(pageNum);
 
   const samples = data?.samples ?? [];
   const totalCount = data?.totalCount ?? 0;
+  const totalPages =
+    totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
 
-  if (isFetched && samples.length == 0) return <p>No samples found.</p>;
+  const pageChangeHandler = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("page", String(newPage));
+
+    router.push(`/samples?${params.toString()}`);
+  };
+
+  if (isFetched && samples.length == 0)
+    return <h1 className="container py-8 sm:py-12">No samples found.</h1>;
 
   return (
     <>
@@ -28,14 +47,16 @@ export default function SamplesList() {
             ))}
       </ul>
       <div className="container">
-        {totalCount > 0 && (
+        {totalPages > 0 && (
           <AppPagination
             pageNum={pageNum}
-            totalPages={Math.ceil(totalCount / defaultSamplesPageSize)}
-            onPageChange={(nextPage) => setPageNum(nextPage)}
+            totalPages={totalPages}
+            onPageChange={pageChangeHandler}
           />
         )}
       </div>
     </>
   );
-}
+};
+
+export default SamplesList;
