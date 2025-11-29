@@ -3,20 +3,18 @@ import { defaultSamplesPageSize } from "./constants";
 import { graphqlClient } from "./graphql-client";
 import { sanityClient } from "./sanity-client";
 
-export async function fetchSamplePage(pageNumber: number) {
-  const pagePromise = graphqlClient.request(
+export async function fetchSamplesPage(pageNumber: number) {
+  const gqlData = await graphqlClient.request(
     SamplesPageDocument,
     {
       limit: defaultSamplesPageSize,
       offset: defaultSamplesPageSize * (pageNumber - 1)
     }
   )
-  const totalPromise = sanityClient.fetch<number>('count(*[_type == "sample"])')
 
-  const [pageData, totalCount] = await Promise.all([pagePromise, totalPromise]);
+  return gqlData.allSample;
+}
 
-  return {
-    samples: pageData.allSample,
-    totalCount
-  }
+export async function fetchTotalSamplesCount() {
+  return sanityClient.fetch<number>('count(*[_type == "sample"])');
 }

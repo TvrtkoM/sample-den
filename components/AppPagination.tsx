@@ -13,15 +13,17 @@ type AppPaginationProps = {
   pageNum: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  className?: string;
 };
 
 const AppPagination: React.FC<AppPaginationProps> = ({
   pageNum,
   totalPages,
-  onPageChange
+  onPageChange,
+  className = ""
 }) => {
   return (
-    <Pagination>
+    <Pagination className={className}>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

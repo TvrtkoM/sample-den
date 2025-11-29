@@ -1,6 +1,6 @@
 "use client";
 
-import { useSamples } from "@/hooks/queries/useSamples";
+import useSamplesPage from "@/hooks/queries/useSamplesPage";
 import SampleItem from "./SampleItem";
 import AppPagination from "../AppPagination";
 import { FC } from "react";
@@ -8,6 +8,7 @@ import { defaultSamplesPageSize } from "@/lib/constants";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import useSamplesTotalCount from "@/hooks/queries/useSamplesTotalCount";
 
 type SamplesListProps = {
   pageNum: number;
@@ -17,12 +18,16 @@ const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { data, isFetched } = useSamples(pageNum);
+  const { data: pageData, isFetched: isPageFetched } = useSamplesPage(pageNum);
+  const { data: totalCount, isFetched: isTotalCountFetched } =
+    useSamplesTotalCount();
 
-  const samples = data?.samples ?? [];
-  const totalCount = data?.totalCount ?? 0;
+  const isFetched = isPageFetched && isTotalCountFetched;
+
+  const samples = pageData ?? [];
   const totalPages =
-    totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
+    totalCount != null &&
+    (totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize));
 
   const pageChangeHandler = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -46,15 +51,14 @@ const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
               <SampleItem key={sample._id} sample={sample} />
             ))}
       </ul>
-      <div className="container">
-        {totalPages > 0 && (
-          <AppPagination
-            pageNum={pageNum}
-            totalPages={totalPages}
-            onPageChange={pageChangeHandler}
-          />
-        )}
-      </div>
+      {totalPages !== false && totalPages > 0 && (
+        <AppPagination
+          pageNum={pageNum}
+          totalPages={totalPages}
+          onPageChange={pageChangeHandler}
+          className="container"
+        />
+      )}
     </>
   );
 };
