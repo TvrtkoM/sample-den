@@ -1,8 +1,6 @@
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
-import { SamplesPageDocument } from "@/graphql-generated/graphql";
-import { defaultSamplesPageSize } from "@/lib/constants";
-import { graphqlClient } from "@/lib/graphql-client";
+import { fetchSamplePage } from "@/lib/fetch";
 import {
   getDehydratedState,
   getServerQueryClient
@@ -14,10 +12,7 @@ export default async function SamplesPage() {
 
   await queryClient.prefetchQuery({
     queryKey: ["samples", 1],
-    queryFn: () =>
-      graphqlClient.request(SamplesPageDocument, {
-        limit: defaultSamplesPageSize
-      })
+    queryFn: () => fetchSamplePage(1)
   });
 
   const dehydrated = getDehydratedState(queryClient);

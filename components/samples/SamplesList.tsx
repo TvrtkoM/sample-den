@@ -11,7 +11,8 @@ export default function SamplesList() {
   const [pageNum, setPageNum] = useState(1);
   const { data, isFetched } = useSamples(pageNum);
 
-  const samples = data?.allSample ?? [];
+  const samples = data?.samples ?? [];
+  const totalCount = data?.totalCount ?? 0;
 
   if (isFetched && samples.length == 0) return <p>No samples found.</p>;
 
@@ -27,14 +28,12 @@ export default function SamplesList() {
             ))}
       </ul>
       <div className="container">
-        {isFetched ? (
+        {totalCount > 0 && (
           <AppPagination
             pageNum={pageNum}
-            totalPages={2}
+            totalPages={Math.ceil(totalCount / defaultSamplesPageSize)}
             onPageChange={(nextPage) => setPageNum(nextPage)}
           />
-        ) : (
-          <Skeleton className="w-full h-9" />
         )}
       </div>
     </>
