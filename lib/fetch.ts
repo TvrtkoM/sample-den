@@ -1,13 +1,12 @@
-import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
 import { samplesPageQuery } from "@/groq/samples";
 import { defaultSamplesPageSize } from "./constants";
 import { sanityClient } from "./sanity-client";
 
-export async function fetchSamplesPage(pageNumber: number) {
+export async function fetchSamplesPage(pageNumber: number, search: string) {
   const offset = (pageNumber - 1) * defaultSamplesPageSize;
   const end = offset + defaultSamplesPageSize;
 
-  const result = await sanityClient.fetch<SamplesPageQueryResult, { offset: number; end: number }>(samplesPageQuery, { offset, end });
+  const result = await sanityClient.fetch(samplesPageQuery, { offset, end, search });
 
   return result;
 }

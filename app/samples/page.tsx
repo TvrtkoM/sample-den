@@ -9,6 +9,7 @@ import { HydrationBoundary } from "@tanstack/react-query";
 
 type SearchParams = {
   page?: string;
+  search?: string;
 };
 
 export default async function SamplesPage({
@@ -19,10 +20,11 @@ export default async function SamplesPage({
   const queryClient = getServerQueryClient();
 
   const pageNum = Number((await searchParams).page ?? "1");
+  const search = (await searchParams).search ?? "";
 
   await queryClient.prefetchQuery({
-    queryKey: ["samples", pageNum],
-    queryFn: () => fetchSamplesPage(pageNum)
+    queryKey: ["samples", search, pageNum],
+    queryFn: () => fetchSamplesPage(pageNum, search)
   });
 
   const dehydrated = getDehydratedState(queryClient);
@@ -38,7 +40,7 @@ export default async function SamplesPage({
             <SampleSearch />
           </div>
         </header>
-        <SamplesList pageNum={pageNum} />
+        <SamplesList pageNum={pageNum} search={search} />
       </section>
     </HydrationBoundary>
   );

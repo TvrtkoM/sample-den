@@ -4,20 +4,27 @@ import { Search } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type FormData = {
   search: string;
 };
 
 const SampleSearch: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
-    formState: { isValid }
-  } = useForm<FormData>();
+    formState: { isValid },
+    reset
+  } = useForm<FormData>({ defaultValues: { search: "" } });
 
   const onSubmitHandler: SubmitHandler<FormData> = (data) => {
-    console.log("Searching for", data.search);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("search", data.search);
+    router.push(`/samples?${params.toString()}`);
+    reset();
   };
 
   return (

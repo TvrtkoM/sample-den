@@ -1,4 +1,4 @@
-import groq from 'groq';
+import { defineQuery } from 'groq';
 
 const sampleFragment = `
 {
@@ -17,12 +17,22 @@ const sampleFragment = `
 }
 `;
 
-export const samplesPageQuery = groq`
+const samplesSearchFragment = `
+*[_type == "sample" && (
+    !defined($search) ||
+    $search == "" ||
+    title match $search ||
+    description match $search ||
+    categories[]->title match $search
+)]
+`
+
+export const samplesPageQuery = defineQuery(`
 {
-  "samples": *[_type == "sample"]
+  "samples": ${samplesSearchFragment}
     | order(_createdAt desc)
     [$offset...$end]
     ${sampleFragment},
-  "totalCount": count(*[_type == "sample"])
+  "totalCount": count(${samplesSearchFragment})
 }
-`;
+`);

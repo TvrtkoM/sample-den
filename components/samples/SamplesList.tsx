@@ -11,13 +11,17 @@ import { useSearchParams } from "next/navigation";
 
 type SamplesListProps = {
   pageNum: number;
+  search: string;
 };
 
-const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
+const SamplesList: FC<SamplesListProps> = ({ pageNum, search }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { data: pageData, isFetched: isPageFetched } = useSamplesPage(pageNum);
+  const { data: pageData, isFetched: isPageFetched } = useSamplesPage(
+    pageNum,
+    search
+  );
 
   const isFetched = isPageFetched;
 

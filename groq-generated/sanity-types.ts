@@ -192,7 +192,7 @@ export type AllSanitySchemaTypes = Sample | HighResFile | Slug | Category | Medi
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ../sample-den/groq/samples.ts
 // Variable: samplesPageQuery
-// Query: {  "samples": *[_type == "sample"]    | order(_createdAt desc)    [$offset...$end]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }},  "totalCount": count(*[_type == "sample"])}
+// Query: {  "samples": *[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)]    | order(_createdAt desc)    [$offset...$end]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }},  "totalCount": count(*[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)])}
 export type SamplesPageQueryResult = {
   samples: Array<{
     _id: string;
@@ -215,6 +215,6 @@ export type SamplesPageQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n{\n  \"samples\": *[_type == \"sample\"]\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(*[_type == \"sample\"])\n}\n": SamplesPageQueryResult;
+    "\n{\n  \"samples\": \n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n": SamplesPageQueryResult;
   }
 }
