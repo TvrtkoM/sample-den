@@ -1,34 +1,18 @@
 "use client";
 
+import { useSamplesSearchParams } from "@/lib/search-params";
 import { Search } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { debounce } from "nuqs";
 
-type FormData = {
-  search: string;
-};
-
-const SampleSearch: React.FC = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const {
-    register,
-    handleSubmit,
-    formState: { isValid },
-    reset
-  } = useForm<FormData>({ defaultValues: { search: "" } });
-
-  const onSubmitHandler: SubmitHandler<FormData> = (data) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("search", data.search);
-    router.push(`/samples?${params.toString()}`);
-    reset();
-  };
+const SampleSearch = () => {
+  const [{ search }, setSearchParams] = useSamplesSearchParams({
+    history: "replace",
+    limitUrlUpdates: debounce(250)
+  });
 
   return (
-    <form className="flex gap-3" onSubmit={handleSubmit(onSubmitHandler)}>
+    <form className="flex gap-3">
       <div className="relative flex-1">
         <Search
           size={16}
@@ -36,15 +20,15 @@ const SampleSearch: React.FC = () => {
         />
         <Input
           type="text"
+          value={search}
+          onChange={(e) => {
+            setSearchParams({ search: e.target.value });
+          }}
           placeholder="Search samples..."
-          {...register("search", { required: true })}
           autoComplete="off"
           className="pl-10"
         />
       </div>
-      <Button type="submit" variant={"outline"} disabled={!isValid}>
-        Search
-      </Button>
     </form>
   );
 };

@@ -5,6 +5,7 @@ import {
   getDehydratedState,
   getServerQueryClient
 } from "@/lib/react-query-server";
+import { loadSamplesSearchParams } from "@/lib/search-params";
 import { HydrationBoundary } from "@tanstack/react-query";
 
 type SearchParams = {
@@ -19,12 +20,11 @@ export default async function SamplesPage({
 }) {
   const queryClient = getServerQueryClient();
 
-  const pageNum = Number((await searchParams).page ?? "1");
-  const search = (await searchParams).search ?? "";
+  const params = await loadSamplesSearchParams(searchParams);
 
   await queryClient.prefetchQuery({
-    queryKey: ["samples", search, pageNum],
-    queryFn: () => fetchSamplesPage(pageNum, search)
+    queryKey: ["samples", params.search, params.page],
+    queryFn: () => fetchSamplesPage(params.page, params.search)
   });
 
   const dehydrated = getDehydratedState(queryClient);

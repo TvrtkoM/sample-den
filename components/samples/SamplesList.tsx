@@ -2,17 +2,19 @@
 
 import useSamplesPage from "@/hooks/queries/useSamplesPage";
 import { defaultSamplesPageSize } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSamplesSearchParams } from "@/lib/search-params";
 import AppPagination from "../AppPagination";
 import { Skeleton } from "../ui/skeleton";
 import SampleItem from "./SampleItem";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const SamplesList = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [searchParams, setSearchParams] = useSamplesSearchParams();
 
-  const search = searchParams.get("search") ?? undefined;
-  const pageNum = Number(searchParams.get("page") ?? 1);
+  const debouncedParams = useDebounce(searchParams, 300);
+
+  const search = debouncedParams.search;
+  const pageNum = debouncedParams.page;
 
   const { data: pageData, isFetched: isPageFetched } = useSamplesPage(
     pageNum,
@@ -26,12 +28,10 @@ const SamplesList = () => {
   const totalPages =
     totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
 
-  const pageChangeHandler = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.set("page", String(newPage));
-
-    router.push(`/samples?${params.toString()}`);
+  const pageChangeHandler = (nextPage: number) => {
+    setSearchParams({
+      page: nextPage
+    });
   };
 
   if (isFetched && samples.length == 0)
