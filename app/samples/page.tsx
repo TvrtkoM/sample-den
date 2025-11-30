@@ -40,7 +40,7 @@ export default async function SamplesPage({
             <SampleSearch />
           </div>
         </header>
-        <SamplesList pageNum={pageNum} search={search} />
+        <SamplesList />
       </section>
     </HydrationBoundary>
   );

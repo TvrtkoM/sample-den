@@ -1,22 +1,18 @@
 "use client";
 
 import useSamplesPage from "@/hooks/queries/useSamplesPage";
-import SampleItem from "./SampleItem";
-import AppPagination from "../AppPagination";
-import { FC } from "react";
 import { defaultSamplesPageSize } from "@/lib/constants";
+import { useRouter, useSearchParams } from "next/navigation";
+import AppPagination from "../AppPagination";
 import { Skeleton } from "../ui/skeleton";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import SampleItem from "./SampleItem";
 
-type SamplesListProps = {
-  pageNum: number;
-  search: string;
-};
-
-const SamplesList: FC<SamplesListProps> = ({ pageNum, search }) => {
+const SamplesList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const search = searchParams.get("search") ?? undefined;
+  const pageNum = Number(searchParams.get("page") ?? 1);
 
   const { data: pageData, isFetched: isPageFetched } = useSamplesPage(
     pageNum,
