@@ -5,7 +5,7 @@ export default function useSamplesPage(pageNumber = 1) {
   return useQuery({
     queryKey: ['samples', pageNumber],
     queryFn: () => {
-      return fetchSamplesPage(pageNumber)
+      return fetchSamplesPage(pageNumber);
     }
   })
 }

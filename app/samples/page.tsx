@@ -1,6 +1,6 @@
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
-import { fetchSamplesPage, fetchTotalSamplesCount } from "@/lib/fetch";
+import { fetchSamplesPage } from "@/lib/fetch";
 import {
   getDehydratedState,
   getServerQueryClient
@@ -23,11 +23,6 @@ export default async function SamplesPage({
   await queryClient.prefetchQuery({
     queryKey: ["samples", pageNum],
     queryFn: () => fetchSamplesPage(pageNum)
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["totalSamples"],
-    queryFn: () => fetchTotalSamplesCount()
   });
 
   const dehydrated = getDehydratedState(queryClient);

@@ -8,7 +8,6 @@ import { defaultSamplesPageSize } from "@/lib/constants";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import useSamplesTotalCount from "@/hooks/queries/useSamplesTotalCount";
 
 type SamplesListProps = {
   pageNum: number;
@@ -19,15 +18,13 @@ const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
   const searchParams = useSearchParams();
 
   const { data: pageData, isFetched: isPageFetched } = useSamplesPage(pageNum);
-  const { data: totalCount, isFetched: isTotalCountFetched } =
-    useSamplesTotalCount();
 
-  const isFetched = isPageFetched && isTotalCountFetched;
+  const isFetched = isPageFetched;
 
-  const samples = pageData ?? [];
+  const samples = pageData?.samples ?? [];
+  const totalCount = pageData?.totalCount ?? 0;
   const totalPages =
-    totalCount != null &&
-    (totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize));
+    totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
 
   const pageChangeHandler = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -51,7 +48,7 @@ const SamplesList: FC<SamplesListProps> = ({ pageNum }) => {
               <SampleItem key={sample._id} sample={sample} />
             ))}
       </ul>
-      {totalPages !== false && totalPages > 0 && (
+      {totalPages > 0 && (
         <AppPagination
           pageNum={pageNum}
           totalPages={totalPages}

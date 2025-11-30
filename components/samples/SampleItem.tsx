@@ -1,15 +1,15 @@
 "use client";
 
-import { SamplesPageQuery } from "@/graphql-generated/graphql";
 import { formatSecondsDuration } from "@/lib/utils";
 import { useCallback, useState } from "react";
 import SamplePlayer from "./SamplePlayer";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ShoppingCart } from "react-feather";
+import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
 
 type SampleItemProps = {
-  sample: SamplesPageQuery["allSample"][number];
+  sample: SamplesPageQueryResult["samples"][number];
 };
 
 export default function SampleItem({ sample }: SampleItemProps) {

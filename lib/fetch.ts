@@ -1,20 +1,13 @@
-import { SamplesPageDocument } from "@/graphql-generated/graphql";
+import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
+import { samplesPageQuery } from "@/groq/samples";
 import { defaultSamplesPageSize } from "./constants";
-import { graphqlClient } from "./graphql-client";
 import { sanityClient } from "./sanity-client";
 
 export async function fetchSamplesPage(pageNumber: number) {
-  const gqlData = await graphqlClient.request(
-    SamplesPageDocument,
-    {
-      limit: defaultSamplesPageSize,
-      offset: defaultSamplesPageSize * (pageNumber - 1)
-    }
-  )
+  const offset = (pageNumber - 1) * defaultSamplesPageSize;
+  const end = offset + defaultSamplesPageSize;
 
-  return gqlData.allSample;
-}
+  const result = await sanityClient.fetch<SamplesPageQueryResult, { offset: number; end: number }>(samplesPageQuery, { offset, end });
 
-export async function fetchTotalSamplesCount() {
-  return sanityClient.fetch<number>('count(*[_type == "sample"])');
+  return result;
 }
