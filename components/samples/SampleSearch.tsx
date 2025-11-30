@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "react-feather";
+import { Search } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

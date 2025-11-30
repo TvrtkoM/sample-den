@@ -5,8 +5,8 @@ import { useCallback, useState } from "react";
 import SamplePlayer from "./SamplePlayer";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { ShoppingCart } from "react-feather";
 import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
+import { ShoppingCart } from "lucide-react";
 
 type SampleItemProps = {
   sample: SamplesPageQueryResult["samples"][number];

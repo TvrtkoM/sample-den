@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
-import { Pause, Play } from "react-feather";
+import { Pause, Play } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 
 type SamplePlayerProps = {
