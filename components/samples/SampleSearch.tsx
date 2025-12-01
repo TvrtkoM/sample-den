@@ -4,6 +4,7 @@ import { useSamplesSearchParams } from "@/lib/search-params";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { debounce } from "nuqs";
+import { Button } from "../ui/button";
 
 const SampleSearch = () => {
   const [{ search }, setSearchParams] = useSamplesSearchParams({
@@ -22,13 +23,22 @@ const SampleSearch = () => {
           type="text"
           value={search}
           onChange={(e) => {
-            setSearchParams({ search: e.target.value });
+            setSearchParams({ search: e.target.value, page: null });
           }}
           placeholder="Search samples..."
           autoComplete="off"
           className="pl-10"
         />
       </div>
+      <Button
+        variant="outline"
+        onClick={(e) => {
+          e.preventDefault();
+          setSearchParams(null);
+        }}
+      >
+        Clear
+      </Button>
     </form>
   );
 };
