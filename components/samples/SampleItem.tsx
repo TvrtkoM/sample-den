@@ -1,12 +1,13 @@
 "use client";
 
+import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
+import { useCartStore } from "@/lib/store/cart";
 import { formatSecondsDuration } from "@/lib/utils";
-import { useCallback, useState } from "react";
-import SamplePlayer from "./SamplePlayer";
+import { ShoppingCart } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
-import { ShoppingCart } from "lucide-react";
+import SamplePlayer from "./SamplePlayer";
 
 type SampleItemProps = {
   sample: SamplesPageQueryResult["samples"][number];
@@ -14,10 +15,11 @@ type SampleItemProps = {
 
 export default function SampleItem({ sample }: SampleItemProps) {
   const [duration, setDuration] = useState(0);
-
-  const onReadyHandler = useCallback((duration: number) => {
-    setDuration(duration);
-  }, []);
+  const toggleInCart = useCartStore((s) => s.toggle);
+  const isInCart = useCartStore((s) => {
+    return s.items.has(sample._id);
+  });
+  const toggleButtonLabel = isInCart ? "Remove from cart" : "Add to cart";
 
   return (
     <li className="card h-64 justify-between">
@@ -33,7 +35,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
         <div className="card-section bg-gray-100">
           <SamplePlayer
             src={sample.highResFile.mp3Url}
-            onReady={onReadyHandler}
+            onReady={(duration) => setDuration(duration)}
           />
         </div>
       )}
@@ -48,8 +50,12 @@ export default function SampleItem({ sample }: SampleItemProps) {
       </div>
 
       <div className="card-section">
-        <Button className="w-full">
-          <ShoppingCart /> Add to Cart
+        <Button
+          className="w-full data-[in-cart=true]:bg-accent data-[in-cart=true]:text-foreground data-[in-cart=true]:border-foreground data-[in-cart=true]:border"
+          data-in-cart={isInCart}
+          onClick={() => toggleInCart(sample._id)}
+        >
+          <ShoppingCart /> {toggleButtonLabel}
         </Button>
       </div>
     </li>
