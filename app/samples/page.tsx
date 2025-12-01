@@ -1,3 +1,4 @@
+import CartIcon from "@/components/cart/CartIcon";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { fetchSamplesPage } from "@/lib/fetch";
@@ -34,9 +35,14 @@ export default async function SamplesPage({
       <section aria-labelledby="samples-heading">
         <header className="border-b border-neutral-200">
           <div className="container py-6">
-            <h1 className="mb-6" id="samples-heading">
-              Sample den
-            </h1>
+            <div className="flex justify-between">
+              <h1 className="mb-6" id="samples-heading">
+                Sample den
+              </h1>
+              <nav>
+                <CartIcon />
+              </nav>
+            </div>
             <SampleSearch />
           </div>
         </header>
