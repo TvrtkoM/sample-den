@@ -1,30 +1,46 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
+type CartItem = {
+  id: string;
+};
+
 type State = {
-  items: Set<string>, // set of ids
+  items: Record<string, CartItem>,
   toggle: (id: string) => void;
   clear: () => void;
 }
 
 export const useCartStore = create<State>()(
-  immer((set, get) => {
+  immer((set) => {
     return {
-      items: new Set<string>(),
+      items: {},
       toggle(id) {
         set((state) => {
-          if (state.items.has(id)) {
-            state.items.delete(id);
+          if (id in state.items) {
+            delete state.items[id];
           } else {
-            state.items.add(id);
+            state.items[id] = { id };
           }
         })
       },
       clear() {
         set((state) => {
-          state.items.clear()
+          state.items = {}
         })
       },
     }
   })
 )
+
+export const useCartSize = () => {
+  return useCartStore((s) => {
+    return Object.keys(s.items).length;
+  })
+}
+
+export const useIsInCart = (id: string) => {
+  return useCartStore((s) => {
+    return id in s.items;
+  })
+}

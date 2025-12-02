@@ -3,10 +3,10 @@
 import { ShoppingBag } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { useCartStore } from "@/lib/store/cart";
+import { useCartSize } from "@/lib/store/cart";
 
 export default function CartIcon() {
-  const count = useCartStore((s) => s.items.size);
+  const cartSize = useCartSize();
   return (
     <Button
       type="button"
@@ -14,7 +14,7 @@ export default function CartIcon() {
       className="relative rounded-full"
     >
       <Badge className="absolute -top-[30%] -right-[25%] bg-background text-foreground">
-        {count}
+        {cartSize}
       </Badge>
       <ShoppingBag />
     </Button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
-import { useCartStore } from "@/lib/store/cart";
+import { useCartStore, useIsInCart } from "@/lib/store/cart";
 import { formatSecondsDuration } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
@@ -16,9 +16,7 @@ type SampleItemProps = {
 export default function SampleItem({ sample }: SampleItemProps) {
   const [duration, setDuration] = useState(0);
   const toggleInCart = useCartStore((s) => s.toggle);
-  const isInCart = useCartStore((s) => {
-    return s.items.has(sample._id);
-  });
+  const isInCart = useIsInCart(sample._id);
   const toggleButtonLabel = isInCart ? "Remove from cart" : "Add to cart";
 
   return (
