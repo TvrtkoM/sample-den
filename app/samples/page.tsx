@@ -2,12 +2,12 @@ import CartIcon from "@/components/cart/CartIcon";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { fetchSamplesPage } from "@/lib/fetch";
-import {
-  getDehydratedState,
-  getServerQueryClient
-} from "@/lib/react-query-server";
 import { loadSamplesSearchParams } from "@/lib/search-params";
-import { HydrationBoundary } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient
+} from "@tanstack/react-query";
 
 type SearchParams = {
   page?: string;
@@ -19,7 +19,7 @@ export default async function SamplesPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const queryClient = getServerQueryClient();
+  const queryClient = new QueryClient();
 
   const params = await loadSamplesSearchParams(searchParams);
 
@@ -28,7 +28,7 @@ export default async function SamplesPage({
     queryFn: () => fetchSamplesPage(params.page, params.search)
   });
 
-  const dehydrated = getDehydratedState(queryClient);
+  const dehydrated = dehydrate(queryClient);
 
   return (
     <HydrationBoundary state={dehydrated}>
