@@ -8,20 +8,21 @@ import {
   HydrationBoundary,
   QueryClient
 } from "@tanstack/react-query";
+import { cacheLife } from "next/cache";
+import { Suspense } from "react";
 
 type SearchParams = {
   page?: string;
   search?: string;
 };
 
-export default async function SamplesPage({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const queryClient = new QueryClient();
+async function getDehydratedState(searchParams: SearchParams) {
+  "use cache";
+  cacheLife("hours");
 
-  const params = await loadSamplesSearchParams(searchParams);
+  const params = loadSamplesSearchParams(searchParams);
+
+  const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["samples", params.search, params.page],
@@ -29,6 +30,17 @@ export default async function SamplesPage({
   });
 
   const dehydrated = dehydrate(queryClient);
+
+  return dehydrated;
+}
+
+async function PageImpl({
+  searchParams
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const dehydrated = await getDehydratedState(params);
 
   return (
     <HydrationBoundary state={dehydrated}>
@@ -49,5 +61,17 @@ export default async function SamplesPage({
         <SamplesList />
       </section>
     </HydrationBoundary>
+  );
+}
+
+export default async function SamplesPage({
+  searchParams
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  return (
+    <Suspense>
+      <PageImpl searchParams={searchParams} />
+    </Suspense>
   );
 }
