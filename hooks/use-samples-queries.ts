@@ -1,11 +1,12 @@
 import { fetchSamplesPage } from "@/lib/fetch";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-export default function useSamplesPage(pageNumber = 1, search = "") {
+export function useSuspenseSamplesPage(pageNumber = 1, search = "") {
   return useSuspenseQuery({
     queryKey: ['samples', search, pageNumber],
-    queryFn: () => {
+    queryFn: async () => {
       return fetchSamplesPage(pageNumber, search);
-    }
+    },
+    staleTime: 60 * 1000 * 60
   })
 }

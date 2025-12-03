@@ -1,10 +1,10 @@
 "use client";
 
-import useSamplesPage from "@/hooks/queries/useSamplesPage";
+import { useSuspenseSamplesPage } from "@/hooks/use-samples-queries";
 import { defaultSamplesPageSize } from "@/lib/constants";
 import { useSamplesSearchParams } from "@/lib/search-params";
 import { useDebounce } from "@uidotdev/usehooks";
-import { Suspense } from "react";
+import { Suspense, useDeferredValue } from "react";
 import AppPagination from "../AppPagination";
 import { Skeleton } from "../ui/skeleton";
 import SampleItem from "./SampleItem";
@@ -12,7 +12,7 @@ import SampleItem from "./SampleItem";
 const SamplesList = ({ page, search }: { page: number; search: string }) => {
   const {
     data: { samples }
-  } = useSamplesPage(page, search);
+  } = useSuspenseSamplesPage(page, search);
 
   if (samples.length === 0) {
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>;
@@ -47,7 +47,7 @@ const SamplesPagination = ({
 }) => {
   const {
     data: { totalCount }
-  } = useSamplesPage(page, search);
+  } = useSuspenseSamplesPage(page, search);
 
   const totalPages =
     totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
@@ -66,8 +66,14 @@ const SamplesListContainer = () => {
 
   const debouncedParams = useDebounce(searchParams, 300);
 
-  const search = debouncedParams.search;
+  // immediately use search if it is an empty string so we can show cached 1st page, otherwise use debounced search
+  const search =
+    searchParams.search === "" ? searchParams.search : debouncedParams.search;
+
   const page = searchParams.page;
+
+  const deferredSearch = useDeferredValue(search);
+  const deferredPage = useDeferredValue(page);
 
   const pageChangeHandler = (nextPage: number) => {
     setSearchParams({
@@ -82,8 +88,8 @@ const SamplesListContainer = () => {
       </Suspense>
       <Suspense>
         <SamplesPagination
-          page={page}
-          search={search}
+          page={deferredPage}
+          search={deferredSearch}
           onPageChange={pageChangeHandler}
         />
       </Suspense>
