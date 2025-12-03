@@ -53,11 +53,13 @@ const SamplesPagination = ({
     totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
 
   return (
-    <AppPagination
-      pageNum={page}
-      totalPages={totalPages}
-      onPageChange={onPageChange}
-    />
+    totalCount > 0 && (
+      <AppPagination
+        pageNum={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
+    )
   );
 };
 
