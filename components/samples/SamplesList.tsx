@@ -14,14 +14,9 @@ const SamplesList = () => {
   const debouncedParams = useDebounce(searchParams, 300);
 
   const search = debouncedParams.search;
-  const pageNum = debouncedParams.page;
+  const pageNum = searchParams.page;
 
-  const { data: pageData, isFetched: isPageFetched } = useSamplesPage(
-    pageNum,
-    search
-  );
-
-  const isFetched = isPageFetched;
+  const { data: pageData, isFetched } = useSamplesPage(pageNum, search);
 
   const samples = pageData?.samples ?? [];
   const totalCount = pageData?.totalCount ?? 0;
