@@ -44,3 +44,7 @@ export const useIsInCart = (id: string) => {
     return id in s.items;
   })
 }
+
+export const useToggleCartItem = () => {
+  return useCartStore((s => s.toggle));
+}
