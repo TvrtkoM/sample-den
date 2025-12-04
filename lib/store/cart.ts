@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { unstable_ssrSafe as ssrSafe } from 'zustand/middleware'
 
 type CartItem = {
   id: string;
@@ -12,25 +13,27 @@ type State = {
 }
 
 export const useCartStore = create<State>()(
-  immer((set) => {
-    return {
-      items: {},
-      toggle(id) {
-        set((state) => {
-          if (id in state.items) {
-            delete state.items[id];
-          } else {
-            state.items[id] = { id };
-          }
-        })
-      },
-      clear() {
-        set((state) => {
-          state.items = {}
-        })
-      },
-    }
-  })
+  ssrSafe(
+    immer((set) => {
+      return {
+        items: {},
+        toggle: (id) => {
+          set((state) => {
+            if (id in state.items) {
+              delete state.items[id];
+            } else {
+              state.items[id] = { id };
+            }
+          })
+        },
+        clear: () => {
+          set((state) => {
+            state.items = {}
+          })
+        },
+      }
+    })
+  )
 )
 
 export const useCartSize = () => {
