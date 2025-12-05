@@ -149,3 +149,7 @@
 @utility card-section {
   @apply px-3 flex;
 }
+
+@utility container-small {
+  @apply max-w-2xl mx-auto px-4 sm:px-6 lg:px-8;
+}
