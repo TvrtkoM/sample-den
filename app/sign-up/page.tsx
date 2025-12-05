@@ -11,25 +11,40 @@ import { Input } from "@/components/ui/input";
 import { signUp } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 type FormData = {
   name: string;
   email: string;
   password: string;
+  repeatPassword: string;
 };
+
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#^()\-_=+]).{8,}$/;
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function SignUpPage() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
 
-  const { register, handleSubmit } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    control
+  } = useForm<FormData>({
     defaultValues: {
       name: "",
       email: "",
-      password: ""
-    }
+      password: "",
+      repeatPassword: ""
+    },
+    mode: "onChange"
   });
+
+  const password = useWatch({ control, name: "password" });
 
   const submit: SubmitHandler<FormData> = async (data) => {
     const { name, email, password } = data;
@@ -53,35 +68,72 @@ export default function SignUpPage() {
       <form onSubmit={handleSubmit(submit)} className="card p-6">
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="name">Full Name</FieldLabel>
+            <FieldLabel htmlFor="name">Full name</FieldLabel>
             <Input
-              {...register("name", { required: true })}
-              placeholder="Full Name"
+              {...register("name", { required: "Full name is required" })}
+              placeholder="Full name"
               autoComplete="off"
               id="name"
+              aria-invalid={Boolean(errors.name)}
             />
+            {errors.name && <FieldError>{errors.name.message}</FieldError>}
           </Field>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
-              {...register("email", { required: true })}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: emailRegex,
+                  message: "Enter a valid email address"
+                }
+              })}
               placeholder="Email"
+              type="email"
               autoComplete="off"
               id="email"
+              aria-invalid={Boolean(errors.email)}
             />
+            {errors.email && <FieldError>{errors.email.message}</FieldError>}
           </Field>
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: "Password is required",
+                pattern: {
+                  value: passwordRegex,
+                  message:
+                    "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
+                }
+              })}
               type="password"
               placeholder="Password"
               autoComplete="off"
-              id="email"
+              id="password"
             />
           </Field>
+          <Field>
+            <FieldLabel htmlFor="repeatPassword">Repeat Password</FieldLabel>
+            <Input
+              {...register("repeatPassword", {
+                required: "Please repeat your password",
+                validate: (value) =>
+                  value === password || "Passwords do not match"
+              })}
+              type="password"
+              placeholder="Repeat password"
+              autoComplete="off"
+              id="repeatPassword"
+            />
+            {errors.repeatPassword && (
+              <FieldError>{errors.repeatPassword.message}</FieldError>
+            )}
+          </Field>
           <Field orientation="horizontal">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={!isValid}>
+              Submit
+            </Button>
             {authError && <FieldError>{authError}</FieldError>}
           </Field>
         </FieldGroup>
