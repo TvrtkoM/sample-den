@@ -54,7 +54,7 @@ export default function SignUpPage() {
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
-      router.push("/dashboard");
+      router.push("/user");
     }
   };
 

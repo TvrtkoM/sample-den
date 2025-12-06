@@ -45,7 +45,7 @@ export default function SignInPage() {
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
-      router.push("/dashboard");
+      router.push("/user");
     }
   };
 
