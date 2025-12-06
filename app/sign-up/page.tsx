@@ -69,10 +69,10 @@ export default function SignUpPage() {
       <form onSubmit={handleSubmit(submit)} className="card p-6">
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="name">Full name</FieldLabel>
+            <FieldLabel htmlFor="name">Username</FieldLabel>
             <Input
               {...register("name", { required: "Full name is required" })}
-              placeholder="Full name"
+              placeholder="Username"
               autoComplete="off"
               id="name"
               aria-invalid={Boolean(errors.name)}
@@ -112,7 +112,11 @@ export default function SignUpPage() {
               placeholder="Password"
               autoComplete="off"
               id="password"
+              aria-invalid={Boolean(errors.password)}
             />
+            {errors.password && (
+              <FieldError>{errors.password.message}</FieldError>
+            )}
           </Field>
           <Field>
             <FieldLabel htmlFor="repeatPassword">Repeat Password</FieldLabel>
@@ -126,6 +130,7 @@ export default function SignUpPage() {
               placeholder="Repeat password"
               autoComplete="off"
               id="repeatPassword"
+              aria-invalid={Boolean(errors.repeatPassword)}
             />
             {errors.repeatPassword && (
               <FieldError>{errors.repeatPassword.message}</FieldError>
