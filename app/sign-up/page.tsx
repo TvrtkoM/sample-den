@@ -47,6 +47,7 @@ export default function SignUpPage() {
   const password = useWatch({ control, name: "password" });
 
   const submit: SubmitHandler<FormData> = async (data) => {
+    setAuthError(null);
     const { name, email, password } = data;
     const res = await signUp.email({
       name,
