@@ -46,7 +46,6 @@ export default function SignInPage() {
 
     try {
       await signInAction(email, password);
-      //router.refresh();
       router.push("/user");
       reset();
     } catch (err) {
