@@ -34,7 +34,7 @@ const SamplePlayer = ({ src, onReady }: SamplePlayerProps) => {
   const togglePlay = () => wavesurfer?.playPause();
 
   return (
-    <div className="w-full flex items-center gap-4">
+    <div className="w-full flex items-center gap-4 h-16">
       <Button
         onClick={togglePlay}
         disabled={!isReady}
