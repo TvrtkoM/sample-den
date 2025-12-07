@@ -8,8 +8,8 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
-import { signInAction } from "@/lib/server-actions/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -44,17 +44,20 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    try {
-      await signInAction(email, password);
-      router.push("/user");
-      reset();
-    } catch (err) {
-      if (err instanceof Error) {
-        setAuthError(err.message);
+    await signIn.email(
+      { email, password },
+      {
+        onSuccess: () => {
+          router.push("/samples");
+          reset();
+        },
+        onError: (err) => {
+          setAuthError(err.error.message);
+        }
       }
-    } finally {
-      setIsSubmitting(false);
-    }
+    );
+
+    setIsSubmitting(false);
   };
 
   return (

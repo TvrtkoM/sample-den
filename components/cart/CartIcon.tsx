@@ -11,7 +11,7 @@ export default function CartIcon() {
     <Button
       type="button"
       aria-label="View cart"
-      className="relative rounded-full"
+      className="relative rounded-full w-9 h-9"
     >
       <Badge className="absolute -top-[30%] -right-[25%] bg-background text-foreground">
         {cartSize}

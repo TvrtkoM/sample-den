@@ -1,4 +1,4 @@
-import CartIcon from "@/components/cart/CartIcon";
+import AppNavButtons from "@/components/AppNavButtons";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { fetchSamplesPage } from "@/lib/fetch";
@@ -51,9 +51,7 @@ async function PageImpl({
               <h1 className="mb-6" id="samples-heading">
                 Sample den
               </h1>
-              <nav>
-                <CartIcon />
-              </nav>
+              <AppNavButtons />
             </div>
             <SampleSearch />
           </div>
