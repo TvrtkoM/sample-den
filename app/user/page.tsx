@@ -1,35 +1,42 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { Suspense } from "react";
-import { signOutAction } from "@/lib/server-actions/auth";
+import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const UserPageImpl = async ({ headers }: { headers: Promise<HeadersInit> }) => {
-  const session = await auth.api.getSession({ headers: await headers });
+export default function UserPage() {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
 
-  if (!session?.user) redirect("/sign-in");
+  useEffect(() => {
+    if (!isPending && !session?.user) {
+      router.push("/sign-in");
+    }
+  }, [isPending, session, router]);
 
-  const signOut = async () => {
-    "use server";
-    await signOutAction();
-    redirect("/sign-in");
-  };
+  if (isPending) {
+    return (
+      <main className="container">
+        <p>Loading</p>
+      </main>
+    );
+  }
+
+  if (!session?.user) {
+    return (
+      <main className="container">
+        <p>Redirecting...</p>
+      </main>
+    );
+  }
+
+  const { user } = session;
 
   return (
     <main className="container">
-      <h1>Welcome, {session?.user.name || "User"}!</h1>
-      <form action={signOut}>
-        <Button type="submit">Sign Out</Button>
-      </form>
+      <h1>Welcome, {user.name || "User"}!</h1>
+      <Button onClick={() => signOut()}>Sign out</Button>
     </main>
-  );
-};
-
-export default async function UserPage() {
-  return (
-    <Suspense>
-      <UserPageImpl headers={headers()} />
-    </Suspense>
   );
 }
