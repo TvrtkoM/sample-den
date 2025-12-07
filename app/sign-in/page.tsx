@@ -21,6 +21,7 @@ type FormData = {
 
 export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const {
@@ -37,16 +38,23 @@ export default function SignInPage() {
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null);
-    const res = await signIn.email({
-      email: data.email,
-      password: data.password
-    });
-
-    if (res.error) {
-      setAuthError(res.error.message || "Something went wrong.");
-    } else {
-      router.push("/user");
-    }
+    setIsSubmitting(true);
+    await signIn.email(
+      {
+        email: data.email,
+        password: data.password
+      },
+      {
+        onSuccess: () => {
+          router.push("/user");
+          setIsSubmitting(false);
+        },
+        onError: (err) => {
+          setAuthError(err.error.message || "Something went wrong.");
+          setIsSubmitting(false);
+        }
+      }
+    );
   };
 
   return (
@@ -92,7 +100,7 @@ export default function SignInPage() {
           </Field>
 
           <Field orientation="horizontal">
-            <Button type="submit" disabled={!isValid}>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
               Sign In
             </Button>
             {authError && <FieldError>{authError}</FieldError>}
