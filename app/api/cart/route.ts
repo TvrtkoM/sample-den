@@ -1,28 +1,10 @@
-import { auth } from '@/lib/auth'
+import { getCartItems } from '@/lib/db'
+import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
-import { headers } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
-async function getSession() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
-  return session
-}
-
 export async function GET() {
-  const session = await getSession()
-
-  if (!session) {
-    return NextResponse.json({ items: [] })
-  }
-
-  const cartItems = await prisma.cartItem.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  return NextResponse.json({ items: cartItems.map((item) => item.sampleId) })
+  return NextResponse.json({ items: await getCartItems() })
 }
 
 export async function POST(request: NextRequest) {

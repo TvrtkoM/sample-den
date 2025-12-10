@@ -1,6 +1,7 @@
 import AppNavButtons from "@/components/AppNavButtons";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
+import { getCartItems } from "@/lib/db";
 import { fetchSamplesPage } from "@/lib/fetch/samples";
 import { loadSamplesSearchParams } from "@/lib/search-params";
 import {
@@ -16,7 +17,7 @@ type SearchParams = {
   search?: string;
 };
 
-async function getDehydratedState(searchParams: SearchParams) {
+async function getDehydratedPage(searchParams: SearchParams) {
   "use cache";
   cacheLife("hours");
 
@@ -40,24 +41,37 @@ async function PageImpl({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const dehydrated = await getDehydratedState(params);
+  const dehydratedPage = await getDehydratedPage(params);
+
+  const cartItems = await getCartItems();
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["cart"],
+    queryFn: () => ({ items: cartItems })
+  });
+
+  const dehydratedCart = dehydrate(queryClient);
 
   return (
-    <HydrationBoundary state={dehydrated}>
-      <section aria-labelledby="samples-heading">
-        <header className="border-b border-neutral-200">
-          <div className="container py-6">
-            <div className="flex justify-between">
-              <h1 className="mb-6" id="samples-heading">
-                Sample den
-              </h1>
-              <AppNavButtons />
+    <HydrationBoundary state={dehydratedCart}>
+      <HydrationBoundary state={dehydratedPage}>
+        <section aria-labelledby="samples-heading">
+          <header className="border-b border-neutral-200">
+            <div className="container py-6">
+              <div className="flex justify-between">
+                <h1 className="mb-6" id="samples-heading">
+                  Sample den
+                </h1>
+                <AppNavButtons />
+              </div>
+              <SampleSearch />
             </div>
-            <SampleSearch />
-          </div>
-        </header>
-        <SamplesList />
-      </section>
+          </header>
+          <SamplesList />
+        </section>
+      </HydrationBoundary>
     </HydrationBoundary>
   );
 }
