@@ -32,14 +32,16 @@ const DropdownMenuNotSignedIn = () => {
 
 const DropdownMenuSignedIn = ({ username }: { username: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   return (
     <DropdownMenuContent>
       <DropdownMenuLabel>Hello {username}</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem
-        onClick={() => {
+        onClick={async () => {
+          await signOut();
           queryClient.setQueryData(["cart"], { items: [] });
-          signOut();
+          router.refresh();
         }}
       >
         Sign out
