@@ -22,6 +22,9 @@ const DropdownMenuNotSignedIn = () => {
       <DropdownMenuItem onClick={() => router.push("/sign-in")}>
         Sign in
       </DropdownMenuItem>
+      <DropdownMenuItem onClick={() => router.push("/sign-up")}>
+        Register
+      </DropdownMenuItem>
     </DropdownMenuContent>
   );
 };
@@ -43,6 +46,8 @@ const UserDropdown = () => {
     return <Skeleton className="w-9 h-9 rounded-full"></Skeleton>;
   }
 
+  const isAuth = session != null && session.user.isAnonymous !== true;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -50,9 +55,10 @@ const UserDropdown = () => {
           <User></User>
         </Button>
       </DropdownMenuTrigger>
-      {!session && <DropdownMenuNotSignedIn />}
-      {session != null && (
-        <DropdownMenuSignedIn username={session!.user.name} />
+      {isAuth ? (
+        <DropdownMenuSignedIn username={session.user.name} />
+      ) : (
+        <DropdownMenuNotSignedIn />
       )}
     </DropdownMenu>
   );

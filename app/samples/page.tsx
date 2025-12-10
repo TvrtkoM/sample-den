@@ -1,7 +1,7 @@
 import AppNavButtons from "@/components/AppNavButtons";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
-import { fetchSamplesPage } from "@/lib/fetch";
+import { fetchSamplesPage } from "@/lib/fetch/samples";
 import { loadSamplesSearchParams } from "@/lib/search-params";
 import {
   dehydrate,

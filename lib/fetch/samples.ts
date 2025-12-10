@@ -1,6 +1,6 @@
 import { samplesPageQuery } from "@/groq/samples";
-import { defaultSamplesPageSize } from "./constants";
-import { sanityClient } from "./sanity-client";
+import { defaultSamplesPageSize } from "../constants";
+import { sanityClient } from "../sanity-client";
 
 export async function fetchSamplesPage(pageNumber: number, search: string) {
   const offset = (pageNumber - 1) * defaultSamplesPageSize;

@@ -1,7 +1,7 @@
 "use client";
 
 import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
-import { useIsInCart, useToggleCartItem } from "@/lib/store/cart";
+import { useIsInCart, useToggleCartItem } from "@/hooks/use-cart";
 import { formatSecondsDuration } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
@@ -15,7 +15,7 @@ type SampleItemProps = {
 
 export default function SampleItem({ sample }: SampleItemProps) {
   const [duration, setDuration] = useState(0);
-  const toggleCartItems = useToggleCartItem();
+  const toggleCartItem = useToggleCartItem();
   const isInCart = useIsInCart(sample._id);
   const toggleButtonLabel = isInCart ? "Remove from cart" : "Add to cart";
 
@@ -51,7 +51,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
         <Button
           className="w-full data-[in-cart=true]:bg-accent data-[in-cart=true]:text-foreground data-[in-cart=true]:border-foreground data-[in-cart=true]:border"
           data-in-cart={isInCart}
-          onClick={() => toggleCartItems(sample._id)}
+          onClick={() => toggleCartItem(sample._id)}
         >
           <ShoppingCart /> {toggleButtonLabel}
         </Button>

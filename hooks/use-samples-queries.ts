@@ -1,4 +1,4 @@
-import { fetchSamplesPage } from "@/lib/fetch";
+import { fetchSamplesPage } from "@/lib/fetch/samples";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const samplePageStaleTime = 60 * 1000 * 60;

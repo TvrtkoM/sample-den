@@ -1,9 +1,9 @@
 "use client";
 
+import { useCartSize } from "@/hooks/use-cart";
 import { ShoppingBag } from "lucide-react";
-import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { useCartSize } from "@/lib/store/cart";
+import { Button } from "../ui/button";
 
 export default function CartIcon() {
   const cartSize = useCartSize();
