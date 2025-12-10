@@ -81,9 +81,5 @@ export default async function SamplesPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  return (
-    <Suspense>
-      <PageImpl searchParams={searchParams} />
-    </Suspense>
-  );
+  return <PageImpl searchParams={searchParams} />;
 }

@@ -1,24 +1,21 @@
 "use client";
-
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/hooks/use-session";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 
 const PublicGuard = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
+  const { data: session } = useSession();
+
+  const isAuth = session != null && session.user.isAnonymous !== true;
 
   useEffect(() => {
-    if (!isPending && session?.user) {
+    if (isAuth) {
       router.replace("/samples");
     }
-  }, [isPending, session, router]);
+  }, [isAuth, router]);
 
-  if (isPending) {
-    return null;
-  }
-
-  if (session?.user) {
+  if (isAuth) {
     return null;
   }
 

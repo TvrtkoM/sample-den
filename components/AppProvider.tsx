@@ -1,13 +1,15 @@
 "use client";
 
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { auth } from "@/lib/auth";
 import {
   isServer,
   QueryClient,
   QueryClientProvider
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ReactNode } from "react";
+import { SessionContext } from "../context/SessionContext";
 
 const makeQueryClient = () => {
   return new QueryClient({
@@ -32,15 +34,25 @@ const getQueryClient = () => {
   }
 };
 
-export default function AppProvider({ children }: { children: ReactNode }) {
+type AppProviderProps = {
+  children: ReactNode;
+  sessionPromise: Promise<typeof auth.$Infer.Session | null>;
+};
+
+export default function AppProvider({
+  children,
+  sessionPromise
+}: AppProviderProps) {
   const queryClient = getQueryClient();
 
   return (
-    <NuqsAdapter>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
-      </QueryClientProvider>
-    </NuqsAdapter>
+    <SessionContext.Provider value={sessionPromise}>
+      <NuqsAdapter>
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+        </QueryClientProvider>
+      </NuqsAdapter>
+    </SessionContext.Provider>
   );
 }

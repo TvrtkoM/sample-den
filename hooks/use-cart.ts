@@ -1,6 +1,7 @@
-import { signIn, useSession } from '@/lib/auth-client'
+import { signIn } from '@/lib/auth-client'
 import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSession } from './use-session'
 
 const CART_QUERY_KEY = ['cart']
 
