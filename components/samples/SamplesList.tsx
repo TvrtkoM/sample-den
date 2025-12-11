@@ -1,6 +1,6 @@
 "use client";
 
-import { useSuspenseSamplesPage } from "@/hooks/use-samples-queries";
+import { useSuspenseSamplesPageQuery } from "@/hooks/use-samples-queries";
 import { defaultSamplesPageSize } from "@/lib/constants";
 import { useSamplesSearchParams } from "@/lib/search-params";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -12,7 +12,7 @@ import SampleItem from "./SampleItem";
 const SamplesList = ({ page, search }: { page: number; search: string }) => {
   const {
     data: { samples }
-  } = useSuspenseSamplesPage(page, search);
+  } = useSuspenseSamplesPageQuery(page, search);
 
   if (samples.length === 0) {
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>;
@@ -47,7 +47,7 @@ const SamplesPagination = ({
 }) => {
   const {
     data: { totalCount }
-  } = useSuspenseSamplesPage(page, search);
+  } = useSuspenseSamplesPageQuery(page, search);
 
   const totalPages =
     totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
