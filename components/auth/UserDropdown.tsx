@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "../ui/dropdown-menu";
+import Image from "next/image";
 
 const DropdownMenuNotSignedIn = () => {
   const router = useRouter();
@@ -56,8 +57,21 @@ const UserDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-full w-9 h-9">
-          <User></User>
+        <Button
+          variant="outline"
+          className="rounded-full w-9 h-9 overflow-hidden"
+        >
+          {session?.user.image ? (
+            <Image
+              src={session.user.image}
+              alt="user avatar"
+              width={36}
+              height={36}
+              className="w-9 h-9 min-w-9"
+            />
+          ) : (
+            <User></User>
+          )}
         </Button>
       </DropdownMenuTrigger>
       {isAuth ? (
