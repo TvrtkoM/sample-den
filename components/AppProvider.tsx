@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ReactNode } from "react";
 import { SessionContext } from "../context/SessionContext";
+import { Provider } from "jotai";
 
 const makeQueryClient = () => {
   return new QueryClient({
@@ -48,10 +49,12 @@ export default function AppProvider({
   return (
     <SessionContext.Provider value={sessionPromise}>
       <NuqsAdapter>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
-        </QueryClientProvider>
+        <Provider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+          </QueryClientProvider>
+        </Provider>
       </NuqsAdapter>
     </SessionContext.Provider>
   );

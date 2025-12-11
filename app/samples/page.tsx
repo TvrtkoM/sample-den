@@ -1,4 +1,5 @@
 import AppNavButtons from "@/components/AppNavButtons";
+import CartDrawer from "@/components/cart/CartDrawer";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { getCartItems } from "@/lib/db";
@@ -70,6 +71,7 @@ async function PageImpl({
           </header>
           <SamplesList />
         </section>
+        <CartDrawer />
       </HydrationBoundary>
     </HydrationBoundary>
   );
