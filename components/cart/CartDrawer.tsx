@@ -4,8 +4,9 @@ import { useCartDrawerOpen } from "@/lib/store/cart";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { useEffect } from "react";
+import ClientOnly from "../ClientOnly";
 
-const CartDrawer = () => {
+const CartDrawerImpl = () => {
   const [isOpen, setIsOpen] = useCartDrawerOpen();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -56,6 +57,14 @@ const CartDrawer = () => {
         </>
       )}
     </AnimatePresence>
+  );
+};
+
+const CartDrawer = () => {
+  return (
+    <ClientOnly>
+      <CartDrawerImpl />
+    </ClientOnly>
   );
 };
 
