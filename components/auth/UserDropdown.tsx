@@ -4,7 +4,8 @@ import { useSession } from "@/hooks/use-session";
 import { signOut } from "@/lib/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -14,18 +15,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "../ui/dropdown-menu";
-import Image from "next/image";
 
 const DropdownMenuNotSignedIn = () => {
-  const router = useRouter();
-
   return (
     <DropdownMenuContent>
-      <DropdownMenuItem onClick={() => router.push("/sign-in")}>
-        Sign in
+      <DropdownMenuItem asChild>
+        <Link href="/sign-in">Sign in</Link>
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => router.push("/sign-up")}>
-        Register
+      <DropdownMenuItem asChild>
+        <Link href="/sign-up">Register</Link>
       </DropdownMenuItem>
     </DropdownMenuContent>
   );
