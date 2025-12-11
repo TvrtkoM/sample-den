@@ -1,5 +1,6 @@
 import { signIn } from '@/lib/auth-client'
 import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
+import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from './use-session'
 
@@ -13,18 +14,29 @@ export function useCart() {
   })
 }
 
-export function useCartItems() {
+export function useCartIds() {
   const { data } = useCart()
   return data?.items ?? []
 }
 
+export function useCartItems(pageNumber = 1) {
+  const ids = useCartIds()
+
+  return useQuery({
+    queryKey: ['cartItems', ids, pageNumber],
+    queryFn: () => fetchSamplesByIds(ids, pageNumber),
+    staleTime: 1000 * 60 * 5,
+    enabled: ids.length > 0,
+  })
+}
+
 export function useCartSize() {
-  const items = useCartItems()
+  const items = useCartIds()
   return items.length
 }
 
 export function useIsInCart(sampleId: string) {
-  const items = useCartItems()
+  const items = useCartIds()
   return items.includes(sampleId)
 }
 
