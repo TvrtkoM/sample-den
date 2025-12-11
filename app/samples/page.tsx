@@ -10,7 +10,6 @@ import {
   QueryClient
 } from "@tanstack/react-query";
 import { cacheLife } from "next/cache";
-import { Suspense } from "react";
 
 type SearchParams = {
   page?: string;
