@@ -1,5 +1,3 @@
-"use client";
-
 import PublicGuard from "@/components/auth/PublicGuard";
 import SignUpForm from "@/components/auth/SignUpForm";
 
