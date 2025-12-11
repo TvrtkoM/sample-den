@@ -2,6 +2,7 @@
 
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
+import { Button } from "../ui/button";
 
 export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,11 +16,11 @@ export default function GoogleSignInButton() {
   };
 
   return (
-    <button
+    <Button
       type="button"
       onClick={handleGoogleSignIn}
       disabled={isLoading}
-      className="inline-flex items-center justify-center gap-3 w-full h-10 px-4 rounded-md text-sm font-medium transition-colors bg-white text-[#1f1f1f] border border-[#747775] hover:bg-[#f8faff] hover:border-[#d2e3fc] disabled:opacity-50 disabled:pointer-events-none"
+      variant={"outline"}
     >
       <svg
         width="18"
@@ -45,6 +46,6 @@ export default function GoogleSignInButton() {
         />
       </svg>
       {isLoading ? "Signing in..." : "Continue with Google"}
-    </button>
+    </Button>
   );
 }
