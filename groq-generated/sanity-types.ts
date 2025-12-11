@@ -210,11 +210,31 @@ export type SamplesPageQueryResult = {
   }>;
   totalCount: number;
 };
+// Variable: samplesByIdsPageQuery
+// Query: {  "samples": *[_type == "sample" && _id in $ids]    | order(_createdAt desc)    [$offset...$end]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }},  "totalCount": count(*[_type == "sample" && _id in $ids])}
+export type SamplesByIdsPageQueryResult = {
+  samples: Array<{
+    _id: string;
+    title: string | null;
+    description: string | null;
+    slug: Slug | null;
+    highResFile: {
+      mp3Url: string | null;
+    } | null;
+    priceUsd: number | null;
+    categories: Array<{
+      title: string | null;
+      slug: Slug | null;
+    }> | null;
+  }>;
+  totalCount: number;
+};
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n{\n  \"samples\": \n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n": SamplesPageQueryResult;
+    "\n{\n  \"samples\": \n*[_type == \"sample\" && _id in $ids]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && _id in $ids]\n)\n}\n": SamplesByIdsPageQueryResult;
   }
 }

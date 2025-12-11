@@ -36,3 +36,17 @@ export const samplesPageQuery = defineQuery(`
   "totalCount": count(${samplesSearchFragment})
 }
 `);
+
+const samplesByIdsFragment = `
+*[_type == "sample" && _id in $ids]
+`;
+
+export const samplesByIdsPageQuery = defineQuery(`
+{
+  "samples": ${samplesByIdsFragment}
+    | order(_createdAt desc)
+    [$offset...$end]
+    ${sampleFragment},
+  "totalCount": count(${samplesByIdsFragment})
+}
+`);
