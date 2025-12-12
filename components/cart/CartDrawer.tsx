@@ -3,8 +3,11 @@
 import { useCartDrawerOpen } from "@/lib/store/cart";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@uidotdev/usehooks";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import ClientOnly from "../ClientOnly";
+import { Button } from "../ui/button";
+import Cart from "./Cart";
 
 const CartDrawerImpl = () => {
   const [isOpen, setIsOpen] = useCartDrawerOpen();
@@ -46,13 +49,25 @@ const CartDrawerImpl = () => {
             onClick={() => setIsOpen(false)}
           />
           <motion.section
-            className="fixed bg-white shadow-lg z-10 top-0 right-0 w-2xl h-full max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:w-full max-md:h-[80vh]"
+            className="fixed bg-white shadow-lg z-10 top-0 right-0 w-2xl h-full max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:w-full max-md:h-[80vh] flex flex-col"
             initial={drawerVariants.initial}
             animate={drawerVariants.animate}
             exit={drawerVariants.exit}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            Cart Drawer
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold">Your Cart</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="size-5" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <Cart />
+            </div>
           </motion.section>
         </>
       )}

@@ -23,7 +23,7 @@ export function useCartItems(pageNumber = 1) {
   const ids = useCartIds()
 
   return useQuery({
-    queryKey: ['cartItems', ids, pageNumber],
+    queryKey: ['cartItems', ids.sort(), pageNumber],
     queryFn: () => fetchSamplesByIds(ids, pageNumber),
     staleTime: 1000 * 60 * 5,
     enabled: ids.length > 0,
