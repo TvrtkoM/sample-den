@@ -1,7 +1,7 @@
 import { signIn } from '@/lib/auth-client'
 import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from './use-session'
 
 const CART_QUERY_KEY = ['cart']
@@ -27,6 +27,7 @@ export function useCartItems(pageNumber = 1) {
     queryFn: () => fetchSamplesByIds(ids, pageNumber),
     staleTime: 1000 * 60 * 5,
     enabled: ids.length > 0,
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -86,6 +87,31 @@ export function useRemoveFromCart() {
         items: (old?.items ?? []).filter((id) => id !== sampleId),
       }))
 
+      return { previous }
+    },
+    onError: (_err, _sampleId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(CART_QUERY_KEY, context.previous)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY })
+    },
+  })
+}
+
+type UseRemoveFromCartInCartOptions = {
+  onRemoveStart?: () => void;
+};
+
+export function useRemoveFromCartInCart({ onRemoveStart }: UseRemoveFromCartInCartOptions) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: removeFromCart,
+    onMutate: async () => {
+      onRemoveStart?.()
+      await queryClient.cancelQueries({ queryKey: CART_QUERY_KEY })
+      const previous = queryClient.getQueryData<{ items: string[] }>(CART_QUERY_KEY)
       return { previous }
     },
     onError: (_err, _sampleId, context) => {

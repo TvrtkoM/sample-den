@@ -1,20 +1,29 @@
 "use client";
 
 import { SamplesByIdsPageQueryResult } from "@/groq-generated/sanity-types";
-import { useRemoveFromCart } from "@/hooks/use-cart";
+import { useRemoveFromCartInCart } from "@/hooks/use-cart";
 import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import SamplePlayer from "../samples/SamplePlayer";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 type CartItemProps = {
   sample: SamplesByIdsPageQueryResult["samples"][number];
 };
 
 export default function CartItem({ sample }: CartItemProps) {
-  const removeFromCart = useRemoveFromCart();
+  const [isRemoving, setIsRemoving] = useState(false);
+  const removeFromCart = useRemoveFromCartInCart({
+    onRemoveStart: () => setIsRemoving(true)
+  });
 
   return (
-    <li className="flex flex-col gap-3 p-4 border-b last:border-b-0">
+    <li
+      className={cn("flex flex-col gap-3 p-4 border-b last:border-b-0", {
+        "opacity-50 pointer-events-none": isRemoving
+      })}
+    >
       <div className="flex items-center justify-between gap-2">
         <h4 className="font-medium truncate flex-1">{sample.title}</h4>
         <span className="font-semibold text-sm whitespace-nowrap">

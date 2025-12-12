@@ -9,7 +9,7 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const [pageNum, setPageNum] = useState(1);
-  const { data, isLoading } = useCartItems(pageNum);
+  const { data, isLoading, isFetching } = useCartItems(pageNum);
 
   const totalPages = data
     ? Math.ceil(data.totalCount / defaultSamplesPageSize)
@@ -17,11 +17,13 @@ export default function Cart() {
 
   const { samples } = data || { samples: [] };
 
-  if (isLoading) {
+  // Show loading when we're fetching a different page than what's currently displayed
+  const isChangingPage = isFetching && data?.pageNumber !== pageNum;
+
+  if (isLoading || isChangingPage) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-8 text-muted-foreground">
         <LoaderCircle className="animate-spin size-10" />
-        <p>Updating cart</p>
       </div>
     );
   }
@@ -44,7 +46,7 @@ export default function Cart() {
       </ul>
       <AppPagination
         pageNum={pageNum}
-        onPageChange={(pageNum) => setPageNum(pageNum)}
+        onPageChange={setPageNum}
         totalPages={totalPages}
       />
     </>

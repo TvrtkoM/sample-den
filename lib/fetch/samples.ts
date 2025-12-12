@@ -17,5 +17,5 @@ export async function fetchSamplesByIds(ids: string[], pageNumber: number) {
 
   const result = await sanityClient.fetch(samplesByIdsPageQuery, { ids, offset, end });
 
-  return result;
+  return { ...result, pageNumber };
 }
