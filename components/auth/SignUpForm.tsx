@@ -24,6 +24,7 @@ type FormData = {
 export default function SignUpForm() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -44,6 +45,8 @@ export default function SignUpForm() {
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null);
+    setIsSubmitting(true);
+
     const { name, email, password } = data;
     const res = await signUp.email({
       name,
@@ -56,6 +59,8 @@ export default function SignUpForm() {
     } else {
       router.push("/samples");
     }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -130,7 +135,7 @@ export default function SignUpForm() {
           )}
         </Field>
         <Field orientation="horizontal">
-          <Button type="submit" disabled={!isValid}>
+          <Button type="submit" disabled={!isValid || isSubmitting}>
             Submit
           </Button>
           {authError && <FieldError>{authError}</FieldError>}
