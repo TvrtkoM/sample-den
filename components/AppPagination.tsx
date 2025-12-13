@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { MouseEvent, MouseEventHandler } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -13,6 +13,7 @@ type AppPaginationProps = {
   pageNum: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  buildHref?: (page: number) => string;
   className?: string;
 };
 
@@ -20,15 +21,36 @@ const AppPagination: React.FC<AppPaginationProps> = ({
   pageNum,
   totalPages,
   onPageChange,
+  buildHref,
   className = ""
 }) => {
+  const handleNavigatePrevious: MouseEventHandler = (event) => {
+    event.preventDefault();
+    if (pageNum > 1) {
+      onPageChange(pageNum - 1);
+    }
+  };
+
+  const handleNavigateNext: MouseEventHandler = (event) => {
+    event.preventDefault();
+    if (pageNum < totalPages) {
+      onPageChange(pageNum + 1);
+    }
+  };
+
+  const handleNavigatePage = (event: MouseEvent, page: number) => {
+    event.preventDefault();
+    onPageChange(page);
+  };
+
   return (
     <Pagination className={className}>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => pageNum > 1 && onPageChange(pageNum - 1)}
+            onClick={handleNavigatePrevious}
             aria-disabled={pageNum === 1}
+            href={pageNum !== 1 ? buildHref?.(pageNum - 1) : undefined}
           />
         </PaginationItem>
 
@@ -36,7 +58,8 @@ const AppPagination: React.FC<AppPaginationProps> = ({
           <PaginationItem key={p}>
             <PaginationLink
               isActive={p === pageNum}
-              onClick={() => onPageChange(p)}
+              onClick={(e) => handleNavigatePage(e, p)}
+              href={buildHref?.(p)}
             >
               {p}
             </PaginationLink>
@@ -45,8 +68,9 @@ const AppPagination: React.FC<AppPaginationProps> = ({
 
         <PaginationItem>
           <PaginationNext
-            onClick={() => pageNum < totalPages && onPageChange(pageNum + 1)}
+            onClick={handleNavigateNext}
             aria-disabled={pageNum === totalPages}
+            href={pageNum < totalPages ? buildHref?.(pageNum + 1) : undefined}
           />
         </PaginationItem>
       </PaginationContent>

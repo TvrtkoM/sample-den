@@ -55,6 +55,9 @@ const SamplesPagination = ({
   return (
     totalCount > 0 && (
       <AppPagination
+        buildHref={(page) =>
+          `/samples?page=${page}${search ? `&search=${search}` : ""}`
+        }
         pageNum={page}
         totalPages={totalPages}
         onPageChange={onPageChange}
