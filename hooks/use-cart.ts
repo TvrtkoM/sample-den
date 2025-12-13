@@ -21,14 +21,18 @@ export function useCartIds() {
   return data?.items ?? []
 }
 
+export function useCartTotalCount() {
+  const allIds = useCartIds();
+  return allIds.length;
+}
+
 export function useCartItems(pageNumber = 1) {
   const allIds = useCartIds()
 
   const pageIds = allIds
     .slice((pageNumber - 1) * defaultCartPageSize, pageNumber * defaultCartPageSize);
-  const totalCount = allIds.length;
 
-  const query = useQuery({
+  return useQuery({
     queryKey: [CART_SAMPLES_QUERY_KEY, pageIds],
     queryFn: async () => {
       const unorderedItems = await fetchSamplesByIds(pageIds);
@@ -42,8 +46,6 @@ export function useCartItems(pageNumber = 1) {
     staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData,
   })
-
-  return { totalCount, query };
 }
 
 export function useCartSize() {

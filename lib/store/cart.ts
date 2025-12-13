@@ -19,3 +19,13 @@ export const useCloseCartDrawer = () => {
 export const useIsCartDrawerOpen = () => {
   return useAtomValue(cartDrawerOpenAtom);
 }
+
+const cartPageNumAtom = atom(1);
+
+export const useCartPageNum = () => {
+  return useAtomValue(cartPageNumAtom);
+}
+
+export const useSetCartPageNum = () => {
+  return useSetAtom(cartPageNumAtom);
+}

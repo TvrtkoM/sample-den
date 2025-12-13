@@ -1,35 +1,22 @@
 "use client";
 
-import { useCartItems } from "@/hooks/use-cart";
-import { defaultSamplesPageSize } from "@/lib/constants";
+import { SamplesByIdsPageQueryResult } from "@/generated/groq/sanity-types";
 import { LoaderCircle, ShoppingCart } from "lucide-react";
-import { useState } from "react";
-import AppPagination from "../AppPagination";
 import CartItem from "./CartItem";
 
-export default function Cart() {
-  const [pageNum, setPageNum] = useState(1);
-  const [prevPageNum, setPrevPageNum] = useState(pageNum);
-  const {
-    query: { data, isLoading, isFetching },
-    totalCount
-  } = useCartItems(pageNum);
+type CartProps = {
+  samples: SamplesByIdsPageQueryResult["samples"];
+  isChangingPage: boolean;
+  isLoading: boolean;
+  isCartEmpty: boolean;
+};
 
-  const totalPages = Math.ceil(totalCount / defaultSamplesPageSize);
-
-  const { samples } = data || { samples: [] };
-
-  if (samples.length === 0 && pageNum > 1) {
-    setPageNum(pageNum - 1);
-  }
-
-  // Show loading when we're fetching a different page than what's currently displayed
-  const isChangingPage = isFetching && prevPageNum !== pageNum;
-
-  if (isFetching === false && prevPageNum !== pageNum) {
-    setPrevPageNum(pageNum);
-  }
-
+export default function Cart({
+  samples,
+  isChangingPage,
+  isLoading,
+  isCartEmpty
+}: CartProps) {
   if (isLoading || isChangingPage) {
     return (
       <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 text-muted-foreground">
@@ -38,7 +25,7 @@ export default function Cart() {
     );
   }
 
-  if (samples.length === 0 && totalPages === 0) {
+  if (isCartEmpty) {
     return (
       <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 text-center text-muted-foreground">
         <ShoppingCart className="size-12" />
@@ -54,16 +41,6 @@ export default function Cart() {
           <CartItem key={sample._id} sample={sample} />
         ))}
       </ul>
-      {totalPages > 1 && (
-        <AppPagination
-          pageNum={pageNum}
-          onPageChange={(nextPage) => {
-            setPrevPageNum(pageNum);
-            setPageNum(nextPage);
-          }}
-          totalPages={totalPages}
-        />
-      )}
     </div>
   );
 }

@@ -1,9 +1,15 @@
 "use client";
 
-import { useCartDrawerOpenAtom } from "@/lib/store/cart";
+import { useCartItems, useCartTotalCount } from "@/hooks/use-cart";
+import { defaultCartPageSize } from "@/lib/constants";
+import {
+  useCartDrawerOpenAtom,
+  useCartPageNum,
+  useSetCartPageNum
+} from "@/lib/store/cart";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ClientOnly from "../ClientOnly";
 import Cart from "./Cart";
 import CartFooter from "./CartFooter";
@@ -12,6 +18,27 @@ import CartHeader from "./CartHeader";
 const CartDrawerImpl = () => {
   const [isOpen, setIsOpen] = useCartDrawerOpenAtom();
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const pageNum = useCartPageNum();
+  const setPageNum = useSetCartPageNum();
+  const [prevPageNum, setPrevPageNum] = useState(pageNum);
+  const { data, isLoading, isFetching } = useCartItems(pageNum);
+  const totalCount = useCartTotalCount();
+
+  const totalPages = Math.ceil(totalCount / defaultCartPageSize);
+
+  const { samples } = data || { samples: [] };
+
+  if (samples.length === 0 && pageNum > 1) {
+    setPageNum(pageNum - 1);
+  }
+
+  //Show loading when we're fetching a different page than what's currently displayed
+  const isChangingPage = isFetching && prevPageNum !== pageNum;
+
+  if (isFetching === false && prevPageNum !== pageNum) {
+    setPrevPageNum(pageNum);
+  }
 
   const drawerVariants = isMobile
     ? {
@@ -56,8 +83,20 @@ const CartDrawerImpl = () => {
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <CartHeader />
-            <Cart />
-            <CartFooter />
+            <Cart
+              samples={samples}
+              isChangingPage={isChangingPage}
+              isLoading={isLoading}
+              isCartEmpty={samples.length === 0 && totalPages === 0}
+            />
+            <CartFooter
+              pageNum={pageNum}
+              totalPages={totalPages}
+              setPageNum={(nextPage) => {
+                setPrevPageNum(pageNum);
+                setPageNum(nextPage);
+              }}
+            />
           </motion.section>
         </>
       )}
