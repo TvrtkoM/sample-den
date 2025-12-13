@@ -48,7 +48,7 @@ export default function Cart() {
   }
 
   return (
-    <>
+    <div className="flex-1 overflow-y-auto">
       <ul className="flex flex-col gap-6 my-6">
         {samples.map((sample) => (
           <CartItem key={sample._id} sample={sample} />
@@ -64,6 +64,6 @@ export default function Cart() {
           totalPages={totalPages}
         />
       )}
-    </>
+    </div>
   );
 }

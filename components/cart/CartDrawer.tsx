@@ -1,16 +1,16 @@
 "use client";
 
-import { useCartDrawerOpen } from "@/lib/store/cart";
-import { AnimatePresence, motion } from "framer-motion";
+import { useCartDrawerOpenAtom } from "@/lib/store/cart";
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import ClientOnly from "../ClientOnly";
-import { Button } from "../ui/button";
 import Cart from "./Cart";
+import CartFooter from "./CartFooter";
+import CartHeader from "./CartHeader";
 
 const CartDrawerImpl = () => {
-  const [isOpen, setIsOpen] = useCartDrawerOpen();
+  const [isOpen, setIsOpen] = useCartDrawerOpenAtom();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const drawerVariants = isMobile
@@ -55,19 +55,9 @@ const CartDrawerImpl = () => {
             exit={drawerVariants.exit}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Your Cart</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-              >
-                <X className="size-5" />
-              </Button>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <Cart />
-            </div>
+            <CartHeader />
+            <Cart />
+            <CartFooter />
           </motion.section>
         </>
       )}

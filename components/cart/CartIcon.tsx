@@ -18,7 +18,7 @@ export default function CartIcon() {
       onClick={openCart}
     >
       cart
-      <Badge className="absolute -top-[30%] -right-[20%] bg-background text-foreground border border-gray-400">
+      <Badge className="absolute -top-[30%] -right-[15%] bg-background text-foreground border border-gray-400">
         {cartSize}
       </Badge>
       <ShoppingBag />
