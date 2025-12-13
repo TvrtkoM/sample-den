@@ -20,7 +20,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
   const toggleButtonLabel = isInCart ? "Remove from cart" : "Add to cart";
 
   return (
-    <li className="card h-64 justify-between">
+    <li className="card-shadow-sm h-64 justify-between">
       <div className="card-section gap-2">
         {sample.categories?.map((c) => (
           <Badge variant="secondary" key={c?.slug?.current}>

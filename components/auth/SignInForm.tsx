@@ -62,7 +62,7 @@ export default function SignInPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="card p-6">
+    <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
