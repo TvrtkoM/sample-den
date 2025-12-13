@@ -1,4 +1,4 @@
-import { samplesByIdsQuery, samplesPageQuery } from "@/groq/samples";
+import { samplesByIdsQuery, samplesPageQuery, samplesPriceSumByIdsQuery } from "@/groq/samples";
 import { defaultSamplesPageSize } from "../constants";
 import { sanityClient } from "../sanity-client";
 
@@ -18,4 +18,13 @@ export async function fetchSamplesByIds(ids: string[]) {
   const res = await sanityClient.fetch(samplesByIdsQuery, { ids });
 
   return res.samples;
+}
+
+export async function fetchSamplesPriceSumByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return 0;
+  }
+  const res = await sanityClient.fetch(samplesPriceSumByIdsQuery, { ids });
+
+  return res.totalPrice;
 }

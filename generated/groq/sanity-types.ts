@@ -228,6 +228,11 @@ export type SamplesByIdsQueryResult = {
     }> | null;
   }>;
 };
+// Variable: samplesPriceSumByIdsQuery
+// Query: {  "totalPrice": math::sum(*[_type == "sample" && _id in $ids].priceUsd)}
+export type SamplesPriceSumByIdsQueryResult = {
+  totalPrice: number;
+};
 
 // Query TypeMap
 import "@sanity/client";
@@ -235,5 +240,6 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "\n{\n  \"samples\": \n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n": SamplesPageQueryResult;
     "\n{\n  \"samples\": \n*[_type == \"sample\" && _id in $ids]\n\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n\n}\n": SamplesByIdsQueryResult;
+    "\n{\n  \"totalPrice\": math::sum(\n*[_type == \"sample\" && _id in $ids]\n.priceUsd)\n}\n": SamplesPriceSumByIdsQueryResult;
   }
 }

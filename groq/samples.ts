@@ -47,3 +47,9 @@ export const samplesByIdsQuery = defineQuery(`
     ${sampleFragment}
 }
 `);
+
+export const samplesPriceSumByIdsQuery = defineQuery(`
+{
+  "totalPrice": math::sum(${samplesByIdsFragment}.priceUsd)
+}
+`);

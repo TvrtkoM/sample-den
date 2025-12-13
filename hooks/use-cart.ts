@@ -1,12 +1,11 @@
 import { signIn } from '@/lib/auth-client'
 import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
-import { fetchSamplesByIds } from '@/lib/fetch/samples'
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fetchSamplesByIds, fetchSamplesPriceSumByIds } from '@/lib/fetch/samples'
+import { keepPreviousData, useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useSession } from './use-session'
-import { defaultCartPageSize, defaultSamplesPageSize } from '@/lib/constants'
+import { defaultCartPageSize } from '@/lib/constants'
 
 const CART_QUERY_KEY = ['cart']
-const CART_SAMPLES_QUERY_KEY = ['cartSamples'];
 
 export function useCart() {
   return useQuery({
@@ -26,6 +25,19 @@ export function useCartTotalCount() {
   return allIds.length;
 }
 
+export function useCartTotalPrice() {
+  const ids = useCartIds();
+
+  const sortedIds = [...ids];
+  sortedIds.sort();
+
+  return useSuspenseQuery({
+    queryKey: ['cartTotalPrice', sortedIds],
+    queryFn: () => fetchSamplesPriceSumByIds(sortedIds),
+    staleTime: 1000 * 60 * 5
+  })
+}
+
 export function useCartItems(pageNumber = 1) {
   const allIds = useCartIds()
 
@@ -33,7 +45,7 @@ export function useCartItems(pageNumber = 1) {
     .slice((pageNumber - 1) * defaultCartPageSize, pageNumber * defaultCartPageSize);
 
   return useQuery({
-    queryKey: [CART_SAMPLES_QUERY_KEY, pageIds],
+    queryKey: ['cartSamples', pageIds],
     queryFn: async () => {
       const unorderedItems = await fetchSamplesByIds(pageIds);
 
