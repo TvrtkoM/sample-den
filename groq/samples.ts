@@ -44,9 +44,6 @@ const samplesByIdsFragment = `
 export const samplesByIdsPageQuery = defineQuery(`
 {
   "samples": ${samplesByIdsFragment}
-    | order(_createdAt desc)
-    [$offset...$end]
-    ${sampleFragment},
-  "totalCount": count(${samplesByIdsFragment})
+    ${sampleFragment}
 }
 `);

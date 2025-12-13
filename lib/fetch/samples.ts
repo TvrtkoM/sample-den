@@ -11,11 +11,11 @@ export async function fetchSamplesPage(pageNumber: number, search: string) {
   return result;
 }
 
-export async function fetchSamplesByIds(ids: string[], pageNumber: number) {
-  const offset = (pageNumber - 1) * defaultSamplesPageSize;
-  const end = offset + defaultSamplesPageSize;
+export async function fetchSamplesByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return [];
+  }
+  const res = await sanityClient.fetch(samplesByIdsPageQuery, { ids });
 
-  const result = await sanityClient.fetch(samplesByIdsPageQuery, { ids, offset, end });
-
-  return { ...result, pageNumber };
+  return res.samples;
 }

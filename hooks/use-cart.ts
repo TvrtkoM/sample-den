@@ -3,8 +3,10 @@ import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from './use-session'
+import { defaultSamplesPageSize } from '@/lib/constants'
 
 const CART_QUERY_KEY = ['cart']
+const CART_SAMPLES_QUERY_KEY = ['cartSamples'];
 
 export function useCart() {
   return useQuery({
@@ -20,15 +22,27 @@ export function useCartIds() {
 }
 
 export function useCartItems(pageNumber = 1) {
-  const ids = useCartIds()
+  const allIds = useCartIds()
 
-  return useQuery({
-    queryKey: ['cartItems', ids.sort(), pageNumber],
-    queryFn: () => fetchSamplesByIds(ids, pageNumber),
+  const pageIds = allIds.slice((pageNumber - 1) * defaultSamplesPageSize, pageNumber * defaultSamplesPageSize);
+  const totalCount = allIds.length;
+
+  const query = useQuery({
+    queryKey: [CART_SAMPLES_QUERY_KEY, pageIds],
+    queryFn: async () => {
+      const unorderedItems = await fetchSamplesByIds(pageIds);
+
+      const items = pageIds
+        .map((id) => unorderedItems.find((item) => item._id === id))
+        .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+      return { samples: items, pageNumber };
+    },
     staleTime: 1000 * 60 * 5,
-    enabled: ids.length > 0,
     placeholderData: keepPreviousData,
   })
+
+  return { totalCount, query };
 }
 
 export function useCartSize() {

@@ -11,7 +11,7 @@ export async function getCartItems() {
 
   const cartItems = await prisma.cartItem.findMany({
     where: { userId: session.user.id },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: 'asc' },
   })
 
   return cartItems.map((item) => item.sampleId)

@@ -9,11 +9,12 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const [pageNum, setPageNum] = useState(1);
-  const { data, isLoading, isFetching } = useCartItems(pageNum);
+  const {
+    query: { data, isLoading, isFetching },
+    totalCount
+  } = useCartItems(pageNum);
 
-  const totalPages = data
-    ? Math.ceil(data.totalCount / defaultSamplesPageSize)
-    : 0;
+  const totalPages = Math.ceil(totalCount / defaultSamplesPageSize);
 
   const { samples } = data || { samples: [] };
 
