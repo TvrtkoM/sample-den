@@ -14,10 +14,11 @@ export default function CartIcon() {
     <Button
       type="button"
       aria-label="View cart"
-      className="relative rounded-full w-9 h-9"
+      className="relative rounded-full h-9 flex items-center"
       onClick={openCart}
     >
-      <Badge className="absolute -top-[30%] -right-[25%] bg-background text-foreground">
+      cart
+      <Badge className="absolute -top-[30%] -right-[20%] bg-background text-foreground border border-gray-400">
         {cartSize}
       </Badge>
       <ShoppingBag />
