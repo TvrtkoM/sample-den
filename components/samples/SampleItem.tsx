@@ -1,6 +1,6 @@
 "use client";
 
-import { SamplesPageQueryResult } from "@/groq-generated/sanity-types";
+import { SamplesPageQueryResult } from "@/generated/groq/sanity-types";
 import { useIsInCart, useToggleCartItem } from "@/hooks/use-cart";
 import { formatSecondsDuration } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
