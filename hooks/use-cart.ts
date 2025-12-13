@@ -3,7 +3,7 @@ import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from './use-session'
-import { defaultSamplesPageSize } from '@/lib/constants'
+import { defaultCartPageSize, defaultSamplesPageSize } from '@/lib/constants'
 
 const CART_QUERY_KEY = ['cart']
 const CART_SAMPLES_QUERY_KEY = ['cartSamples'];
@@ -24,7 +24,8 @@ export function useCartIds() {
 export function useCartItems(pageNumber = 1) {
   const allIds = useCartIds()
 
-  const pageIds = allIds.slice((pageNumber - 1) * defaultSamplesPageSize, pageNumber * defaultSamplesPageSize);
+  const pageIds = allIds
+    .slice((pageNumber - 1) * defaultCartPageSize, pageNumber * defaultCartPageSize);
   const totalCount = allIds.length;
 
   const query = useQuery({

@@ -20,11 +20,11 @@ export default function CartItem({ sample }: CartItemProps) {
 
   return (
     <li
-      className={cn("flex flex-col gap-3 p-4 card mx-4", {
+      className={cn("flex flex-col gap-3 card mx-4", {
         "opacity-50 pointer-events-none": isRemoving
       })}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 card-section">
         <h3 className="font-medium truncate flex-1">{sample.title}</h3>
         <span className="font-semibold whitespace-nowrap">
           {sample.priceUsd} $
@@ -32,12 +32,12 @@ export default function CartItem({ sample }: CartItemProps) {
       </div>
 
       {sample.highResFile?.mp3Url && (
-        <div className="bg-gray-100 rounded-md p-2">
+        <div className="bg-gray-100 card-section">
           <SamplePlayer src={sample.highResFile.mp3Url} />
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end card-section">
         <Button
           variant="ghost"
           size="sm"

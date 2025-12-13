@@ -32,15 +32,15 @@ export default function Cart() {
 
   if (isLoading || isChangingPage) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-8 text-muted-foreground">
-        <LoaderCircle className="animate-spin size-10" />
+      <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 text-muted-foreground">
+        <LoaderCircle className="animate-spin size-20" />
       </div>
     );
   }
 
   if (samples.length === 0 && totalPages === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-8 text-center text-muted-foreground">
+      <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 text-center text-muted-foreground">
         <ShoppingCart className="size-12" />
         <p>Your cart is empty</p>
       </div>
@@ -49,7 +49,7 @@ export default function Cart() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <ul className="flex flex-col gap-6 my-6">
+      <ul className="flex flex-col gap-5 my-8">
         {samples.map((sample) => (
           <CartItem key={sample._id} sample={sample} />
         ))}
