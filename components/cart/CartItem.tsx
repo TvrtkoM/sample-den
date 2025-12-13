@@ -25,8 +25,8 @@ export default function CartItem({ sample }: CartItemProps) {
       })}
     >
       <div className="flex items-center justify-between gap-2">
-        <h4 className="font-medium truncate flex-1">{sample.title}</h4>
-        <span className="font-semibold text-sm whitespace-nowrap">
+        <h3 className="font-medium truncate flex-1">{sample.title}</h3>
+        <span className="font-semibold whitespace-nowrap">
           {sample.priceUsd} $
         </span>
       </div>
@@ -42,10 +42,9 @@ export default function CartItem({ sample }: CartItemProps) {
           variant="ghost"
           size="sm"
           onClick={() => removeFromCart.mutate(sample._id)}
-          disabled={removeFromCart.isPending}
         >
           <Trash2 className="size-4" />
-          Remove
+          {isRemoving ? "Removing..." : "Remove"}
         </Button>
       </div>
     </li>

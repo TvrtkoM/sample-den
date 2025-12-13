@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -22,12 +22,6 @@ const AppPagination: React.FC<AppPaginationProps> = ({
   onPageChange,
   className = ""
 }) => {
-  useEffect(() => {
-    if (pageNum > totalPages) {
-      onPageChange(totalPages);
-    }
-  }, [pageNum, totalPages, onPageChange]);
-
   return (
     <Pagination className={className}>
       <PaginationContent>

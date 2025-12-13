@@ -36,7 +36,7 @@ export function useCartItems(pageNumber = 1) {
         .map((id) => unorderedItems.find((item) => item._id === id))
         .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-      return { samples: items, pageNumber };
+      return { samples: items };
     },
     staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData,

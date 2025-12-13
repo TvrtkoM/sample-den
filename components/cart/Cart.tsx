@@ -9,6 +9,7 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const [pageNum, setPageNum] = useState(1);
+  const [prevPageNum, setPrevPageNum] = useState(pageNum);
   const {
     query: { data, isLoading, isFetching },
     totalCount
@@ -18,8 +19,16 @@ export default function Cart() {
 
   const { samples } = data || { samples: [] };
 
+  if (samples.length === 0 && pageNum > 1) {
+    setPageNum(pageNum - 1);
+  }
+
   // Show loading when we're fetching a different page than what's currently displayed
-  const isChangingPage = isFetching && data?.pageNumber !== pageNum;
+  const isChangingPage = isFetching && prevPageNum !== pageNum;
+
+  if (isFetching === false && prevPageNum !== pageNum) {
+    setPrevPageNum(pageNum);
+  }
 
   if (isLoading || isChangingPage) {
     return (
@@ -45,11 +54,16 @@ export default function Cart() {
           <CartItem key={sample._id} sample={sample} />
         ))}
       </ul>
-      <AppPagination
-        pageNum={pageNum}
-        onPageChange={setPageNum}
-        totalPages={totalPages}
-      />
+      {totalPages > 1 && (
+        <AppPagination
+          pageNum={pageNum}
+          onPageChange={(nextPage) => {
+            setPrevPageNum(pageNum);
+            setPageNum(nextPage);
+          }}
+          totalPages={totalPages}
+        />
+      )}
     </>
   );
 }
