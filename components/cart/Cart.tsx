@@ -1,11 +1,11 @@
 "use client";
 
-import { SamplesByIdsPageQueryResult } from "@/generated/groq/sanity-types";
+import { SamplesByIdsQueryResult } from "@/generated/groq/sanity-types";
 import { LoaderCircle, ShoppingCart } from "lucide-react";
 import CartItem from "./CartItem";
 
 type CartProps = {
-  samples: SamplesByIdsPageQueryResult["samples"];
+  samples: SamplesByIdsQueryResult["samples"];
   isChangingPage: boolean;
   isLoading: boolean;
   isCartEmpty: boolean;

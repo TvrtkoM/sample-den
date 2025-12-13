@@ -41,7 +41,7 @@ const samplesByIdsFragment = `
 *[_type == "sample" && _id in $ids]
 `;
 
-export const samplesByIdsPageQuery = defineQuery(`
+export const samplesByIdsQuery = defineQuery(`
 {
   "samples": ${samplesByIdsFragment}
     ${sampleFragment}

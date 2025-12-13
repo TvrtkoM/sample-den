@@ -1,4 +1,4 @@
-import { samplesByIdsPageQuery, samplesPageQuery } from "@/groq/samples";
+import { samplesByIdsQuery, samplesPageQuery } from "@/groq/samples";
 import { defaultSamplesPageSize } from "../constants";
 import { sanityClient } from "../sanity-client";
 
@@ -15,7 +15,7 @@ export async function fetchSamplesByIds(ids: string[]) {
   if (ids.length === 0) {
     return [];
   }
-  const res = await sanityClient.fetch(samplesByIdsPageQuery, { ids });
+  const res = await sanityClient.fetch(samplesByIdsQuery, { ids });
 
   return res.samples;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { SamplesByIdsPageQueryResult } from "@/generated/groq/sanity-types";
+import { SamplesByIdsQueryResult } from "@/generated/groq/sanity-types";
 import { useRemoveFromCartInCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
@@ -9,7 +9,7 @@ import SamplePlayer from "../samples/SamplePlayer";
 import { Button } from "../ui/button";
 
 type CartItemProps = {
-  sample: SamplesByIdsPageQueryResult["samples"][number];
+  sample: SamplesByIdsQueryResult["samples"][number];
 };
 
 export default function CartItem({ sample }: CartItemProps) {
