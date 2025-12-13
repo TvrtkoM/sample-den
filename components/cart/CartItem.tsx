@@ -20,7 +20,7 @@ export default function CartItem({ sample }: CartItemProps) {
 
   return (
     <li
-      className={cn("flex flex-col gap-3 p-4 border-b last:border-b-0", {
+      className={cn("flex flex-col gap-3 p-4 card mx-4", {
         "opacity-50 pointer-events-none": isRemoving
       })}
     >

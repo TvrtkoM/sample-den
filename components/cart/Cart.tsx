@@ -49,7 +49,7 @@ export default function Cart() {
 
   return (
     <>
-      <ul className="flex flex-col">
+      <ul className="flex flex-col gap-6 my-6">
         {samples.map((sample) => (
           <CartItem key={sample._id} sample={sample} />
         ))}
