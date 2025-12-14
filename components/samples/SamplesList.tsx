@@ -1,6 +1,6 @@
 "use client";
 
-import { useSuspenseSamplesPage } from "@/hooks/use-samples-queries";
+import { useSuspenseSamplesPage } from "@/hooks/use-samples";
 import { defaultSamplesPageSize } from "@/lib/constants";
 import { useSamplesSearchParams } from "@/lib/search-params";
 import { useDebounce } from "@uidotdev/usehooks";
