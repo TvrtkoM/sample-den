@@ -1,19 +1,24 @@
-import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { startTransition } from "react";
 
 const cartDrawerOpenAtom = atom(false);
 
-export const useCartDrawerOpenAtom = () => {
-  return useAtom(cartDrawerOpenAtom);
-}
-
 export const useOpenCartDrawer = () => {
   const setOpen = useSetAtom(cartDrawerOpenAtom);
-  return () => setOpen(true);
+  return () => {
+    startTransition(() => {
+      setOpen(true)
+    })
+  };
 }
 
 export const useCloseCartDrawer = () => {
   const setOpen = useSetAtom(cartDrawerOpenAtom);
-  return () => setOpen(false);
+  return () => {
+    startTransition(() => {
+      setOpen(false)
+    })
+  };
 }
 
 export const useIsCartDrawerOpen = () => {

@@ -157,3 +157,91 @@
 @utility container-small {
   @apply max-w-2xl mx-auto px-4 sm:px-6 lg:px-8;
 }
+
+::view-transition-old(.drawer-slide-desktop) {
+  animation: slide-out-horizontal 300ms ease-out forwards;
+}
+
+::view-transition-new(.drawer-slide-desktop) {
+  animation: slide-in-horizontal 300ms ease-out forwards;
+}
+
+@keyframes slide-out-horizontal {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-in-horizontal {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+::view-transition-old(.drawer-slide-mobile) {
+  animation: slide-out-vertical 300ms ease-out forwards;
+}
+
+::view-transition-new(.drawer-slide-mobile) {
+  animation: slide-in-vertical 300ms ease-out forwards;
+}
+
+@keyframes slide-out-vertical {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes slide-in-vertical {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+::view-transition-old(.drawer-backdrop) {
+  animation: backdrop-out 300ms ease-out forwards;
+}
+
+::view-transition-new(.drawer-backdrop) {
+  animation: backdrop-in 300ms ease-out forwards;
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes backdrop-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}

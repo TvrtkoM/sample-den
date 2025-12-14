@@ -28,7 +28,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "framer-motion": "^12.23.26",
     "groq": "^4.19.0",
     "immer": "^11.0.1",
     "jotai": "^2.16.0",
