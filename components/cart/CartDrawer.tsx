@@ -15,10 +15,7 @@ import Cart from "./Cart";
 import CartFooter from "./CartFooter";
 import CartHeader from "./CartHeader";
 
-const CartDrawerImpl = () => {
-  const [isOpen, setIsOpen] = useCartDrawerOpenAtom();
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
+const CartDrawerContent = () => {
   const pageNum = useCartPageNum();
   const setPageNum = useSetCartPageNum();
   const [prevPageNum, setPrevPageNum] = useState(pageNum);
@@ -39,6 +36,31 @@ const CartDrawerImpl = () => {
   if (isFetching === false && prevPageNum !== pageNum) {
     setPrevPageNum(pageNum);
   }
+
+  return (
+    <>
+      <CartHeader />
+      <Cart
+        samples={samples}
+        isChangingPage={isChangingPage}
+        isLoading={isLoading}
+        isCartEmpty={samples.length === 0 && totalPages === 0}
+      />
+      <CartFooter
+        pageNum={pageNum}
+        totalPages={totalPages}
+        setPageNum={(nextPage) => {
+          setPrevPageNum(pageNum);
+          setPageNum(nextPage);
+        }}
+      />
+    </>
+  );
+};
+
+const CartDrawerImpl = () => {
+  const [isOpen, setIsOpen] = useCartDrawerOpenAtom();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const drawerVariants = isMobile
     ? {
@@ -82,21 +104,7 @@ const CartDrawerImpl = () => {
             exit={drawerVariants.exit}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <CartHeader />
-            <Cart
-              samples={samples}
-              isChangingPage={isChangingPage}
-              isLoading={isLoading}
-              isCartEmpty={samples.length === 0 && totalPages === 0}
-            />
-            <CartFooter
-              pageNum={pageNum}
-              totalPages={totalPages}
-              setPageNum={(nextPage) => {
-                setPrevPageNum(pageNum);
-                setPageNum(nextPage);
-              }}
-            />
+            <CartDrawerContent />
           </motion.section>
         </>
       )}
