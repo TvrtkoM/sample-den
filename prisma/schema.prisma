@@ -24,24 +24,12 @@ model User {
   sessions      Session[]
   accounts      Account[]
   cartItems     CartItem[]
+  purchases     Purchase[]
 
   isAnonymous Boolean? @default(false)
 
   @@unique([email])
   @@map("user")
-}
-
-model CartItem {
-  id        String   @id @default(cuid())
-  userId    String
-  sampleId  String
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, sampleId])
-  @@index([userId])
-  @@map("cart_item")
 }
 
 model Session {
@@ -90,4 +78,39 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  sampleId  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sampleId])
+  @@index([userId])
+  @@map("cart_item")
+}
+
+model Purchase {
+  id              String    @id @default(cuid())
+  userId          String
+  sampleId        String
+  stripeSessionId String?
+  priceInCents    Int
+
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("purchase")
+}
+
+model ProcessedWebhookEvent {
+  stripeEventId String    @id
+  processedAt   DateTime  @default(now())
+
+  @@map("processed-webhook-event")
 }

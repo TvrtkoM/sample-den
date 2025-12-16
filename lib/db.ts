@@ -2,7 +2,7 @@ import { getSession } from "./getSession"
 import prisma from "./prisma";
 
 
-export async function getCartItems() {
+export async function getCartSamplesIds() {
   const session = await getSession()
 
   if (!session) {

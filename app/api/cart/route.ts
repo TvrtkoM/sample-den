@@ -1,10 +1,10 @@
-import { getCartItems } from '@/lib/db'
+import { getCartSamplesIds } from '@/lib/db'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
-  return NextResponse.json({ items: await getCartItems() })
+  return NextResponse.json({ items: await getCartSamplesIds() })
 }
 
 export async function POST(request: NextRequest) {

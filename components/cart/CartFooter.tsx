@@ -1,10 +1,34 @@
 "use client";
 
 import { useCartTotalPrice } from "@/hooks/use-cart";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import AppPagination from "../AppPagination";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+
+const CheckoutButton = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const checkout = async () => {
+    setIsSubmitting(true);
+    const res = await fetch("/api/payment/checkout-sessions", {
+      method: "POST"
+    });
+    const { url } = await res.json();
+    window.location.href = url;
+  };
+
+  return (
+    <Button
+      size={"lg"}
+      className="text-xl"
+      onClick={() => checkout()}
+      disabled={isSubmitting}
+    >
+      Checkout
+    </Button>
+  );
+};
 
 const CartTotalPrice = () => {
   const { data: totalPrice } = useCartTotalPrice();
@@ -38,9 +62,7 @@ const CartFooter = ({ pageNum, setPageNum, totalPages }: CartFooterProps) => {
         <Suspense fallback={<Skeleton className="h-7 w-1/2 mx-auto" />}>
           <CartTotalPrice />
         </Suspense>
-        <Button size={"lg"} className="text-xl">
-          Go to checkout
-        </Button>
+        <CheckoutButton />
       </div>
     </div>
   );

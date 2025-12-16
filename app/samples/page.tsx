@@ -2,7 +2,7 @@ import AppNavButtons from "@/components/AppNavButtons";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
-import { getCartItems } from "@/lib/db";
+import { getCartSamplesIds } from "@/lib/db";
 import { fetchSamplesPage } from "@/lib/fetch/samples";
 import { loadSamplesSearchParams } from "@/lib/search-params";
 import {
@@ -43,7 +43,7 @@ async function PageImpl({
   const params = await searchParams;
   const dehydratedPage = await getDehydratedPage(params);
 
-  const cartItems = await getCartItems();
+  const cartItems = await getCartSamplesIds();
 
   const queryClient = new QueryClient();
 
