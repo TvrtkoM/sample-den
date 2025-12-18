@@ -46,14 +46,16 @@ const CartDrawerContent = () => {
         isLoading={isLoading}
         isCartEmpty={samples.length === 0 && totalPages === 0}
       />
-      <CartFooter
-        pageNum={pageNum}
-        totalPages={totalPages}
-        setPageNum={(nextPage) => {
-          setPrevPageNum(pageNum);
-          setPageNum(nextPage);
-        }}
-      />
+      {totalCount && (
+        <CartFooter
+          pageNum={pageNum}
+          totalPages={totalPages}
+          setPageNum={(nextPage) => {
+            setPrevPageNum(pageNum);
+            setPageNum(nextPage);
+          }}
+        />
+      )}
     </>
   );
 };

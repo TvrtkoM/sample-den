@@ -5,28 +5,57 @@ import { Suspense, useState } from "react";
 import AppPagination from "../AppPagination";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+import { useSession } from "@/hooks/use-session";
+import Link from "next/link";
 
 const CheckoutButton = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: session } = useSession();
+
+  const isAuth = session != null && session.user.isAnonymous !== true;
 
   const checkout = async () => {
     setIsSubmitting(true);
     const res = await fetch("/api/payment/checkout-sessions", {
       method: "POST"
     });
-    const { url } = await res.json();
+    const response: { url: string } = await res.json();
+    const url = response.url;
     window.location.href = url;
+    //setIsSubmitting(false);
   };
 
   return (
-    <Button
-      size={"lg"}
-      className="text-xl"
-      onClick={() => checkout()}
-      disabled={isSubmitting}
-    >
-      Checkout
-    </Button>
+    <>
+      {isAuth ? (
+        <Button
+          size={"lg"}
+          className="text-xl"
+          onClick={() => checkout()}
+          disabled={isSubmitting}
+        >
+          Checkout
+        </Button>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <Button size={"lg"} className="text-xl" asChild>
+            <Link
+              href={{
+                pathname: "/sign-up",
+                query: { checkout: true }
+              }}
+            >
+              Sign in to continue
+            </Link>
+          </Button>
+          <Button size={"lg"} className="text-xl" asChild>
+            <Link href={{ pathname: "/sign-in", query: { checkout: true } }}>
+              Create an account
+            </Link>
+          </Button>
+        </div>
+      )}
+    </>
   );
 };
 
