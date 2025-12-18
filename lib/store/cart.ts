@@ -1,3 +1,4 @@
+import "client-only";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { startTransition } from "react";
 

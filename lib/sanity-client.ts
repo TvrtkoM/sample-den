@@ -1,3 +1,7 @@
+// safe to use on both client and server
+// - doesn't contain any secret env varialble - used only for fetching
+// - stateless
+// - recreating multiple instances has no real cost
 import { createClient } from '@sanity/client';
 
 export const sanityClient = createClient({

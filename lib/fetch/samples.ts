@@ -1,3 +1,5 @@
+// safe to use on both server and client
+// - only fetching data
 import { samplesByIdsQuery, samplesPageQuery, samplesPriceSumByIdsQuery } from "@/groq/samples";
 import { defaultSamplesPageSize } from "../constants";
 import { sanityClient } from "../sanity-client";

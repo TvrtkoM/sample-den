@@ -2,12 +2,12 @@
 
 import { useSuspenseSamplesPage } from "@/hooks/use-samples";
 import { defaultSamplesPageSize } from "@/lib/constants";
-import { useSamplesSearchParams } from "@/lib/search-params";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Suspense, useDeferredValue } from "react";
 import AppPagination from "../AppPagination";
 import { Skeleton } from "../ui/skeleton";
 import SampleItem from "./SampleItem";
+import { useSamplesSearchParams } from "@/lib/search-params/hooks";
 
 const SamplesList = ({ page, search }: { page: number; search: string }) => {
   const {

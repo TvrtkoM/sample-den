@@ -1,3 +1,4 @@
+import "server-only"
 import { getSession } from "./getSession"
 import prisma from "./prisma";
 

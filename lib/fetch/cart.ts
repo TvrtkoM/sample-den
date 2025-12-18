@@ -1,3 +1,5 @@
+import "client-only";
+
 export async function fetchCart(): Promise<{ items: string[] }> {
   const res = await fetch('/api/cart')
   if (!res.ok) throw new Error('Failed to fetch cart')

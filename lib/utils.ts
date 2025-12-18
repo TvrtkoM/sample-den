@@ -1,3 +1,4 @@
+// utilities that are used in both server and client components
 import { format } from "date-fns";
 
 import { clsx, type ClassValue } from "clsx"

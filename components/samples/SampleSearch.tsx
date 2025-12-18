@@ -1,10 +1,10 @@
 "use client";
 
-import { useSamplesSearchParams } from "@/lib/search-params";
+import { useSamplesSearchParams } from "@/lib/search-params/hooks";
 import { Search } from "lucide-react";
-import { Input } from "../ui/input";
 import { debounce } from "nuqs";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const SampleSearch = () => {
   const [{ search }, setSearchParams] = useSamplesSearchParams({

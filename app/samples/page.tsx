@@ -4,7 +4,7 @@ import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { getCartSamplesIds } from "@/lib/db";
 import { fetchSamplesPage } from "@/lib/fetch/samples";
-import { loadSamplesSearchParams } from "@/lib/search-params";
+import { loadSamplesSearchParams } from "@/lib/search-params/loaders";
 import {
   dehydrate,
   HydrationBoundary,
