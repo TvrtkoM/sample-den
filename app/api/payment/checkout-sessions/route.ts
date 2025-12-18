@@ -19,7 +19,6 @@ export async function POST() {
 
     const cartSamplesIds = await getCartSamplesIds();
     if (cartSamplesIds.length === 0) {
-      console.log('cart empty', cartSamplesIds);
       return NextResponse.json(
         { error: "Your cart is empty" },
         { status: 400 }
