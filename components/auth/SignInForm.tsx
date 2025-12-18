@@ -45,18 +45,17 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    await signIn.email(
-      { email, password },
-      {
-        onSuccess: () => {
-          router.push("/samples");
-          reset();
-        },
-        onError: (err) => {
-          setAuthError(err.error.message);
-        }
-      }
-    );
+    const res = await signIn.email({
+      email,
+      password
+    });
+
+    if (res.error) {
+      setAuthError(res.error.message ?? "Something went wrong");
+    } else {
+      router.push("/samples");
+      reset();
+    }
 
     setIsSubmitting(false);
   };
