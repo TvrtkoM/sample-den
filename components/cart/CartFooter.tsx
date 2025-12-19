@@ -10,9 +10,9 @@ import Link from "next/link";
 
 const CheckoutButton = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: session } = useSession();
+  const { session } = useSession();
 
-  const isAuth = session != null && session.user.isAnonymous !== true;
+  const isAuth = session != null && session.user.isAnonymous === false;
 
   const checkout = async () => {
     setIsSubmitting(true);
@@ -41,7 +41,7 @@ const CheckoutButton = () => {
           <Button size={"lg"} className="text-xl" asChild>
             <Link
               href={{
-                pathname: "/sign-up",
+                pathname: "/sign-in",
                 query: { checkout: true }
               }}
             >
@@ -49,7 +49,7 @@ const CheckoutButton = () => {
             </Link>
           </Button>
           <Button size={"lg"} className="text-xl" asChild>
-            <Link href={{ pathname: "/sign-in", query: { checkout: true } }}>
+            <Link href={{ pathname: "/sign-up", query: { checkout: true } }}>
               Create an account
             </Link>
           </Button>

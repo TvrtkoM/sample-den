@@ -3,15 +3,28 @@
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useSession } from "@/hooks/use-session";
+import { useQueryState, parseAsBoolean } from "nuqs";
 
 export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckout] = useQueryState(
+    "checkout",
+    parseAsBoolean.withDefault(false)
+  );
+  const { session } = useSession();
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     await signIn.social({
       provider: "google",
-      callbackURL: "/samples"
+      additionalData: {
+        anonymousId:
+          isCheckout && session?.user.isAnonymous ? session.user.id : null
+      },
+      callbackURL: `/samples${
+        isCheckout && session?.user.isAnonymous ? "?cart=true" : ""
+      }`
     });
   };
 

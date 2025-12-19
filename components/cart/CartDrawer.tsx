@@ -2,18 +2,20 @@
 
 import { useCartItems, useCartTotalCount } from "@/hooks/use-cart";
 import { defaultCartPageSize } from "@/lib/constants";
-import {
-  useCartPageNum,
-  useCloseCartDrawer,
-  useIsCartDrawerOpen,
-  useSetCartPageNum
-} from "@/lib/store/cart";
+import { useCartPageNum, useSetCartPageNum } from "@/lib/store/cart";
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { useEffect, useState, ViewTransition } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useState,
+  ViewTransition
+} from "react";
 import ClientOnly from "../ClientOnly";
 import Cart from "./Cart";
 import CartFooter from "./CartFooter";
 import CartHeader from "./CartHeader";
+import { useCartDrawerOpen } from "@/lib/search-params/hooks";
 
 const CartDrawerContent = () => {
   const pageNum = useCartPageNum();
@@ -61,12 +63,13 @@ const CartDrawerContent = () => {
 };
 
 const CartDrawerImpl = () => {
-  const isOpen = useIsCartDrawerOpen();
-  const closeDrawer = useCloseCartDrawer();
+  const [cartOpen, setCartOpen] = useCartDrawerOpen();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const deferredCartOpen = useDeferredValue(cartOpen);
+
   useEffect(() => {
-    if (!isOpen) {
+    if (!cartOpen) {
       return;
     }
     // Prevent background scrolling when cart drawer is open
@@ -74,15 +77,19 @@ const CartDrawerImpl = () => {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [cartOpen]);
 
   return (
-    isOpen && (
+    deferredCartOpen && (
       <>
         <ViewTransition default="drawer-backdrop">
           <div
             className="fixed inset-0 z-9 bg-black/40"
-            onClick={() => closeDrawer()}
+            onClick={() => {
+              startTransition(() => {
+                setCartOpen(false);
+              });
+            }}
           ></div>
         </ViewTransition>
         <ViewTransition

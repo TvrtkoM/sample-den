@@ -9,9 +9,11 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -23,14 +25,18 @@ type FormData = {
 export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckout] = useQueryState(
+    "checkout",
+    parseAsBoolean.withDefault(false)
+  );
+  const { session } = useSession();
 
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    reset
+    formState: { errors, isValid }
   } = useForm<FormData>({
     defaultValues: {
       email: "",
@@ -45,16 +51,25 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    const res = await signIn.email({
-      email,
-      password
-    });
+    const res = await signIn.email(
+      {
+        email,
+        password
+      },
+      {
+        body: {
+          anonymousId:
+            isCheckout && session?.user.isAnonymous ? session.user.id : null
+        }
+      }
+    );
 
     if (res.error) {
       setAuthError(res.error.message ?? "Something went wrong");
     } else {
-      router.push("/samples");
-      reset();
+      router.push(
+        `/samples${isCheckout && session?.user.isAnonymous ? "?cart=true" : ""}`
+      );
     }
 
     setIsSubmitting(false);

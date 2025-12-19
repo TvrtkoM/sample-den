@@ -48,7 +48,7 @@ const DropdownMenuSignedIn = ({ username }: { username: string }) => {
 };
 
 const UserDropdown = () => {
-  const { data: session } = useSession();
+  const { session } = useSession();
 
   const isAuth = session != null && session.user.isAnonymous !== true;
 

@@ -72,7 +72,7 @@ export function useIsInCart(sampleId: string) {
 
 export function useAddToCart() {
   const queryClient = useQueryClient()
-  const { data: session } = useSession()
+  const { session } = useSession()
 
   return useMutation({
     mutationFn: async (sampleId: string) => {
