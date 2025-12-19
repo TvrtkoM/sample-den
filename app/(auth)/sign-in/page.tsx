@@ -3,7 +3,13 @@ import SignInForm from "@/components/auth/SignInForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams
+}: {
+  searchParams: Promise<{ checkout?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <PublicGuard>
       <main className="container-small">
@@ -12,7 +18,9 @@ export default function SignInPage() {
         <p className="mt-3">
           Don&apos;t have an account?{" "}
           <Button variant="link" asChild className="p-0 h-auto">
-            <Link href="/sign-up">Sign Up</Link>
+            <Link href={{ pathname: "/sign-up", query: { ...params } }}>
+              Sign Up
+            </Link>
           </Button>
         </p>
       </main>
