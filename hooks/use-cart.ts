@@ -1,7 +1,7 @@
 import { signIn } from '@/lib/auth-client'
 import { addToCart, fetchCart, removeFromCart } from '@/lib/fetch/cart'
 import { fetchSamplesByIds, fetchSamplesPriceSumByIds } from '@/lib/fetch/samples'
-import { keepPreviousData, useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from './use-session'
 import { defaultCartPageSize } from '@/lib/constants'
 
@@ -31,10 +31,11 @@ export function useCartTotalPrice() {
   const sortedIds = [...ids];
   sortedIds.sort();
 
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ['cartTotalPrice', sortedIds],
     queryFn: () => fetchSamplesPriceSumByIds(sortedIds),
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
+    placeholderData: keepPreviousData
   })
 }
 

@@ -1,12 +1,12 @@
 "use client";
 
 import { useCartTotalPrice } from "@/hooks/use-cart";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import AppPagination from "../AppPagination";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
 import { useSession } from "@/hooks/use-session";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 const CheckoutButton = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +60,11 @@ const CheckoutButton = () => {
 };
 
 const CartTotalPrice = () => {
-  const { data: totalPrice } = useCartTotalPrice();
+  const { data: totalPrice, isLoading } = useCartTotalPrice();
+
+  if (isLoading) {
+    return <Skeleton className="h-7 w-1/2 mx-auto" />;
+  }
 
   return (
     <p className="text-xl h-7 text-center">
@@ -88,9 +92,7 @@ const CartFooter = ({ pageNum, setPageNum, totalPages }: CartFooterProps) => {
         </div>
       )}
       <div className="flex flex-col gap-4 px-4 py-4 border-t h-52">
-        <Suspense fallback={<Skeleton className="h-7 w-1/2 mx-auto" />}>
-          <CartTotalPrice />
-        </Suspense>
+        <CartTotalPrice />
         <CheckoutButton />
       </div>
     </div>
