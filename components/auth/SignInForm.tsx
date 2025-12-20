@@ -9,6 +9,7 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useCartTotalCount } from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
@@ -26,11 +27,15 @@ export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const cartTotalCount = useCartTotalCount();
+
   const [isCheckout] = useQueryState(
     "checkout",
     parseAsBoolean.withDefault(false)
   );
   const { session } = useSession();
+
+  const shouldMigrateCart = cartTotalCount && session?.user.isAnonymous;
 
   const router = useRouter();
 
@@ -59,7 +64,7 @@ export default function SignInPage() {
       },
       {
         body: {
-          anonymousId: session?.user.isAnonymous ? session.user.id : undefined
+          anonymousId: shouldMigrateCart ? session.user.id : undefined
         }
       }
     );

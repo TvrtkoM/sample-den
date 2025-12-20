@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useSession } from "@/hooks/use-session";
 import { useQueryState, parseAsBoolean } from "nuqs";
+import { useCartTotalCount } from "@/hooks/use-cart";
 
 export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,17 +14,18 @@ export default function GoogleSignInButton() {
     parseAsBoolean.withDefault(false)
   );
   const { session } = useSession();
+  const cartTotalCount = useCartTotalCount();
+
+  const shouldMigrateCart = cartTotalCount && session?.user.isAnonymous;
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     await signIn.social({
       provider: "google",
       additionalData: {
-        anonymousId: session?.user.isAnonymous ? session.user.id : null
+        anonymousId: shouldMigrateCart ? session.user.id : null
       },
-      callbackURL: `/samples${
-        isCheckout && session?.user.isAnonymous ? "?cart=true" : ""
-      }`
+      callbackURL: `/samples${isCheckout ? "?cart=true" : ""}`
     });
   };
 
