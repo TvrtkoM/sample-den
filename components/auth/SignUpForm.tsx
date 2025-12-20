@@ -8,9 +8,11 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
@@ -25,6 +27,12 @@ export default function SignUpForm() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isCheckout] = useQueryState(
+    "checkout",
+    parseAsBoolean.withDefault(false)
+  );
+  const { session } = useSession();
 
   const {
     register,
@@ -48,16 +56,29 @@ export default function SignUpForm() {
     setIsSubmitting(true);
 
     const { name, email, password } = data;
-    const res = await signUp.email({
-      name,
-      email,
-      password
-    });
+
+    const res = await signUp.email(
+      {
+        name,
+        email,
+        password
+      },
+      {
+        body: {
+          anonymousId:
+            isCheckout && session?.user.isAnonymous
+              ? session.user.id
+              : undefined
+        }
+      }
+    );
 
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
-      router.push("/samples");
+      router.push(
+        `/samples${isCheckout && session?.user.isAnonymous ? "?cart=true" : ""}`
+      );
     }
 
     setIsSubmitting(false);

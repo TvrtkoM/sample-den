@@ -25,6 +25,7 @@ type FormData = {
 export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [isCheckout] = useQueryState(
     "checkout",
     parseAsBoolean.withDefault(false)
@@ -59,7 +60,9 @@ export default function SignInPage() {
       {
         body: {
           anonymousId:
-            isCheckout && session?.user.isAnonymous ? session.user.id : null
+            isCheckout && session?.user.isAnonymous
+              ? session.user.id
+              : undefined
         }
       }
     );

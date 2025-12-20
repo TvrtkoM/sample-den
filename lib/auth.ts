@@ -22,7 +22,7 @@ export const auth = betterAuth({
   },
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === '/sign-in/email') {
+      if (ctx.path === '/sign-in/email' || ctx.path === '/sign-up/email') {
         const userId = ctx.context.newSession?.user.id;
         const anonymousUserId = ctx.body.anonymousId;
         if (anonymousUserId && userId) {
