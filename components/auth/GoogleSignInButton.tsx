@@ -19,8 +19,7 @@ export default function GoogleSignInButton() {
     await signIn.social({
       provider: "google",
       additionalData: {
-        anonymousId:
-          isCheckout && session?.user.isAnonymous ? session.user.id : null
+        anonymousId: session?.user.isAnonymous ? session.user.id : null
       },
       callbackURL: `/samples${
         isCheckout && session?.user.isAnonymous ? "?cart=true" : ""

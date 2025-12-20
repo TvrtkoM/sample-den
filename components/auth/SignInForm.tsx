@@ -59,10 +59,7 @@ export default function SignInPage() {
       },
       {
         body: {
-          anonymousId:
-            isCheckout && session?.user.isAnonymous
-              ? session.user.id
-              : undefined
+          anonymousId: session?.user.isAnonymous ? session.user.id : undefined
         }
       }
     );

@@ -65,10 +65,7 @@ export default function SignUpForm() {
       },
       {
         body: {
-          anonymousId:
-            isCheckout && session?.user.isAnonymous
-              ? session.user.id
-              : undefined
+          anonymousId: session?.user.isAnonymous ? session.user.id : undefined
         }
       }
     );
