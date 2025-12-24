@@ -11,7 +11,17 @@ export const auth = betterAuth({
     provider: 'postgresql',
   }),
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    autoSignIn: false,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => { }
+  },
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      console.log('email verification url', url);
+    }
   },
   socialProviders: {
     google: {
