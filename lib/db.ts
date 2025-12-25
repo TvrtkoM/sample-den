@@ -17,8 +17,12 @@ export async function getCartSamplesIds() {
   return cartItems.map((item) => item.sampleId)
 }
 
-// migrate cart from anonymous user to user
+// migrate cart from anonymous user to user, but only if there are items in cart of fromUserId
 export async function migrateCart(fromUserId: string, toUserId: string) {
+  const items = await prisma.cartItem.findMany({ where: { userId: fromUserId } })
+  if (items.length === 0) {
+    return;
+  }
   await prisma.cartItem.deleteMany({
     where: { userId: toUserId }
   });
