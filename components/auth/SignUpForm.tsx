@@ -8,12 +8,9 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useCartTotalCount } from "@/hooks/use-cart";
-import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
 import { useRouter } from "next/navigation";
-import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
@@ -28,16 +25,6 @@ export default function SignUpForm() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const cartTotalCount = useCartTotalCount();
-
-  const [isCheckout] = useQueryState(
-    "checkout",
-    parseAsBoolean.withDefault(false)
-  );
-  const { session } = useSession();
-
-  const shouldMigrateCart = cartTotalCount && session?.user.isAnonymous;
 
   const {
     register,
@@ -62,23 +49,16 @@ export default function SignUpForm() {
 
     const { name, email, password } = data;
 
-    const res = await signUp.email(
-      {
-        name,
-        email,
-        password
-      },
-      {
-        body: {
-          anonymousId: shouldMigrateCart ? session.user.id : undefined
-        }
-      }
-    );
+    const res = await signUp.email({
+      name,
+      email,
+      password
+    });
 
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
-      router.push(`/samples${isCheckout ? "?cart=true" : ""}`);
+      router.push(`/verify`);
     }
 
     setIsSubmitting(false);
