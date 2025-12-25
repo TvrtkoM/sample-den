@@ -27,15 +27,7 @@ export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const cartTotalCount = useCartTotalCount();
-
-  const [isCheckout] = useQueryState(
-    "checkout",
-    parseAsBoolean.withDefault(false)
-  );
   const { session } = useSession();
-
-  const shouldMigrateCart = cartTotalCount && session?.user.isAnonymous;
 
   const router = useRouter();
 
@@ -57,24 +49,15 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    const res = await signIn.email(
-      {
-        email,
-        password
-      },
-      {
-        body: {
-          anonymousId: shouldMigrateCart ? session.user.id : undefined
-        }
-      }
-    );
+    const res = await signIn.email({
+      email,
+      password
+    });
 
     if (res.error) {
       setAuthError(res.error.message ?? "Something went wrong");
     } else {
-      router.push(
-        `/samples${isCheckout && session?.user.isAnonymous ? "?cart=true" : ""}`
-      );
+      router.push(`/samples`);
     }
 
     setIsSubmitting(false);

@@ -41,17 +41,14 @@ const CheckoutButton = () => {
           <Button size={"lg"} className="text-xl" asChild>
             <Link
               href={{
-                pathname: "/sign-in",
-                query: { checkout: true }
+                pathname: "/sign-in"
               }}
             >
               Sign in to continue
             </Link>
           </Button>
           <Button size={"lg"} className="text-xl" asChild>
-            <Link href={{ pathname: "/sign-up", query: { checkout: true } }}>
-              Create an account
-            </Link>
+            <Link href={{ pathname: "/sign-up" }}>Create an account</Link>
           </Button>
         </div>
       )}
