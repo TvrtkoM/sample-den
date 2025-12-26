@@ -4,12 +4,12 @@ import { useCartSize } from "@/hooks/use-cart";
 import { ShoppingBag } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { useCartDrawerOpen } from "@/lib/search-params/hooks";
 import { startTransition } from "react";
+import { useShowCart } from "@/lib/store/cart";
 
 export default function CartIcon() {
   const cartSize = useCartSize();
-  const [, setCartOpen] = useCartDrawerOpen();
+  const showCart = useShowCart();
 
   return (
     <Button
@@ -18,7 +18,7 @@ export default function CartIcon() {
       className="relative rounded-full h-9 flex items-center"
       onClick={() => {
         startTransition(() => {
-          setCartOpen(true);
+          showCart();
         });
       }}
     >

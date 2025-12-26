@@ -2,7 +2,12 @@
 
 import { useCartItems, useCartTotalCount } from "@/hooks/use-cart";
 import { defaultCartPageSize } from "@/lib/constants";
-import { useCartPageNum, useSetCartPageNum } from "@/lib/store/cart";
+import {
+  useCartPageNum,
+  useCartVisible,
+  useHideCart,
+  useSetCartPageNum
+} from "@/lib/store/cart";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import {
   startTransition,
@@ -15,7 +20,6 @@ import ClientOnly from "../ClientOnly";
 import Cart from "./Cart";
 import CartFooter from "./CartFooter";
 import CartHeader from "./CartHeader";
-import { useCartDrawerOpen } from "@/lib/search-params/hooks";
 
 const CartDrawerContent = () => {
   const pageNum = useCartPageNum();
@@ -63,7 +67,8 @@ const CartDrawerContent = () => {
 };
 
 const CartDrawerImpl = () => {
-  const [cartOpen, setCartOpen] = useCartDrawerOpen();
+  const cartOpen = useCartVisible();
+  const hideCart = useHideCart();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const deferredCartOpen = useDeferredValue(cartOpen);
@@ -87,7 +92,7 @@ const CartDrawerImpl = () => {
             className="fixed inset-0 z-9 bg-black/40"
             onClick={() => {
               startTransition(() => {
-                setCartOpen(false);
+                hideCart();
               });
             }}
           ></div>

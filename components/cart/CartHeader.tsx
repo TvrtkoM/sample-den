@@ -2,11 +2,11 @@
 
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
-import { useCartDrawerOpen } from "@/lib/search-params/hooks";
 import { startTransition } from "react";
+import { useHideCart } from "@/lib/store/cart";
 
 const CartHeader = () => {
-  const [, setCartOpen] = useCartDrawerOpen();
+  const hideCart = useHideCart();
   return (
     <div className="flex items-center justify-between p-4 border-b">
       <h2 className="text-lg font-semibold">Your Cart</h2>
@@ -15,7 +15,7 @@ const CartHeader = () => {
         size="icon"
         onClick={() => {
           startTransition(() => {
-            setCartOpen(false);
+            hideCart();
           });
         }}
       >
