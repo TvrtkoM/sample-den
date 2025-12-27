@@ -49,10 +49,17 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    const res = await signIn.email({
-      email,
-      password
-    });
+    const res = await signIn.email(
+      {
+        email,
+        password
+      },
+      {
+        body: {
+          anonymousId: session?.user.isAnonymous ? session.user.id : undefined
+        }
+      }
+    );
 
     if (res.error) {
       setAuthError(res.error.message ?? "Something went wrong");

@@ -41,7 +41,15 @@ export const auth = betterAuth({
         }
         return;
       }
-      if (ctx.path === '/verify-email' || ctx.path === '/sign-in/email' || ctx.path === '/callback/:id') {
+      if (ctx.path === '/sign-in/email') {
+        const anonymousUserId = ctx.body.anonymousId;
+        const userId = ctx.context.newSession?.user.id;
+        if (anonymousUserId && userId) {
+          await migrateCart(anonymousUserId, userId)
+        }
+        return;
+      }
+      if (ctx.path === '/verify-email') {
         const userId = ctx.context.newSession?.user.id;
         const anonymousUserId = ctx.context.session?.user.isAnonymous && ctx.context.session.user.id;
         if (anonymousUserId && userId) {
