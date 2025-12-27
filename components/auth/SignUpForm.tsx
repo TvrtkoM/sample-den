@@ -8,6 +8,7 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,8 @@ export default function SignUpForm() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { session } = useSession();
 
   const {
     register,
@@ -48,6 +51,10 @@ export default function SignUpForm() {
     setIsSubmitting(true);
 
     const { name, email, password } = data;
+
+    if (session?.user.isAnonymous) {
+      document.cookie = `anonymous-user-id=${session.user.id}; path=/; max-age=300; SameSite=Lax`;
+    }
 
     const res = await signUp.email({
       name,

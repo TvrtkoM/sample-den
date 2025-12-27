@@ -49,17 +49,14 @@ export default function SignInPage() {
 
     const { email, password } = data;
 
-    const res = await signIn.email(
-      {
-        email,
-        password
-      },
-      {
-        body: {
-          anonymousId: session?.user.isAnonymous ? session.user.id : undefined
-        }
-      }
-    );
+    if (session?.user.isAnonymous) {
+      document.cookie = `anonymous-user-id=${session.user.id}; path=/; max-age=300; SameSite=Lax`;
+    }
+
+    const res = await signIn.email({
+      email,
+      password
+    });
 
     if (res.error) {
       setAuthError(res.error.message ?? "Something went wrong");

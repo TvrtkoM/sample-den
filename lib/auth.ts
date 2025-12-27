@@ -41,19 +41,20 @@ export const auth = betterAuth({
         }
         return;
       }
-      if (ctx.path === '/sign-in/email') {
-        const anonymousUserId = ctx.body.anonymousId;
+
+      if (ctx.path === '/sign-in/email' || ctx.path === '/verify-email') {
         const userId = ctx.context.newSession?.user.id;
-        if (anonymousUserId && userId) {
-          await migrateCart(anonymousUserId, userId)
-        }
-        return;
-      }
-      if (ctx.path === '/verify-email') {
-        const userId = ctx.context.newSession?.user.id;
-        const anonymousUserId = ctx.context.session?.user.isAnonymous && ctx.context.session.user.id;
+
+        const cookieHeader = ctx.request?.headers.get('cookie') || '';
+
+        const anonymousUserId = cookieHeader
+          .split('; ')
+          .find(c => c.startsWith('anonymous-user-id='))
+          ?.split('=')[1];
+
         if (anonymousUserId && userId) {
           await migrateCart(anonymousUserId, userId);
+          ctx.setHeader('Set-Cookie', 'anonymous-user-id=; Path=/; Max-Age=0; SameSite=Lax');
         }
       }
     })
