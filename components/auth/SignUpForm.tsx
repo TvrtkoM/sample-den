@@ -63,7 +63,8 @@ export default function SignUpForm() {
     const res = await signUp.email({
       name,
       email,
-      password
+      password,
+      callbackURL: "/samples"
     });
 
     if (res.error) {
