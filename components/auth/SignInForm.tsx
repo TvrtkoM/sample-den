@@ -13,6 +13,7 @@ import { useCartTotalCount } from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
+import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
@@ -50,7 +51,7 @@ export default function SignInPage() {
     const { email, password } = data;
 
     if (session?.user.isAnonymous) {
-      document.cookie = `anonymous-user-id=${session.user.id}; path=/; max-age=300; SameSite=Lax`;
+      document.cookie = getAnonymousUserIdCookie(session.user.id);
     }
 
     const res = await signIn.email({

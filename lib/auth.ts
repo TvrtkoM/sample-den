@@ -32,17 +32,7 @@ export const auth = betterAuth({
   },
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === '/callback/:id') {
-        const additionalData = await getOAuthState()
-        const anonymousUserId = additionalData?.anonymousId;
-        const userId = ctx.context.newSession?.user.id;
-        if (anonymousUserId && userId) {
-          await migrateCart(anonymousUserId, userId);
-        }
-        return;
-      }
-
-      if (ctx.path === '/sign-in/email' || ctx.path === '/verify-email') {
+      if (ctx.path === '/sign-in/email' || ctx.path === '/verify-email' || ctx.path === '/callback/:id') {
         const userId = ctx.context.newSession?.user.id;
 
         const cookieHeader = ctx.request?.headers.get('cookie') || '';

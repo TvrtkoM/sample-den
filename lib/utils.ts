@@ -12,3 +12,7 @@ export function formatSecondsDuration(seconds: number): string {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export function getAnonymousUserIdCookie(userId: string) {
+  return `anonymous-user-id=${userId}; path=/; max-age=300; SameSite=Lax`
+}

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
+import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
@@ -53,7 +54,7 @@ export default function SignUpForm() {
     const { name, email, password } = data;
 
     if (session?.user.isAnonymous) {
-      document.cookie = `anonymous-user-id=${session.user.id}; path=/; max-age=300; SameSite=Lax`;
+      document.cookie = getAnonymousUserIdCookie(session.user.id);
     }
 
     const res = await signUp.email({

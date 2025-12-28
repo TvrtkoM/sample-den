@@ -1,31 +1,23 @@
 "use client";
 
+import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/lib/auth-client";
+import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { useSession } from "@/hooks/use-session";
-import { useQueryState, parseAsBoolean } from "nuqs";
-import { useCartTotalCount } from "@/hooks/use-cart";
 
 export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isCheckout] = useQueryState(
-    "checkout",
-    parseAsBoolean.withDefault(false)
-  );
   const { session } = useSession();
-  const cartTotalCount = useCartTotalCount();
-
-  const shouldMigrateCart = cartTotalCount && session?.user.isAnonymous;
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    if (session?.user.isAnonymous) {
+      document.cookie = getAnonymousUserIdCookie(session.user.id);
+    }
     await signIn.social({
       provider: "google",
-      additionalData: {
-        anonymousId: shouldMigrateCart ? session.user.id : null
-      },
-      callbackURL: `/samples${isCheckout ? "?cart=true" : ""}`
+      callbackURL: `/samples`
     });
   };
 
