@@ -18,7 +18,7 @@ const setSessionHydrated = () => {
 
 export function useSession() {
   const initialSession = useSessionContext();
-  const { data: clientSession, isPending } = useSessionAuth();
+  const { data: clientSession, isPending, refetch } = useSessionAuth();
 
   if (!getIsSessionHydrated() && !isPending) {
     setSessionHydrated();
@@ -26,5 +26,5 @@ export function useSession() {
 
   const session = getIsSessionHydrated() ? clientSession : initialSession;
 
-  return { session };
+  return { session, refetch };
 }

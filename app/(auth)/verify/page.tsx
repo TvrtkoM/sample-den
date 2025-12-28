@@ -1,7 +1,19 @@
-import PublicGuard from "@/components/auth/PublicGuard";
-import { Mail } from "lucide-react";
+"use client";
 
-export default async function VerifyPage() {
+import PublicGuard from "@/components/auth/PublicGuard";
+import { useSession } from "@/hooks/use-session";
+import { Mail } from "lucide-react";
+import { useEffect } from "react";
+
+export default function VerifyPage() {
+  const { refetch } = useSession();
+
+  useEffect(() => {
+    return () => {
+      refetch();
+    };
+  }, []);
+
   return (
     <PublicGuard>
       <main className="container-small">
