@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
+import { useSetSignUpVerification } from "@/lib/store/signUp";
 import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,6 +30,8 @@ export default function SignUpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { session } = useSession();
+
+  const setSignUpVerification = useSetSignUpVerification();
 
   const {
     register,
@@ -66,6 +69,7 @@ export default function SignUpForm() {
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
+      setSignUpVerification(true);
       router.push(`/verify`);
     }
 

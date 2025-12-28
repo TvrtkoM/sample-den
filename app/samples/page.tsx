@@ -1,4 +1,5 @@
 import AppNavButtons from "@/components/AppNavButtons";
+import ResetVerificationFlag from "@/components/auth/ResetVerificationFlag";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
@@ -70,6 +71,7 @@ async function PageImpl({
             </div>
           </header>
           <SamplesList />
+          <ResetVerificationFlag />
         </section>
         <CartDrawer />
       </HydrationBoundary>
