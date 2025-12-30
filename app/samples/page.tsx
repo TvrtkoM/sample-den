@@ -59,7 +59,7 @@ async function PageImpl({
     <HydrationBoundary state={dehydratedCart}>
       <HydrationBoundary state={dehydratedPage}>
         <ClearSignUpVerificationCookie />
-        <section aria-labelledby="samples-heading">
+        <main>
           <header className="border-b border-neutral-200">
             <div className="container py-6">
               <div className="flex justify-between">
@@ -72,7 +72,7 @@ async function PageImpl({
             </div>
           </header>
           <SamplesList />
-        </section>
+        </main>
         <CartDrawer />
       </HydrationBoundary>
     </HydrationBoundary>
