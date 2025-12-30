@@ -81,9 +81,12 @@ const SamplesListContainer = () => {
   const deferredPage = useDeferredValue(page);
 
   const pageChangeHandler = (nextPage: number) => {
-    setSearchParams({
-      page: nextPage
-    });
+    setSearchParams(
+      {
+        page: nextPage
+      },
+      { history: "push" }
+    );
   };
 
   return (
