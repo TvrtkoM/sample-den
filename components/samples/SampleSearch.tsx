@@ -8,7 +8,6 @@ import { Input } from "../ui/input";
 
 const SampleSearch = () => {
   const [{ search }, setSearchParams] = useSamplesSearchParams({
-    history: "replace",
     limitUrlUpdates: debounce(250)
   });
 

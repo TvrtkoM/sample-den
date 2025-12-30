@@ -75,7 +75,9 @@ const SamplesListContainer = () => {
   const search =
     searchParams.search === "" ? searchParams.search : debouncedParams.search;
 
-  const page = searchParams.page;
+  // use debounced page when search is debounced, immediate page otherwise
+  const page =
+    searchParams.search === "" ? searchParams.page : debouncedParams.page;
 
   const deferredSearch = useDeferredValue(search);
   const deferredPage = useDeferredValue(page);
