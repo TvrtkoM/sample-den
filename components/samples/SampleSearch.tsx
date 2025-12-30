@@ -33,7 +33,9 @@ const SampleSearch = () => {
         variant="outline"
         onClick={(e) => {
           e.preventDefault();
-          setSearchParams(null);
+          if (search) {
+            setSearchParams(null);
+          }
         }}
       >
         Clear
