@@ -19,3 +19,10 @@ export function getAnonymousUserIdCookie(userId?: string) {
   }
   return "anonymous-user-id=; Path=/; Max-Age=0; SameSite=Lax";
 }
+
+export function getSignUpVerificationCookie(clear?: true) {
+  if (clear) {
+    return "signUpVerification=; path=/; max-age=0"
+  }
+  return "signUpVerification=true; path=/; max-age=3600; SameSite=Lax";
+}

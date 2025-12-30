@@ -11,7 +11,10 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/lib/auth-client";
 import { emailRegex, passwordRegex } from "@/lib/constants";
-import { getAnonymousUserIdCookie } from "@/lib/utils";
+import {
+  getAnonymousUserIdCookie,
+  getSignUpVerificationCookie
+} from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
@@ -67,7 +70,7 @@ export default function SignUpForm() {
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
-      document.cookie = "signUpVerification=true; path=/; max-age=3600; SameSite=Lax";
+      document.cookie = getSignUpVerificationCookie();
       router.push(`/verify`);
     }
 
