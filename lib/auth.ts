@@ -3,8 +3,8 @@ import prisma from '@/lib/prisma'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { anonymous, createAuthMiddleware } from 'better-auth/plugins'
-import { getOAuthState } from "better-auth/api"
 import { migrateCart } from "./db"
+import { getAnonymousUserIdCookie } from "./utils"
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -44,7 +44,7 @@ export const auth = betterAuth({
 
         if (anonymousUserId && userId) {
           await migrateCart(anonymousUserId, userId);
-          ctx.setHeader('Set-Cookie', 'anonymous-user-id=; Path=/; Max-Age=0; SameSite=Lax');
+          ctx.setHeader('Set-Cookie', getAnonymousUserIdCookie());
         }
       }
     })

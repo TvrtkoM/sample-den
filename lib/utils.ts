@@ -13,6 +13,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getAnonymousUserIdCookie(userId: string) {
-  return `anonymous-user-id=${userId}; path=/; max-age=300; SameSite=Lax`
+export function getAnonymousUserIdCookie(userId?: string) {
+  if (userId) {
+    return `anonymous-user-id=${userId}; path=/; max-age=300; SameSite=Lax`;
+  }
+  return "anonymous-user-id=; Path=/; Max-Age=0; SameSite=Lax";
 }
