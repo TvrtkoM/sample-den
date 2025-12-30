@@ -1,5 +1,5 @@
 import AppNavButtons from "@/components/AppNavButtons";
-import ResetVerificationFlag from "@/components/auth/ResetVerificationFlag";
+import { ClearSignUpVerificationCookie } from "@/components/auth/ClearSignUpVerificationCookie";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
@@ -58,6 +58,7 @@ async function PageImpl({
   return (
     <HydrationBoundary state={dehydratedCart}>
       <HydrationBoundary state={dehydratedPage}>
+        <ClearSignUpVerificationCookie />
         <section aria-labelledby="samples-heading">
           <header className="border-b border-neutral-200">
             <div className="container py-6">
@@ -71,7 +72,6 @@ async function PageImpl({
             </div>
           </header>
           <SamplesList />
-          <ResetVerificationFlag />
         </section>
         <CartDrawer />
       </HydrationBoundary>

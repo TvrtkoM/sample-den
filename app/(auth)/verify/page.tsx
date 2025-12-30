@@ -1,30 +1,19 @@
-"use client";
-
-import { useSession } from "@/hooks/use-session";
-import { useSignUpVerification } from "@/lib/store/signUp";
+import { RefetchSessionOnUnmount } from "@/components/auth/RefetchSessionOnUnmount";
 import { Mail } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function VerifyPage() {
-  const { refetch } = useSession();
-  const router = useRouter();
-  const signUpVerification = useSignUpVerification();
+export default async function VerifyPage() {
+  const cookieStore = await cookies();
+  const signUpVerification = cookieStore.get("signUpVerification");
 
-  useEffect(() => {
-    if (!signUpVerification) {
-      router.replace("/samples");
-    }
-  }, [signUpVerification]);
-
-  useEffect(() => {
-    return () => {
-      refetch();
-    };
-  }, []);
+  if (!signUpVerification || signUpVerification.value !== "true") {
+    redirect("/samples");
+  }
 
   return (
     <main className="container-small">
+      <RefetchSessionOnUnmount />
       <h1 className="mb-8 mt-4">Verify Your Email</h1>
       <div className="card-shadow-sm p-6">
         <div className="flex flex-col items-center justify-center py-8">
