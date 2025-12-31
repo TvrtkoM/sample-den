@@ -12,6 +12,7 @@ export function useCart() {
     queryKey: CART_QUERY_KEY,
     queryFn: fetchCart,
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: 'always',
   })
 }
 
