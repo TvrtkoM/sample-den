@@ -11,7 +11,6 @@ export function useCart() {
   return useQuery({
     queryKey: CART_QUERY_KEY,
     queryFn: fetchCart,
-    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: 'always',
   })
 }
@@ -35,7 +34,6 @@ export function useCartTotalPrice() {
   return useQuery({
     queryKey: ['cartTotalPrice', sortedIds],
     queryFn: () => fetchSamplesPriceSumByIds(sortedIds),
-    staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData
   })
 }
@@ -57,7 +55,6 @@ export function useCartItems(pageNumber = 1) {
 
       return { samples: items };
     },
-    staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData,
   })
 }
