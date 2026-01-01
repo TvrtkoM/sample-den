@@ -1,5 +1,6 @@
 import AppNavButtons from "@/components/AppNavButtons";
 import { ClearSignUpVerificationCookie } from "@/components/auth/ClearSignUpVerificationCookie";
+import VerificationErrorToast from "@/components/auth/VerificationErrorToast";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
@@ -59,6 +60,7 @@ async function PageImpl({
     <HydrationBoundary state={dehydratedCart}>
       <HydrationBoundary state={dehydratedPage}>
         <ClearSignUpVerificationCookie />
+        <VerificationErrorToast />
         <main>
           <header className="border-b border-neutral-200">
             <div className="container py-6">

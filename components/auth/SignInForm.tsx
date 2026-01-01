@@ -60,6 +60,7 @@ export default function SignInPage() {
     });
 
     if (res.error) {
+      console.log(res.error);
       setAuthError(res.error.message ?? "Something went wrong");
     } else {
       router.push(`/samples`);
