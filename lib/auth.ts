@@ -5,6 +5,8 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { anonymous, createAuthMiddleware } from 'better-auth/plugins'
 import { migrateCart } from "./db"
 import { getAnonymousUserIdCookie } from "./utils"
+import { sendEmail } from "./email/send-email"
+import VerificationEmail from "@/emails/VerificationEmail"
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -21,6 +23,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
       console.log('email verification url', url);
+      sendEmail(user.email, "Verify your email", VerificationEmail({ verificationUrl: url }));
     }
   },
   socialProviders: {
