@@ -21,6 +21,7 @@ export const auth = betterAuth({
   emailVerification: {
     autoSignInAfterVerification: true,
     sendOnSignUp: true,
+    expiresIn: process.env.NODE_ENV === 'production' ? 3600 : 60,
     sendVerificationEmail: async ({ user, url }) => {
       console.log('email verification url', url);
       sendEmail(user.email, "Verify your email", VerificationEmail({ verificationUrl: url, username: user.name }));
