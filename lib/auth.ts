@@ -23,7 +23,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
       console.log('email verification url', url);
-      sendEmail(user.email, "Verify your email", VerificationEmail({ verificationUrl: url }));
+      sendEmail(user.email, "Verify your email", VerificationEmail({ verificationUrl: url, username: user.name }));
     }
   },
   socialProviders: {
