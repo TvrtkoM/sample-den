@@ -1,12 +1,13 @@
-import "server-only"
+import VerificationEmail from "@/emails/VerificationEmail"
 import prisma from '@/lib/prisma'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { anonymous, createAuthMiddleware } from 'better-auth/plugins'
+import { createAuthMiddleware } from "better-auth/api"
+import { anonymous } from 'better-auth/plugins'
+import "server-only"
 import { migrateCart } from "./db"
-import { getAnonymousUserIdCookie } from "./utils"
 import { sendEmail } from "./email/send-email"
-import VerificationEmail from "@/emails/VerificationEmail"
+import { getAnonymousUserIdCookie } from "./utils"
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
