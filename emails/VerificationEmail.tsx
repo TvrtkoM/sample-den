@@ -35,7 +35,7 @@ const VerificationEmail = ({
             Verify Email
           </Button>
           <Text>
-            If you didn't create an account, please ignore this email.
+            {"If you didn't create an account, please ignore this email."}
           </Text>
           <Text>This link will expire in 1 hour.</Text>
           <Text>Best regards,</Text>
