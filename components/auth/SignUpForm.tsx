@@ -16,7 +16,7 @@ import {
   getSignUpVerificationCookie
 } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 type FormData = {
@@ -29,14 +29,14 @@ type FormData = {
 export default function SignUpForm() {
   const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const { session } = useSession();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
     control
   } = useForm<FormData>({
     defaultValues: {
@@ -52,7 +52,6 @@ export default function SignUpForm() {
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null);
-    setIsSubmitting(true);
 
     const { name, email, password } = data;
 
@@ -68,16 +67,17 @@ export default function SignUpForm() {
       callbackURL: "/samples"
     });
 
-    if (res.error) {
-      setAuthError(res.error.message || "Something went wrong.");
-    } else {
-      // eslint-disable-next-line react-hooks/immutability
-      document.cookie = getSignUpVerificationCookie();
-      router.push(`/verify`);
-    }
-
-    setIsSubmitting(false);
+    startTransition(() => {
+      if (res.error) {
+        setAuthError(res.error.message || "Something went wrong.");
+      } else {
+        document.cookie = getSignUpVerificationCookie();
+        router.push(`/verify`);
+      }
+    });
   };
+
+  const isSubmitPending = isSubmitting || isPending;
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
@@ -151,7 +151,7 @@ export default function SignUpForm() {
           )}
         </Field>
         <Field orientation="horizontal">
-          <Button type="submit" disabled={!isValid || isSubmitting}>
+          <Button type="submit" disabled={!isValid || isSubmitPending}>
             Submit
           </Button>
           {authError && <FieldError>{authError}</FieldError>}

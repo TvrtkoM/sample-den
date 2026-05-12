@@ -14,7 +14,7 @@ import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
 import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type FormData = {
@@ -24,7 +24,7 @@ type FormData = {
 
 export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const { session } = useSession();
 
@@ -33,7 +33,7 @@ export default function SignInPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors, isValid, isSubmitting }
   } = useForm<FormData>({
     defaultValues: {
       email: "",
@@ -44,7 +44,6 @@ export default function SignInPage() {
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null);
-    setIsSubmitting(true);
 
     const { email, password } = data;
 
@@ -58,14 +57,16 @@ export default function SignInPage() {
       password
     });
 
-    if (res.error) {
-      setAuthError(res.error.message ?? "Something went wrong");
-    } else {
-      router.push(`/samples`);
-    }
-
-    setIsSubmitting(false);
+    startTransition(() => {
+      if (res.error) {
+        setAuthError(res.error.message ?? "Something went wrong");
+      } else {
+        router.push(`/samples`);
+      }
+    });
   };
+
+  const isSubmitPending = isSubmitting || isPending;
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
@@ -107,7 +108,7 @@ export default function SignInPage() {
         </Field>
 
         <Field orientation="horizontal">
-          <Button type="submit" disabled={!isValid || isSubmitting}>
+          <Button type="submit" disabled={!isValid || isSubmitPending}>
             Sign In
           </Button>
           {authError && <FieldError>{authError}</FieldError>}
