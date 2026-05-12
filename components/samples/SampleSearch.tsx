@@ -2,14 +2,19 @@
 
 import { useSamplesSearchParams } from "@/lib/search-params/hooks";
 import { Search } from "lucide-react";
-import { debounce } from "nuqs";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useState } from "react";
 
 const SampleSearch = () => {
-  const [{ search }, setSearchParams] = useSamplesSearchParams({
-    limitUrlUpdates: debounce(250)
-  });
+  const [{ search }, setSearchParams] = useSamplesSearchParams();
+  const [searchVal, setSearchVal] = useState(search);
+
+  const debouncedSetSearch = useDebouncedCallback(
+    (value: string) => setSearchParams({ search: value, page: null }),
+    200
+  );
 
   return (
     <form className="flex gap-3">
@@ -20,9 +25,10 @@ const SampleSearch = () => {
         />
         <Input
           type="text"
-          value={search}
+          value={searchVal}
           onChange={(e) => {
-            setSearchParams({ search: e.target.value, page: null });
+            setSearchVal(e.target.value);
+            debouncedSetSearch(e.target.value);
           }}
           placeholder="Search samples..."
           autoComplete="off"
@@ -34,6 +40,7 @@ const SampleSearch = () => {
         onClick={(e) => {
           e.preventDefault();
           if (search) {
+            setSearchVal("");
             setSearchParams(null);
           }
         }}

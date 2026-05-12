@@ -8,7 +8,7 @@ import {
   useHideCart,
   useSetCartPageNum
 } from "@/lib/store/cart";
-import { useMediaQuery } from "@uidotdev/usehooks";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   startTransition,
   useDeferredValue,

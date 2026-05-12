@@ -1,39 +1,13 @@
 "use client";
 
 import { auth } from "@/lib/auth";
-import {
-  isServer,
-  QueryClient,
-  QueryClientProvider
-} from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/get-query-client";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Provider } from "jotai";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ReactNode } from "react";
 import { SessionContext } from "../context/SessionContext";
-import { Provider } from "jotai";
-
-const makeQueryClient = () => {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000
-      }
-    }
-  });
-};
-
-let browserQueryClient: QueryClient | null = null;
-
-const getQueryClient = () => {
-  if (isServer) {
-    return makeQueryClient();
-  } else {
-    if (!browserQueryClient) {
-      browserQueryClient = makeQueryClient();
-    }
-    return browserQueryClient;
-  }
-};
 
 type AppProviderProps = {
   children: ReactNode;

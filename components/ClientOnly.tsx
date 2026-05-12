@@ -1,5 +1,5 @@
 "use client";
-import { useIsClient } from "@uidotdev/usehooks";
+import { useIsClient } from "@/hooks/use-is-client";
 import { ReactNode } from "react";
 
 const ClientOnly = ({ children }: { children: ReactNode }) => {

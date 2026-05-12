@@ -6,12 +6,9 @@ import SampleSearch from "@/components/samples/SampleSearch";
 import SamplesList from "@/components/samples/SamplesList";
 import { getCartSamplesIds } from "@/lib/db";
 import { fetchSamplesPage } from "@/lib/fetch/samples";
+import { getQueryClient } from "@/lib/get-query-client";
 import { loadSamplesSearchParams } from "@/lib/search-params/loaders";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cacheLife } from "next/cache";
 
 type SearchParams = {
@@ -19,22 +16,11 @@ type SearchParams = {
   search?: string;
 };
 
-async function getDehydratedPage(searchParams: SearchParams) {
+async function fetchSamplesPageCached(page: number, search: string) {
   "use cache";
   cacheLife("hours");
 
-  const params = loadSamplesSearchParams(searchParams);
-
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["samples", params.search, params.page],
-    queryFn: () => fetchSamplesPage(params.page, params.search)
-  });
-
-  const dehydrated = dehydrate(queryClient);
-
-  return dehydrated;
+  return fetchSamplesPage(page, search);
 }
 
 async function PageImpl({
@@ -43,40 +29,42 @@ async function PageImpl({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const dehydratedPage = await getDehydratedPage(params);
+  const { page, search } = loadSamplesSearchParams(params);
 
-  const cartItems = await getCartSamplesIds();
+  const queryClient = getQueryClient();
 
-  const queryClient = new QueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["samples", search, page],
+      queryFn: () => fetchSamplesPageCached(page, search)
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["cart"],
+      queryFn: async () => ({ items: await getCartSamplesIds() })
+    })
+  ]);
 
-  await queryClient.prefetchQuery({
-    queryKey: ["cart"],
-    queryFn: () => ({ items: cartItems })
-  });
-
-  const dehydratedCart = dehydrate(queryClient);
+  const dehydrated = dehydrate(queryClient);
 
   return (
-    <HydrationBoundary state={dehydratedCart}>
-      <HydrationBoundary state={dehydratedPage}>
-        <ClearSignUpVerificationCookie />
-        <VerificationErrorToast />
-        <main>
-          <header className="border-b border-neutral-200">
-            <div className="container py-6">
-              <div className="flex justify-between">
-                <h1 className="mb-6" id="samples-heading">
-                  Sample den
-                </h1>
-                <AppNavButtons />
-              </div>
-              <SampleSearch />
+    <HydrationBoundary state={dehydrated}>
+      <ClearSignUpVerificationCookie />
+      <VerificationErrorToast />
+      <main>
+        <header className="border-b border-neutral-200">
+          <div className="container py-6">
+            <div className="flex justify-between">
+              <h1 className="mb-6" id="samples-heading">
+                Sample den
+              </h1>
+              <AppNavButtons />
             </div>
-          </header>
-          <SamplesList />
-        </main>
-        <CartDrawer />
-      </HydrationBoundary>
+            <SampleSearch />
+          </div>
+        </header>
+        <SamplesList />
+      </main>
+      <CartDrawer />
     </HydrationBoundary>
   );
 }

@@ -1,19 +1,18 @@
 "use client";
 
-import { useSuspenseSamplesPage } from "@/hooks/use-samples";
+import { SamplesPageQueryResult } from "@/generated/groq/sanity-types";
+import { useSamplesPage } from "@/hooks/use-samples";
 import { defaultSamplesPageSize } from "@/lib/constants";
-import { useDebounce } from "@uidotdev/usehooks";
-import { Suspense, useDeferredValue } from "react";
+import { useSamplesSearchParams } from "@/lib/search-params/hooks";
 import AppPagination from "../AppPagination";
 import { Skeleton } from "../ui/skeleton";
 import SampleItem from "./SampleItem";
-import { useSamplesSearchParams } from "@/lib/search-params/hooks";
 
-const SamplesList = ({ page, search }: { page: number; search: string }) => {
-  const {
-    data: { samples }
-  } = useSuspenseSamplesPage(page, search);
-
+const SamplesList = ({
+  samples
+}: {
+  samples: SamplesPageQueryResult["samples"][number][];
+}) => {
   if (samples.length === 0) {
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>;
   }
@@ -36,53 +35,18 @@ const SamplesSkeleton = () => {
   );
 };
 
-const SamplesPagination = ({
-  page,
-  search,
-  onPageChange
-}: {
-  page: number;
-  search: string;
-  onPageChange: (page: number) => void;
-}) => {
+const SamplesListContainer = () => {
+  const [searchParams, setSearchParams] = useSamplesSearchParams();
+  const { search, page } = searchParams;
   const {
-    data: { totalCount }
-  } = useSuspenseSamplesPage(page, search);
+    data: { samples, totalCount } = { totalCount: 0, samples: [] },
+    isFetching
+  } = useSamplesPage(page, search);
 
   const totalPages =
     totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize);
 
-  return (
-    totalCount > 0 && (
-      <AppPagination
-        buildHref={(page) =>
-          `/samples?page=${page}${search ? `&search=${search}` : ""}`
-        }
-        pageNum={page}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-      />
-    )
-  );
-};
-
-const SamplesListContainer = () => {
-  const [searchParams, setSearchParams] = useSamplesSearchParams();
-
-  const debouncedParams = useDebounce(searchParams, 300);
-
-  // immediately use search if it is an empty string so we can show cached 1st page, otherwise use debounced search
-  const search =
-    searchParams.search === "" ? searchParams.search : debouncedParams.search;
-
-  // use debounced page when search is debounced, immediate page otherwise
-  const page =
-    searchParams.search === "" ? searchParams.page : debouncedParams.page;
-
-  const deferredSearch = useDeferredValue(search);
-  const deferredPage = useDeferredValue(page);
-
-  const pageChangeHandler = (nextPage: number) => {
+  const onPageChange = (nextPage: number) => {
     setSearchParams(
       {
         page: nextPage
@@ -93,16 +57,17 @@ const SamplesListContainer = () => {
 
   return (
     <>
-      <Suspense fallback={<SamplesSkeleton />}>
-        <SamplesList page={page} search={search} />
-      </Suspense>
-      <Suspense>
-        <SamplesPagination
-          page={deferredPage}
-          search={deferredSearch}
-          onPageChange={pageChangeHandler}
+      {isFetching ? <SamplesSkeleton /> : <SamplesList samples={samples} />}
+      {totalPages > 0 && (
+        <AppPagination
+          buildHref={(page) =>
+            `/samples?page=${page}${search ? `&search=${search}` : ""}`
+          }
+          pageNum={page}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
         />
-      </Suspense>
+      )}
     </>
   );
 };
