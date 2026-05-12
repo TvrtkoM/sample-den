@@ -57,6 +57,7 @@ export default function SignUpForm() {
     const { name, email, password } = data;
 
     if (session?.user.isAnonymous) {
+      // eslint-disable-next-line react-hooks/immutability
       document.cookie = getAnonymousUserIdCookie(session.user.id);
     }
 
@@ -70,6 +71,7 @@ export default function SignUpForm() {
     if (res.error) {
       setAuthError(res.error.message || "Something went wrong.");
     } else {
+      // eslint-disable-next-line react-hooks/immutability
       document.cookie = getSignUpVerificationCookie();
       router.push(`/verify`);
     }

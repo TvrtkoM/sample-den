@@ -9,13 +9,11 @@ import {
   FieldLabel
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useCartTotalCount } from "@/hooks/use-cart";
 import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
 import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -51,6 +49,7 @@ export default function SignInPage() {
     const { email, password } = data;
 
     if (session?.user.isAnonymous) {
+      // eslint-disable-next-line react-hooks/immutability
       document.cookie = getAnonymousUserIdCookie(session.user.id);
     }
 
@@ -60,7 +59,6 @@ export default function SignInPage() {
     });
 
     if (res.error) {
-      console.log(res.error);
       setAuthError(res.error.message ?? "Something went wrong");
     } else {
       router.push(`/samples`);
