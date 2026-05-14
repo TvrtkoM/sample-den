@@ -1,0 +1,9 @@
+*
+!app/
+!components/
+!context/
+!generated/
+!groq
+!hooks
+!lib/
+!prisma/
