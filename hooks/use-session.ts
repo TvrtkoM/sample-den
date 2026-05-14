@@ -1,30 +1,20 @@
 import { useSessionContext } from "@/context/SessionContext";
 import { useSessionAuth } from "@/lib/auth-client";
-
-let isSessionHydrated = false;
-
-const getIsSessionHydrated = () => {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-  return isSessionHydrated;
-}
-
-const setSessionHydrated = () => {
-  if (typeof window !== 'undefined') {
-    isSessionHydrated = true;
-  }
-}
+import { useSyncExternalStore } from "react";
 
 export function useSession() {
   const initialSession = useSessionContext();
   const { data: clientSession, isPending, refetch } = useSessionAuth();
 
-  if (!getIsSessionHydrated() && !isPending) {
-    setSessionHydrated();
+  const isHydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+
+  if (!isHydrated || isPending) {
+    return { session: initialSession, refetch: undefined, isPending: true };
   }
 
-  const session = getIsSessionHydrated() ? clientSession : initialSession;
-
-  return { session, refetch };
+  return { session: clientSession, refetch, isPending };
 }

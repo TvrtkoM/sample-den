@@ -15,8 +15,7 @@ import {
   getAnonymousUserIdCookie,
   getSignUpVerificationCookie
 } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 type FormData = {
@@ -27,16 +26,16 @@ type FormData = {
 };
 
 export default function SignUpForm() {
-  const router = useRouter();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { session } = useSession();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    reset,
+    formState: { errors, isValid },
     control
   } = useForm<FormData>({
     defaultValues: {
@@ -48,9 +47,14 @@ export default function SignUpForm() {
     mode: "onChange"
   });
 
+  useEffect(() => {
+    reset();
+  }, [reset]);
+
   const password = useWatch({ control, name: "password" });
 
   const submit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true);
     setAuthError(null);
 
     const { name, email, password } = data;
@@ -63,21 +67,19 @@ export default function SignUpForm() {
     const res = await signUp.email({
       name,
       email,
-      password,
-      callbackURL: "/samples"
+      password
     });
 
-    startTransition(() => {
-      if (res.error) {
-        setAuthError(res.error.message || "Something went wrong.");
-      } else {
-        document.cookie = getSignUpVerificationCookie();
-        router.push(`/verify`);
-      }
-    });
+    if (res.error) {
+      setAuthError(res.error.message || "Something went wrong.");
+      setIsSubmitting(false);
+    } else {
+      // eslint-disable-next-line react-hooks/immutability
+      document.cookie = getSignUpVerificationCookie();
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = "/verify";
+    }
   };
-
-  const isSubmitPending = isSubmitting || isPending;
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
@@ -151,7 +153,7 @@ export default function SignUpForm() {
           )}
         </Field>
         <Field orientation="horizontal">
-          <Button type="submit" disabled={!isValid || isSubmitPending}>
+          <Button type="submit" disabled={!isValid || isSubmitting}>
             Submit
           </Button>
           {authError && <FieldError>{authError}</FieldError>}

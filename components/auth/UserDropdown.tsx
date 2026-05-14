@@ -18,27 +18,37 @@ import {
 
 const DropdownMenuNotSignedIn = () => {
   return (
-    <DropdownMenuContent>
-      <DropdownMenuItem asChild>
-        <Link href="/sign-in">Sign in</Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <Link href="/sign-up">Register</Link>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
+    <>
+      <DropdownMenuContent>
+        <DropdownMenuItem asChild>
+          <Link href="/sign-in">Sign in</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/sign-up">Register</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </>
   );
 };
 
 const DropdownMenuSignedIn = ({ username }: { username: string }) => {
   const queryClient = useQueryClient();
+
   return (
     <DropdownMenuContent>
       <DropdownMenuLabel>Hello {username}</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem
-        onClick={() => {
+        onClick={async () => {
+          //router.refresh();
+          //await revalidateAuthRoutes();
           queryClient.setQueryData(["cart"], { items: [] });
-          signOut();
+          //router.prefetch("/sign-in");
+          await signOut();
+
+          // this fixes bug in which after sign out we need to
+          // trigger sign-in button twice to open sign-in form
+          window.location.reload();
         }}
       >
         Sign out

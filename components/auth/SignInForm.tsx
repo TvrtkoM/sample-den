@@ -14,7 +14,7 @@ import { signIn } from "@/lib/auth-client";
 import { emailRegex } from "@/lib/constants";
 import { getAnonymousUserIdCookie } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type FormData = {
@@ -25,14 +25,14 @@ type FormData = {
 export default function SignInPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const { session } = useSession();
-
-  const router = useRouter();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid, isSubmitting }
   } = useForm<FormData>({
     defaultValues: {
@@ -41,6 +41,10 @@ export default function SignInPage() {
     },
     mode: "onChange"
   });
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null);
@@ -57,16 +61,16 @@ export default function SignInPage() {
       password
     });
 
-    startTransition(() => {
-      if (res.error) {
-        setAuthError(res.error.message ?? "Something went wrong");
-      } else {
-        router.push(`/samples`);
-      }
-    });
+    if (res.error) {
+      setAuthError(res.error.message ?? "Something went wrong");
+    } else {
+      startTransition(() => {
+        router.refresh();
+      });
+    }
   };
 
-  const isSubmitPending = isSubmitting || isPending;
+  const isSubmitPending = isPending || isSubmitting;
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
