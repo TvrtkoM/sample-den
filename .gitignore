@@ -43,3 +43,5 @@ next-env.d.ts
 
 .history/
 /generated/prisma
+
+graphify-out/

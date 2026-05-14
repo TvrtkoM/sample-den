@@ -3,7 +3,7 @@
 !components/
 !context/
 !generated/
-!groq
-!hooks
+!groq/
+!hooks/
 !lib/
 !prisma/
