@@ -26,5 +26,5 @@ export function useSession() {
 
   const session = getIsSessionHydrated() ? clientSession : initialSession;
 
-  return { session, refetch, isPending };
+  return { session, refetch };
 }
