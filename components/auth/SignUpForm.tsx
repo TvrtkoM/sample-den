@@ -7,7 +7,8 @@ import { useSession } from '@/hooks/use-session'
 import { signUp } from '@/lib/auth-client'
 import { emailRegex, passwordRegex } from '@/lib/constants'
 import { getAnonymousUserIdCookie, getSignUpVerificationCookie } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 type FormData = {
@@ -17,7 +18,7 @@ type FormData = {
   repeatPassword: string
 }
 
-export default function SignUpForm() {
+function SignUpFormImpl() {
   const [authError, setAuthError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -26,7 +27,6 @@ export default function SignUpForm() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid },
     control,
   } = useForm<FormData>({
@@ -38,10 +38,6 @@ export default function SignUpForm() {
     },
     mode: 'onChange',
   })
-
-  useEffect(() => {
-    reset()
-  }, [reset])
 
   const password = useWatch({ control, name: 'password' })
 
@@ -159,4 +155,10 @@ export default function SignUpForm() {
       </FieldGroup>
     </form>
   )
+}
+
+export default function SignUpForm() {
+  const pathname = usePathname()
+
+  return <SignUpFormImpl key={pathname} />
 }

@@ -8,8 +8,8 @@ import { useSession } from '@/hooks/use-session'
 import { signIn } from '@/lib/auth-client'
 import { emailRegex } from '@/lib/constants'
 import { getAnonymousUserIdCookie } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 type FormData = {
@@ -17,7 +17,7 @@ type FormData = {
   password: string
 }
 
-export default function SignInPage() {
+function SignInFormImpl() {
   const [authError, setAuthError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -27,7 +27,6 @@ export default function SignInPage() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
@@ -36,10 +35,6 @@ export default function SignInPage() {
     },
     mode: 'onChange',
   })
-
-  useEffect(() => {
-    reset()
-  }, [reset])
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null)
@@ -124,4 +119,10 @@ export default function SignInPage() {
       </FieldGroup>
     </form>
   )
+}
+
+export default function SignInForm() {
+  const pathname = usePathname()
+
+  return <SignInFormImpl key={pathname} />
 }
