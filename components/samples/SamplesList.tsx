@@ -5,6 +5,7 @@ import { useSamplesPage } from '@/hooks/use-samples'
 import { defaultSamplesPageSize } from '@/lib/constants'
 import { useSamplesSearchParams } from '@/lib/search-params/hooks'
 import AppPagination from '../AppPagination'
+import { GridContainer } from '../ui/grid-container'
 import { Skeleton } from '../ui/skeleton'
 import SampleItem from './SampleItem'
 
@@ -13,21 +14,21 @@ const SamplesList = ({ samples }: { samples: SamplesPageQueryResult['samples'][n
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>
   }
   return (
-    <div className="py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <GridContainer className="py-8 sm:py-12">
       {samples.map((sample) => (
         <SampleItem key={sample._id} sample={sample} />
       ))}
-    </div>
+    </GridContainer>
   )
 }
 
 const SamplesSkeleton = () => {
   return (
-    <div className="py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <GridContainer className="py-8 sm:py-12">
       {Array.from({ length: defaultSamplesPageSize }, (_, i) => (
         <Skeleton key={i} className="w-full h-64" />
       ))}
-    </div>
+    </GridContainer>
   )
 }
 

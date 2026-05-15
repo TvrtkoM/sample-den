@@ -1,5 +1,6 @@
 import LibraryItem from '@/components/library/LibraryItem'
 import { Button } from '@/components/ui/button'
+import { GridContainer } from '@/components/ui/grid-container'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
@@ -32,8 +33,8 @@ export default async function LibraryPage() {
 
   return (
     <section>
-      <h2 className="mb-4">Library</h2>
-      <ul className="flex flex-col gap-3">
+      <h2 className="mb-6">Library</h2>
+      <GridContainer>
         {purchases.map((purchase) => (
           <LibraryItem
             key={purchase.id}
@@ -46,7 +47,7 @@ export default async function LibraryPage() {
             sample={sampleById.get(purchase.sampleId) ?? null}
           />
         ))}
-      </ul>
+      </GridContainer>
     </section>
   )
 }

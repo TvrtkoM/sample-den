@@ -47,17 +47,17 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
 
   if (!sample) {
     return (
-      <li className="card-shadow-sm">
+      <div className="card-shadow-sm">
         <div className="card-section justify-between text-sm">
           <span className="text-muted-foreground">Sample no longer available</span>
           <span>{format(new Date(purchase.createdAt), 'PP')}</span>
         </div>
-      </li>
+      </div>
     )
   }
 
   return (
-    <li className="card-shadow-sm">
+    <section className="card-shadow-sm">
       <div className="card-section gap-2">
         {sample.categories?.map((c) => (
           <Badge variant="secondary" key={c.slug?.current ?? c.title}>
@@ -86,6 +86,6 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
           <Download /> {isDownloading ? 'Preparing...' : 'Download .wav'}
         </Button>
       </div>
-    </li>
+    </section>
   )
 }

@@ -12,7 +12,7 @@ export default function ProfileNav() {
   const pathname = usePathname()
 
   return (
-    <nav aria-label="Profile" className="flex gap-1 mb-6">
+    <nav aria-label="Profile" className="flex gap-2 mb-6">
       {links.map(({ href, label }) => {
         const isActive = pathname === href
         return (
