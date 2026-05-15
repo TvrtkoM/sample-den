@@ -1,8 +1,7 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import { NavButton } from './ui/nav-button'
 
 const links = [
   { href: '/profile', label: 'Overview' },
@@ -17,18 +16,9 @@ export default function ProfileNav() {
       {links.map(({ href, label }) => {
         const isActive = pathname === href
         return (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              'px-3 py-1.5 rounded-md text-base font-medium transition-colors',
-              isActive
-                ? 'bg-accent text-accent-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
-            )}
-          >
+          <NavButton key={href} active={isActive} href={href} size="md">
             {label}
-          </Link>
+          </NavButton>
         )
       })}
     </nav>
