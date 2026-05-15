@@ -1,7 +1,5 @@
-import AppNavButtons from '@/components/AppNavButtons'
 import { ClearSignUpVerificationCookie } from '@/components/auth/ClearSignUpVerificationCookie'
 import VerificationErrorToast from '@/components/auth/VerificationErrorToast'
-import CartDrawer from '@/components/cart/CartDrawer'
 import SampleSearch from '@/components/samples/SampleSearch'
 import SamplesList from '@/components/samples/SamplesList'
 import { getCartSamplesIds } from '@/lib/db'
@@ -46,21 +44,8 @@ async function PageImpl({ searchParams }: { searchParams: Promise<SearchParams> 
     <HydrationBoundary state={dehydrated}>
       <ClearSignUpVerificationCookie />
       <VerificationErrorToast />
-      <main>
-        <header className="border-b border-neutral-200">
-          <div className="container py-6">
-            <div className="flex justify-between">
-              <h1 className="mb-6" id="samples-heading">
-                Sample den
-              </h1>
-              <AppNavButtons />
-            </div>
-            <SampleSearch />
-          </div>
-        </header>
-        <SamplesList />
-      </main>
-      <CartDrawer />
+      <SampleSearch />
+      <SamplesList />
     </HydrationBoundary>
   )
 }

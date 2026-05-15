@@ -13,17 +13,17 @@ const SamplesList = ({ samples }: { samples: SamplesPageQueryResult['samples'][n
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>
   }
   return (
-    <ul className="container py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <div className="py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {samples.map((sample) => (
         <SampleItem key={sample._id} sample={sample} />
       ))}
-    </ul>
+    </div>
   )
 }
 
 const SamplesSkeleton = () => {
   return (
-    <div className="container py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <div className="py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {Array.from({ length: defaultSamplesPageSize }, (_, i) => (
         <Skeleton key={i} className="w-full h-64" />
       ))}

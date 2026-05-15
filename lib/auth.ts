@@ -17,14 +17,20 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, url }) => {},
+    sendResetPassword: async ({ user, url }) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`password reset for ${user.email}: ${url}`)
+      }
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
     sendOnSignUp: true,
     expiresIn: process.env.NODE_ENV === 'production' ? 3600 : 60,
     sendVerificationEmail: async ({ user, url }) => {
-      console.log('email verification url', url)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('email verification url', url)
+      }
       sendEmail(user.email, 'Verify your email', VerificationEmail({ verificationUrl: url, username: user.name }))
     },
   },

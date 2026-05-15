@@ -1,9 +1,8 @@
-import AppProvider from '@/components/AppProvider'
-import { getSession } from '@/lib/getSession'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
+import AppProvider from '@/components/providers/AppProvider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,13 +24,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const sessionPromise = getSession()
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Toaster position="top-right" />
-        <AppProvider sessionPromise={sessionPromise}>{children}</AppProvider>
+        <AppProvider>
+          <Toaster position="top-right" />
+          {children}
+        </AppProvider>
       </body>
     </html>
   )

@@ -1,9 +1,7 @@
-import type { auth } from '@/lib/auth'
+import { Session } from '@/lib/types'
 import { createContext, use, useContext } from 'react'
 
-type Session = typeof auth.$Infer.Session | null
-
-export const SessionContext = createContext<Promise<Session> | null>(null)
+export const SessionContext = createContext<Promise<Session | null> | null>(null)
 
 export function useSessionContext() {
   const sessionPromise = useContext(SessionContext)
