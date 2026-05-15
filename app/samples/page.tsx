@@ -1,50 +1,46 @@
-import AppNavButtons from "@/components/AppNavButtons";
-import { ClearSignUpVerificationCookie } from "@/components/auth/ClearSignUpVerificationCookie";
-import VerificationErrorToast from "@/components/auth/VerificationErrorToast";
-import CartDrawer from "@/components/cart/CartDrawer";
-import SampleSearch from "@/components/samples/SampleSearch";
-import SamplesList from "@/components/samples/SamplesList";
-import { getCartSamplesIds } from "@/lib/db";
-import { fetchSamplesPage } from "@/lib/fetch/samples";
-import { getQueryClient } from "@/lib/get-query-client";
-import { loadSamplesSearchParams } from "@/lib/search-params/loaders";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { cacheLife } from "next/cache";
+import AppNavButtons from '@/components/AppNavButtons'
+import { ClearSignUpVerificationCookie } from '@/components/auth/ClearSignUpVerificationCookie'
+import VerificationErrorToast from '@/components/auth/VerificationErrorToast'
+import CartDrawer from '@/components/cart/CartDrawer'
+import SampleSearch from '@/components/samples/SampleSearch'
+import SamplesList from '@/components/samples/SamplesList'
+import { getCartSamplesIds } from '@/lib/db'
+import { fetchSamplesPage } from '@/lib/fetch/samples'
+import { getQueryClient } from '@/lib/get-query-client'
+import { loadSamplesSearchParams } from '@/lib/search-params/loaders'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import { cacheLife } from 'next/cache'
 
 type SearchParams = {
-  page?: string;
-  search?: string;
-};
-
-async function fetchSamplesPageCached(page: number, search: string) {
-  "use cache";
-  cacheLife("hours");
-
-  return fetchSamplesPage(page, search);
+  page?: string
+  search?: string
 }
 
-async function PageImpl({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const params = await searchParams;
-  const { page, search } = loadSamplesSearchParams(params);
+async function fetchSamplesPageCached(page: number, search: string) {
+  'use cache'
+  cacheLife('hours')
 
-  const queryClient = getQueryClient();
+  return fetchSamplesPage(page, search)
+}
+
+async function PageImpl({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const params = await searchParams
+  const { page, search } = loadSamplesSearchParams(params)
+
+  const queryClient = getQueryClient()
 
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: ["samples", search, page],
-      queryFn: () => fetchSamplesPageCached(page, search)
+      queryKey: ['samples', search, page],
+      queryFn: () => fetchSamplesPageCached(page, search),
     }),
     queryClient.prefetchQuery({
-      queryKey: ["cart"],
-      queryFn: async () => ({ items: await getCartSamplesIds() })
-    })
-  ]);
+      queryKey: ['cart'],
+      queryFn: async () => ({ items: await getCartSamplesIds() }),
+    }),
+  ])
 
-  const dehydrated = dehydrate(queryClient);
+  const dehydrated = dehydrate(queryClient)
 
   return (
     <HydrationBoundary state={dehydrated}>
@@ -66,13 +62,9 @@ async function PageImpl({
       </main>
       <CartDrawer />
     </HydrationBoundary>
-  );
+  )
 }
 
-export default async function SamplesPage({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  return <PageImpl searchParams={searchParams} />;
+export default async function SamplesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  return <PageImpl searchParams={searchParams} />
 }

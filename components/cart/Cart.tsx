@@ -1,28 +1,23 @@
-"use client";
+'use client'
 
-import { SamplesByIdsQueryResult } from "@/generated/groq/sanity-types";
-import { LoaderCircle, ShoppingCart } from "lucide-react";
-import CartItem from "./CartItem";
+import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
+import { LoaderCircle, ShoppingCart } from 'lucide-react'
+import CartItem from './CartItem'
 
 type CartProps = {
-  samples: SamplesByIdsQueryResult["samples"];
-  isChangingPage: boolean;
-  isLoading: boolean;
-  isCartEmpty: boolean;
-};
+  samples: SamplesByIdsQueryResult['samples']
+  isChangingPage: boolean
+  isLoading: boolean
+  isCartEmpty: boolean
+}
 
-export default function Cart({
-  samples,
-  isChangingPage,
-  isLoading,
-  isCartEmpty
-}: CartProps) {
+export default function Cart({ samples, isChangingPage, isLoading, isCartEmpty }: CartProps) {
   if (isLoading || isChangingPage) {
     return (
       <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 text-muted-foreground">
         <LoaderCircle className="animate-spin size-20" />
       </div>
-    );
+    )
   }
 
   if (isCartEmpty) {
@@ -31,7 +26,7 @@ export default function Cart({
         <ShoppingCart className="size-12" />
         <p>Your cart is empty</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -42,5 +37,5 @@ export default function Cart({
         ))}
       </ul>
     </div>
-  );
+  )
 }

@@ -1,17 +1,17 @@
-import { getSession } from "@/lib/getSession";
-import { redirect } from "next/navigation";
-import { connection } from "next/server";
-import { ReactNode } from "react";
+import { getSession } from '@/lib/getSession'
+import { redirect } from 'next/navigation'
+import { connection } from 'next/server'
+import { ReactNode } from 'react'
 
 const PublicGuard = async ({ children }: { children: ReactNode }) => {
-  await connection();
-  const sessionData_ = await getSession();
+  await connection()
+  const sessionData_ = await getSession()
 
   if (!sessionData_ || sessionData_?.user.isAnonymous === true) {
-    return children;
+    return children
   }
 
-  redirect("/samples");
-};
+  redirect('/samples')
+}
 
-export default PublicGuard;
+export default PublicGuard

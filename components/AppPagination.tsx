@@ -1,47 +1,47 @@
-"use client";
-import React, { MouseEvent, MouseEventHandler } from "react";
+'use client'
+import React, { MouseEvent, MouseEventHandler } from 'react'
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationPrevious
-} from "./ui/pagination";
+  PaginationPrevious,
+} from './ui/pagination'
 
 type AppPaginationProps = {
-  pageNum: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  buildHref?: (page: number) => string;
-  className?: string;
-};
+  pageNum: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  buildHref?: (page: number) => string
+  className?: string
+}
 
 const AppPagination: React.FC<AppPaginationProps> = ({
   pageNum,
   totalPages,
   onPageChange,
   buildHref,
-  className = ""
+  className = '',
 }) => {
   const handleNavigatePrevious: MouseEventHandler = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (pageNum > 1) {
-      onPageChange(pageNum - 1);
+      onPageChange(pageNum - 1)
     }
-  };
+  }
 
   const handleNavigateNext: MouseEventHandler = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (pageNum < totalPages) {
-      onPageChange(pageNum + 1);
+      onPageChange(pageNum + 1)
     }
-  };
+  }
 
   const handleNavigatePage = (event: MouseEvent, page: number) => {
-    event.preventDefault();
-    onPageChange(page);
-  };
+    event.preventDefault()
+    onPageChange(page)
+  }
 
   return (
     <Pagination className={className}>
@@ -56,11 +56,7 @@ const AppPagination: React.FC<AppPaginationProps> = ({
 
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink
-              isActive={p === pageNum}
-              onClick={(e) => handleNavigatePage(e, p)}
-              href={buildHref?.(p)}
-            >
+            <PaginationLink isActive={p === pageNum} onClick={(e) => handleNavigatePage(e, p)} href={buildHref?.(p)}>
               {p}
             </PaginationLink>
           </PaginationItem>
@@ -75,7 +71,7 @@ const AppPagination: React.FC<AppPaginationProps> = ({
         </PaginationItem>
       </PaginationContent>
     </Pagination>
-  );
-};
+  )
+}
 
-export default AppPagination;
+export default AppPagination

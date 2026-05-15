@@ -1,9 +1,9 @@
-import "client-only"
+import 'client-only'
 import { createAuthClient } from 'better-auth/react'
 import { anonymousClient } from 'better-auth/client/plugins'
 
-const authClient = createAuthClient({ plugins: [anonymousClient()] });
+const authClient = createAuthClient({ plugins: [anonymousClient()] })
 
 export const { signIn, signUp, signOut, getSession, sendVerificationEmail } = authClient
 
-export const useSessionAuth = authClient.useSession;
+export const useSessionAuth = authClient.useSession

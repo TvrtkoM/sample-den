@@ -1,4 +1,4 @@
-import "client-only";
+import 'client-only'
 
 export async function fetchCart(): Promise<{ items: string[] }> {
   const res = await fetch('/api/cart')

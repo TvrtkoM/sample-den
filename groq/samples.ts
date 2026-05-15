@@ -1,4 +1,4 @@
-import { defineQuery } from 'groq';
+import { defineQuery } from 'groq'
 
 const sampleFragment = `
 {
@@ -15,7 +15,7 @@ const sampleFragment = `
     slug
   }
 }
-`;
+`
 
 const samplesSearchFragment = `
 *[_type == "sample" && (
@@ -35,24 +35,24 @@ export const samplesPageQuery = defineQuery(`
     ${sampleFragment},
   "totalCount": count(${samplesSearchFragment})
 }
-`);
+`)
 
 const samplesByIdsFragment = `
 *[_type == "sample" && _id in $ids]
-`;
+`
 
 export const samplesByIdsQuery = defineQuery(`
 {
   "samples": ${samplesByIdsFragment}
     ${sampleFragment}
 }
-`);
+`)
 
 export const samplesPriceSumByIdsQuery = defineQuery(`
 {
   "totalPrice": math::sum(${samplesByIdsFragment}.priceUsd)
 }
-`);
+`)
 
 export const sampleDownloadByIdQuery = defineQuery(`
 *[_type == "sample" && _id == $id][0]{
@@ -61,4 +61,4 @@ export const sampleDownloadByIdQuery = defineQuery(`
     fileName
   }
 }
-`);
+`)

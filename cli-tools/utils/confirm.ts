@@ -1,4 +1,4 @@
-import chalk from "chalk"
+import chalk from 'chalk'
 
 /**
  * Ask the user to confirm an action.
@@ -6,16 +6,13 @@ import chalk from "chalk"
  * @param message  The prompt message, e.g. "Are you sure?"
  * @param defaultYes  Whether Enter means "yes" (default false)
  */
-export async function confirm(
-  message: string,
-  defaultYes = false
-): Promise<boolean> {
-  const suffix = defaultYes ? "(Y/n)" : "(y/N)"
+export async function confirm(message: string, defaultYes = false): Promise<boolean> {
+  const suffix = defaultYes ? '(Y/n)' : '(y/N)'
 
   process.stdout.write(chalk.yellow(`${message} ${suffix} `))
 
-  const answer = await new Promise<string>(resolve => {
-    process.stdin.once("data", d => {
+  const answer = await new Promise<string>((resolve) => {
+    process.stdin.once('data', (d) => {
       resolve(String(d).trim().toLowerCase())
     })
   })
@@ -27,5 +24,5 @@ export async function confirm(
     return defaultYes // user pressed Enter
   }
 
-  return ["y", "yes"].includes(answer)
+  return ['y', 'yes'].includes(answer)
 }

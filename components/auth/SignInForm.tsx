@@ -1,76 +1,71 @@
-"use client";
+'use client'
 
-import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { useSession } from "@/hooks/use-session";
-import { signIn } from "@/lib/auth-client";
-import { emailRegex } from "@/lib/constants";
-import { getAnonymousUserIdCookie } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { useSession } from '@/hooks/use-session'
+import { signIn } from '@/lib/auth-client'
+import { emailRegex } from '@/lib/constants'
+import { getAnonymousUserIdCookie } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 type FormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export default function SignInPage() {
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
-  const { session } = useSession();
+  const { session } = useSession()
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isSubmitting }
+    formState: { errors, isValid, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      email: "",
-      password: ""
+      email: '',
+      password: '',
     },
-    mode: "onChange"
-  });
+    mode: 'onChange',
+  })
 
   useEffect(() => {
-    reset();
-  }, [reset]);
+    reset()
+  }, [reset])
 
   const submit: SubmitHandler<FormData> = async (data) => {
-    setAuthError(null);
+    setAuthError(null)
 
-    const { email, password } = data;
+    const { email, password } = data
 
     if (session?.user.isAnonymous) {
       // eslint-disable-next-line react-hooks/immutability
-      document.cookie = getAnonymousUserIdCookie(session.user.id);
+      document.cookie = getAnonymousUserIdCookie(session.user.id)
     }
 
     const res = await signIn.email({
       email,
-      password
-    });
+      password,
+    })
 
     if (res.error) {
-      setAuthError(res.error.message ?? "Something went wrong");
+      setAuthError(res.error.message ?? 'Something went wrong')
     } else {
       startTransition(() => {
-        router.refresh();
-      });
+        router.refresh()
+      })
     }
-  };
+  }
 
-  const isSubmitPending = isPending || isSubmitting;
+  const isSubmitPending = isPending || isSubmitting
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
@@ -78,12 +73,12 @@ export default function SignInPage() {
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
-            {...register("email", {
-              required: "Email is required",
+            {...register('email', {
+              required: 'Email is required',
               pattern: {
                 value: emailRegex,
-                message: "Enter a valid email address"
-              }
+                message: 'Enter a valid email address',
+              },
             })}
             placeholder="Email"
             type="email"
@@ -97,8 +92,8 @@ export default function SignInPage() {
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
-            {...register("password", {
-              required: "Password is required"
+            {...register('password', {
+              required: 'Password is required',
             })}
             type="password"
             placeholder="Password"
@@ -106,9 +101,7 @@ export default function SignInPage() {
             id="password"
             aria-invalid={Boolean(errors.password)}
           />
-          {errors.password && (
-            <FieldError>{errors.password.message}</FieldError>
-          )}
+          {errors.password && <FieldError>{errors.password.message}</FieldError>}
         </Field>
 
         <Field orientation="horizontal">
@@ -130,5 +123,5 @@ export default function SignInPage() {
         <GoogleSignInButton />
       </FieldGroup>
     </form>
-  );
+  )
 }

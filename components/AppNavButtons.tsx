@@ -1,5 +1,5 @@
-import UserDropdown from "./auth/UserDropdown";
-import CartIcon from "./cart/CartIcon";
+import UserDropdown from './auth/UserDropdown'
+import CartIcon from './cart/CartIcon'
 
 const AppNavButtons = () => {
   return (
@@ -7,7 +7,7 @@ const AppNavButtons = () => {
       <UserDropdown />
       <CartIcon />
     </nav>
-  );
-};
+  )
+}
 
-export default AppNavButtons;
+export default AppNavButtons

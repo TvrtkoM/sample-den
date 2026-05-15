@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { useCartSize } from "@/hooks/use-cart";
-import { ShoppingBag } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { startTransition } from "react";
-import { useShowCart } from "@/lib/store/cart";
+import { useCartSize } from '@/hooks/use-cart'
+import { ShoppingBag } from 'lucide-react'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { startTransition } from 'react'
+import { useShowCart } from '@/lib/store/cart'
 
 export default function CartIcon() {
-  const cartSize = useCartSize();
-  const showCart = useShowCart();
+  const cartSize = useCartSize()
+  const showCart = useShowCart()
 
   return (
     <Button
@@ -18,8 +18,8 @@ export default function CartIcon() {
       className="relative rounded-full h-9 flex items-center"
       onClick={() => {
         startTransition(() => {
-          showCart();
-        });
+          showCart()
+        })
       }}
     >
       cart
@@ -28,5 +28,5 @@ export default function CartIcon() {
       </Badge>
       <ShoppingBag />
     </Button>
-  );
+  )
 }

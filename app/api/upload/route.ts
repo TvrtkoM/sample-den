@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { createClient } from '@sanity/client'
-import crypto from 'node:crypto';
+import crypto from 'node:crypto'
 
 // ---------- AWS S3 ----------
 const s3 = new S3Client({
@@ -27,7 +27,7 @@ const headers = {
   'Access-Control-Max-Age': '86400',
 }
 
-const HMAC_SECRET = process.env.UPLOAD_HMAC_SECRET;
+const HMAC_SECRET = process.env.UPLOAD_HMAC_SECRET
 
 // compare 2 hex strings but do it in constant timing to prvent timing based attacs
 function timingSafeEqualHex(a: string, b: string): boolean {
@@ -58,10 +58,7 @@ export async function POST(req: Request) {
     const documentId = formData.get('documentId') as string | null
 
     if (!documentId) {
-      return new NextResponse(
-        JSON.stringify({ error: 'Missing documentId' }),
-        { status: 400, headers },
-      )
+      return new NextResponse(JSON.stringify({ error: 'Missing documentId' }), { status: 400, headers })
     }
 
     if (!HMAC_SECRET) {
@@ -87,8 +84,8 @@ export async function POST(req: Request) {
       return new NextResponse('Request expired', { status: 401, headers })
     }
 
-    const message = `${documentId}:${timestamp}`;
-    const expected = signPayload(message);
+    const message = `${documentId}:${timestamp}`
+    const expected = signPayload(message)
 
     if (!timingSafeEqualHex(expected, signature)) {
       return new NextResponse('Invalid signature', { status: 401, headers })
@@ -97,23 +94,16 @@ export async function POST(req: Request) {
     const wavFile = formData.get('wav') as File | null
     const mp3File = formData.get('mp3') as File | null
 
-
     if (!wavFile || !mp3File) {
-      return new NextResponse(
-        JSON.stringify({ error: 'Missing wav or mp3 file' }),
-        { status: 400, headers },
-      )
+      return new NextResponse(JSON.stringify({ error: 'Missing wav or mp3 file' }), { status: 400, headers })
     }
 
     if (!wavFile.name.toLowerCase().endsWith('.wav')) {
-      return new NextResponse(
-        JSON.stringify({ error: 'Only .wav allowed for wav field' }),
-        { status: 400, headers },
-      )
+      return new NextResponse(JSON.stringify({ error: 'Only .wav allowed for wav field' }), { status: 400, headers })
     }
 
-    const nameWithoutExt = [...wavFile.name.split('.').slice(0, -1)].join(".");
-    const fileName = `${Date.now()}-${nameWithoutExt}`;
+    const nameWithoutExt = [...wavFile.name.split('.').slice(0, -1)].join('.')
+    const fileName = `${Date.now()}-${nameWithoutExt}`
 
     // ----- 1. Upload WAV to S3 -----
     const wavArrayBuffer = await wavFile.arrayBuffer()
@@ -133,14 +123,10 @@ export async function POST(req: Request) {
     const mp3ArrayBuffer = await mp3File.arrayBuffer()
     const mp3Buffer = Buffer.from(mp3ArrayBuffer)
 
-    const asset = await sanity.assets.upload(
-      'file',
-      mp3Buffer,
-      {
-        filename: `${fileName}.mp3`,
-        contentType: 'audio/mpeg',
-      },
-    )
+    const asset = await sanity.assets.upload('file', mp3Buffer, {
+      filename: `${fileName}.mp3`,
+      contentType: 'audio/mpeg',
+    })
 
     // ----- 3. Patch document -----
     const patch = {
@@ -161,10 +147,7 @@ export async function POST(req: Request) {
       },
     }
 
-    await sanity
-      .transaction()
-      .patch(documentId, patch)
-      .commit()
+    await sanity.transaction().patch(documentId, patch).commit()
 
     // ----- 4. Respond -----
     return new NextResponse(
@@ -179,9 +162,6 @@ export async function POST(req: Request) {
   } catch (err: unknown) {
     console.error('[UPLOAD ERROR]', err)
     const message = err instanceof Error ? err.message : 'Unknown error'
-    return new NextResponse(
-      JSON.stringify({ error: message }),
-      { status: 500, headers },
-    )
+    return new NextResponse(JSON.stringify({ error: message }), { status: 500, headers })
   }
 }

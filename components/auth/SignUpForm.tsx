@@ -1,85 +1,77 @@
-"use client";
-import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { useSession } from "@/hooks/use-session";
-import { signUp } from "@/lib/auth-client";
-import { emailRegex, passwordRegex } from "@/lib/constants";
-import {
-  getAnonymousUserIdCookie,
-  getSignUpVerificationCookie
-} from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm, useWatch } from "react-hook-form";
+'use client'
+import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { useSession } from '@/hooks/use-session'
+import { signUp } from '@/lib/auth-client'
+import { emailRegex, passwordRegex } from '@/lib/constants'
+import { getAnonymousUserIdCookie, getSignUpVerificationCookie } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 
 type FormData = {
-  name: string;
-  email: string;
-  password: string;
-  repeatPassword: string;
-};
+  name: string
+  email: string
+  password: string
+  repeatPassword: string
+}
 
 export default function SignUpForm() {
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { session } = useSession();
+  const { session } = useSession()
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isValid },
-    control
+    control,
   } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      repeatPassword: ""
+      name: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
     },
-    mode: "onChange"
-  });
+    mode: 'onChange',
+  })
 
   useEffect(() => {
-    reset();
-  }, [reset]);
+    reset()
+  }, [reset])
 
-  const password = useWatch({ control, name: "password" });
+  const password = useWatch({ control, name: 'password' })
 
   const submit: SubmitHandler<FormData> = async (data) => {
-    setIsSubmitting(true);
-    setAuthError(null);
+    setIsSubmitting(true)
+    setAuthError(null)
 
-    const { name, email, password } = data;
+    const { name, email, password } = data
 
     if (session?.user.isAnonymous) {
       // eslint-disable-next-line react-hooks/immutability
-      document.cookie = getAnonymousUserIdCookie(session.user.id);
+      document.cookie = getAnonymousUserIdCookie(session.user.id)
     }
 
     const res = await signUp.email({
       name,
       email,
-      password
-    });
+      password,
+    })
 
     if (res.error) {
-      setAuthError(res.error.message || "Something went wrong.");
-      setIsSubmitting(false);
+      setAuthError(res.error.message || 'Something went wrong.')
+      setIsSubmitting(false)
     } else {
       // eslint-disable-next-line react-hooks/immutability
-      document.cookie = getSignUpVerificationCookie();
+      document.cookie = getSignUpVerificationCookie()
       // eslint-disable-next-line react-hooks/immutability
-      window.location.href = "/verify";
+      window.location.href = '/verify'
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
@@ -87,7 +79,7 @@ export default function SignUpForm() {
         <Field>
           <FieldLabel htmlFor="name">Username</FieldLabel>
           <Input
-            {...register("name", { required: "Full name is required" })}
+            {...register('name', { required: 'Full name is required' })}
             placeholder="Username"
             autoComplete="off"
             id="name"
@@ -98,12 +90,12 @@ export default function SignUpForm() {
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
-            {...register("email", {
-              required: "Email is required",
+            {...register('email', {
+              required: 'Email is required',
               pattern: {
                 value: emailRegex,
-                message: "Enter a valid email address"
-              }
+                message: 'Enter a valid email address',
+              },
             })}
             placeholder="Email"
             type="email"
@@ -116,13 +108,13 @@ export default function SignUpForm() {
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
-            {...register("password", {
-              required: "Password is required",
+            {...register('password', {
+              required: 'Password is required',
               pattern: {
                 value: passwordRegex,
                 message:
-                  "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
-              }
+                  'Password must be at least 8 characters, include uppercase, lowercase, number, and special character.',
+              },
             })}
             type="password"
             placeholder="Password"
@@ -130,17 +122,14 @@ export default function SignUpForm() {
             id="password"
             aria-invalid={Boolean(errors.password)}
           />
-          {errors.password && (
-            <FieldError>{errors.password.message}</FieldError>
-          )}
+          {errors.password && <FieldError>{errors.password.message}</FieldError>}
         </Field>
         <Field>
           <FieldLabel htmlFor="repeatPassword">Repeat Password</FieldLabel>
           <Input
-            {...register("repeatPassword", {
-              required: "Please repeat your password",
-              validate: (value) =>
-                value === password || "Passwords do not match"
+            {...register('repeatPassword', {
+              required: 'Please repeat your password',
+              validate: (value) => value === password || 'Passwords do not match',
             })}
             type="password"
             placeholder="Repeat password"
@@ -148,9 +137,7 @@ export default function SignUpForm() {
             id="repeatPassword"
             aria-invalid={Boolean(errors.repeatPassword)}
           />
-          {errors.repeatPassword && (
-            <FieldError>{errors.repeatPassword.message}</FieldError>
-          )}
+          {errors.repeatPassword && <FieldError>{errors.repeatPassword.message}</FieldError>}
         </Field>
         <Field orientation="horizontal">
           <Button type="submit" disabled={!isValid || isSubmitting}>
@@ -171,5 +158,5 @@ export default function SignUpForm() {
         <GoogleSignInButton />
       </FieldGroup>
     </form>
-  );
+  )
 }

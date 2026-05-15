@@ -1,63 +1,59 @@
-"use client";
+'use client'
 
-import SamplePlayer from "@/components/samples/SamplePlayer";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { SamplesByIdsQueryResult } from "@/generated/groq/sanity-types";
-import { priceFromCents } from "@/lib/utils";
-import { format } from "date-fns";
-import { Download } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import SamplePlayer from '@/components/samples/SamplePlayer'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
+import { priceFromCents } from '@/lib/utils'
+import { format } from 'date-fns'
+import { Download } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 type LibraryPurchase = {
-  id: string;
-  priceInCents: number;
-  createdAt: string;
-  sampleId: string;
-};
+  id: string
+  priceInCents: number
+  createdAt: string
+  sampleId: string
+}
 
-type LibrarySample = SamplesByIdsQueryResult["samples"][number];
+type LibrarySample = SamplesByIdsQueryResult['samples'][number]
 
 type LibraryItemProps = {
-  purchase: LibraryPurchase;
-  sample: LibrarySample | null;
-};
+  purchase: LibraryPurchase
+  sample: LibrarySample | null
+}
 
 export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const handleDownload = async () => {
-    setIsDownloading(true);
+    setIsDownloading(true)
     try {
-      const res = await fetch(
-        `/api/library/download?purchaseId=${encodeURIComponent(purchase.id)}`
-      );
+      const res = await fetch(`/api/library/download?purchaseId=${encodeURIComponent(purchase.id)}`)
       if (!res.ok) {
-        const { error } = await res.json().catch(() => ({ error: null }));
-        toast.error(error ?? "Could not prepare download");
-        return;
+        const { error } = await res.json().catch(() => ({ error: null }))
+        toast.error(error ?? 'Could not prepare download')
+        return
       }
-      const { url } = (await res.json()) as { url: string };
-      window.location.href = url;
+      const { url } = (await res.json()) as { url: string }
+      window.location.href = url
     } catch {
-      toast.error("Could not prepare download");
+      toast.error('Could not prepare download')
     } finally {
-      setIsDownloading(false);
+      setIsDownloading(false)
     }
-  };
+  }
 
   if (!sample) {
     return (
       <li className="card-shadow-sm">
         <div className="card-section justify-between text-sm">
-          <span className="text-muted-foreground">
-            Sample no longer available
-          </span>
-          <span>{format(new Date(purchase.createdAt), "PP")}</span>
+          <span className="text-muted-foreground">Sample no longer available</span>
+          <span>{format(new Date(purchase.createdAt), 'PP')}</span>
         </div>
       </li>
-    );
+    )
   }
 
   return (
@@ -81,19 +77,15 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
       </div>
 
       <div className="card-section justify-between text-sm text-muted-foreground">
-        <span>Purchased {format(new Date(purchase.createdAt), "PP")}</span>
+        <span>Purchased {format(new Date(purchase.createdAt), 'PP')}</span>
         <span>{priceFromCents(purchase.priceInCents)}</span>
       </div>
 
       <div className="card-section">
-        <Button
-          className="w-full"
-          onClick={handleDownload}
-          disabled={isDownloading}
-        >
-          <Download /> {isDownloading ? "Preparing..." : "Download .wav"}
+        <Button className="w-full" onClick={handleDownload} disabled={isDownloading}>
+          <Download /> {isDownloading ? 'Preparing...' : 'Download .wav'}
         </Button>
       </div>
     </li>
-  );
+  )
 }

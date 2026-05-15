@@ -21,39 +21,38 @@ export function useCartIds() {
 }
 
 export function useCartTotalCount() {
-  const allIds = useCartIds();
-  return allIds.length;
+  const allIds = useCartIds()
+  return allIds.length
 }
 
 export function useCartTotalPrice() {
-  const ids = useCartIds();
+  const ids = useCartIds()
 
-  const sortedIds = [...ids];
-  sortedIds.sort();
+  const sortedIds = [...ids]
+  sortedIds.sort()
 
   return useQuery({
     queryKey: ['cartTotalPrice', sortedIds],
     queryFn: () => fetchSamplesPriceSumByIds(sortedIds),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 }
 
 export function useCartItems(pageNumber = 1) {
   const allIds = useCartIds()
 
-  const pageIds = allIds
-    .slice((pageNumber - 1) * defaultCartPageSize, pageNumber * defaultCartPageSize);
+  const pageIds = allIds.slice((pageNumber - 1) * defaultCartPageSize, pageNumber * defaultCartPageSize)
 
   return useQuery({
     queryKey: ['cartSamples', pageIds],
     queryFn: async () => {
-      const unorderedItems = await fetchSamplesByIds(pageIds);
+      const unorderedItems = await fetchSamplesByIds(pageIds)
 
       const items = pageIds
         .map((id) => unorderedItems.find((item) => item._id === id))
-        .filter((item): item is NonNullable<typeof item> => Boolean(item));
+        .filter((item): item is NonNullable<typeof item> => Boolean(item))
 
-      return { samples: items };
+      return { samples: items }
     },
     placeholderData: keepPreviousData,
   })
@@ -129,8 +128,8 @@ export function useRemoveFromCart() {
 }
 
 type UseRemoveFromCartInCartOptions = {
-  onRemoveStart?: () => void;
-};
+  onRemoveStart?: () => void
+}
 
 export function useRemoveFromCartInCart({ onRemoveStart }: UseRemoveFromCartInCartOptions) {
   const queryClient = useQueryClient()

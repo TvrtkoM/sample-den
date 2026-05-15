@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { getSignUpVerificationCookie } from "@/lib/utils";
-import { useEffect } from "react";
+import { getSignUpVerificationCookie } from '@/lib/utils'
+import { useEffect } from 'react'
 
 export function ClearSignUpVerificationCookie() {
   useEffect(() => {
-    document.cookie = getSignUpVerificationCookie(true);
-  }, []);
+    document.cookie = getSignUpVerificationCookie(true)
+  }, [])
 
-  return null;
+  return null
 }

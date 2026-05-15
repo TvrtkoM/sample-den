@@ -1,29 +1,29 @@
-import "client-only";
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils"
+import 'client-only'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
-const cartPageNumAtom = atom(1);
+const cartPageNumAtom = atom(1)
 
 export const useCartPageNum = () => {
-  return useAtomValue(cartPageNumAtom);
+  return useAtomValue(cartPageNumAtom)
 }
 
 export const useSetCartPageNum = () => {
-  return useSetAtom(cartPageNumAtom);
+  return useSetAtom(cartPageNumAtom)
 }
 
-const cartVisibleAtom = atomWithStorage("showCart", false, undefined, { getOnInit: true });
+const cartVisibleAtom = atomWithStorage('showCart', false, undefined, { getOnInit: true })
 
 export const useCartVisible = () => {
-  return useAtomValue(cartVisibleAtom);
+  return useAtomValue(cartVisibleAtom)
 }
 
 export const useHideCart = () => {
-  const setCartVisible = useSetAtom(cartVisibleAtom);
-  return () => setCartVisible(false);
+  const setCartVisible = useSetAtom(cartVisibleAtom)
+  return () => setCartVisible(false)
 }
 
 export const useShowCart = () => {
-  const setCartVisible = useSetAtom(cartVisibleAtom);
-  return () => setCartVisible(true);
+  const setCartVisible = useSetAtom(cartVisibleAtom)
+  return () => setCartVisible(true)
 }

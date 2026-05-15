@@ -1,25 +1,22 @@
-"use client";
+'use client'
 
-import { parseAsStringEnum, useQueryState } from "nuqs";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import { parseAsStringEnum, useQueryState } from 'nuqs'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 const VerificationErrorToast = () => {
-  const [error] = useQueryState(
-    "error",
-    parseAsStringEnum(["token_expired", "invalid_token"])
-  );
+  const [error] = useQueryState('error', parseAsStringEnum(['token_expired', 'invalid_token']))
 
   useEffect(() => {
-    if (error === "token_expired") {
-      toast.error("Email verification url expired");
+    if (error === 'token_expired') {
+      toast.error('Email verification url expired')
     }
-    if (error === "invalid_token") {
-      toast.error("Verification invalid");
+    if (error === 'invalid_token') {
+      toast.error('Verification invalid')
     }
-  }, [error]);
+  }, [error])
 
-  return <></>;
-};
+  return <></>
+}
 
-export default VerificationErrorToast;
+export default VerificationErrorToast

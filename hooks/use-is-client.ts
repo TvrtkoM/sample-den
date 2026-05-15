@@ -1,5 +1,9 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from 'react'
 
 export function useIsClient() {
-  return useSyncExternalStore(() => () => { }, () => true, () => false)
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
 }

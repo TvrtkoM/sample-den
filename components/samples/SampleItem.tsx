@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import { SamplesPageQueryResult } from "@/generated/groq/sanity-types";
-import { useIsInCart, useToggleCartItem } from "@/hooks/use-cart";
-import { formatSecondsDuration } from "@/lib/utils";
-import { ShoppingCart } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import SamplePlayer from "./SamplePlayer";
+import { SamplesPageQueryResult } from '@/generated/groq/sanity-types'
+import { useIsInCart, useToggleCartItem } from '@/hooks/use-cart'
+import { formatSecondsDuration } from '@/lib/utils'
+import { ShoppingCart } from 'lucide-react'
+import { useState } from 'react'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import SamplePlayer from './SamplePlayer'
 
 type SampleItemProps = {
-  sample: SamplesPageQueryResult["samples"][number];
-};
+  sample: SamplesPageQueryResult['samples'][number]
+}
 
 export default function SampleItem({ sample }: SampleItemProps) {
-  const [duration, setDuration] = useState(0);
-  const toggleCartItem = useToggleCartItem();
-  const isInCart = useIsInCart(sample._id);
-  const toggleButtonLabel = isInCart ? "Remove from cart" : "Add to cart";
+  const [duration, setDuration] = useState(0)
+  const toggleCartItem = useToggleCartItem()
+  const isInCart = useIsInCart(sample._id)
+  const toggleButtonLabel = isInCart ? 'Remove from cart' : 'Add to cart'
 
   return (
     <li className="card-shadow-sm h-64 justify-between">
@@ -31,10 +31,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
 
       {sample.highResFile?.mp3Url && (
         <div className="card-section bg-gray-100">
-          <SamplePlayer
-            src={sample.highResFile.mp3Url}
-            onReady={(duration) => setDuration(duration)}
-          />
+          <SamplePlayer src={sample.highResFile.mp3Url} onReady={(duration) => setDuration(duration)} />
         </div>
       )}
 
@@ -57,5 +54,5 @@ export default function SampleItem({ sample }: SampleItemProps) {
         </Button>
       </div>
     </li>
-  );
+  )
 }

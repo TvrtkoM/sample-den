@@ -1,7 +1,7 @@
-import AppNavButtons from "@/components/AppNavButtons";
-import PrivateGuard from "@/components/auth/PrivateGuard";
-import Link from "next/link";
-import { ReactNode } from "react";
+import AppNavButtons from '@/components/AppNavButtons'
+import PrivateGuard from '@/components/auth/PrivateGuard'
+import Link from 'next/link'
+import { ReactNode } from 'react'
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
   return (
@@ -20,5 +20,5 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
       </header>
       <main className="container py-6">{children}</main>
     </PrivateGuard>
-  );
+  )
 }
