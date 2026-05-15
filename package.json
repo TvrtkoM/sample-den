@@ -9,7 +9,8 @@
     "lint": "eslint",
     "cli:clean-assets:dry-run": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets --include-drafts --dry-run",
     "cli:clean-assets": "ts-node -P cli-tools/tsconfig.json cli-tools/cli.ts clean-assets --include-drafts",
-    "email:dev": "email dev"
+    "email:dev": "email dev",
+    "prettier": "prettier --write"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",
@@ -57,6 +58,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.0.1",
+    "prettier": "^3.8.3",
     "prisma": "^7.8.0",
     "react-email": "6.1.1",
     "tailwindcss": "^4",
