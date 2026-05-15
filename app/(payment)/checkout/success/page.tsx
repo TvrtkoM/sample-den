@@ -29,7 +29,7 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
           library.
         </p>
         <Button asChild>
-          <Link href="/library">Go to Library</Link>
+          <Link href="/profile/library">Go to Library</Link>
         </Button>
       </div>
       <p className="mt-3">

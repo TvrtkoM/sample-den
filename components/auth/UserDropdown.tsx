@@ -35,25 +35,26 @@ const DropdownMenuSignedIn = ({ username }: { username: string }) => {
   const queryClient = useQueryClient();
 
   return (
-    <DropdownMenuContent>
-      <DropdownMenuLabel>Hello {username}</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem
-        onClick={async () => {
-          //router.refresh();
-          //await revalidateAuthRoutes();
-          queryClient.setQueryData(["cart"], { items: [] });
-          //router.prefetch("/sign-in");
-          await signOut();
-
-          // this fixes bug in which after sign out we need to
-          // trigger sign-in button twice to open sign-in form
-          window.location.reload();
-        }}
-      >
-        Sign out
-      </DropdownMenuItem>
-    </DropdownMenuContent>
+    <div className="flex items-center">
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Hello {username}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/profile">Profile</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={async () => {
+            queryClient.setQueryData(["cart"], { items: [] });
+            await signOut();
+            // this fixes bug in which after sign out we need to
+            // trigger sign-in button twice to open sign-in form
+            window.location.reload();
+          }}
+        >
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </div>
   );
 };
 

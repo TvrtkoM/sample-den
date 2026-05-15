@@ -53,3 +53,12 @@ export const samplesPriceSumByIdsQuery = defineQuery(`
   "totalPrice": math::sum(${samplesByIdsFragment}.priceUsd)
 }
 `);
+
+export const sampleDownloadByIdQuery = defineQuery(`
+*[_type == "sample" && _id == $id][0]{
+  highResFile {
+    s3Key,
+    fileName
+  }
+}
+`);

@@ -190,7 +190,7 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes = Sample | HighResFile | Slug | Category | MediaTag | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ../sample-den/groq/samples.ts
+// Source: ../sample-den-ui/groq/samples.ts
 // Variable: samplesPageQuery
 // Query: {  "samples": *[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)]    | order(_createdAt desc)    [$offset...$end]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }},  "totalCount": count(*[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)])}
 export type SamplesPageQueryResult = {
@@ -233,6 +233,14 @@ export type SamplesByIdsQueryResult = {
 export type SamplesPriceSumByIdsQueryResult = {
   totalPrice: number;
 };
+// Variable: sampleDownloadByIdQuery
+// Query: *[_type == "sample" && _id == $id][0]{  highResFile {    s3Key,    fileName  }}
+export type SampleDownloadByIdQueryResult = {
+  highResFile: {
+    s3Key: string | null;
+    fileName: string | null;
+  } | null;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
@@ -241,5 +249,6 @@ declare module "@sanity/client" {
     "\n{\n  \"samples\": \n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n": SamplesPageQueryResult;
     "\n{\n  \"samples\": \n*[_type == \"sample\" && _id in $ids]\n\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n\n}\n": SamplesByIdsQueryResult;
     "\n{\n  \"totalPrice\": math::sum(\n*[_type == \"sample\" && _id in $ids]\n.priceUsd)\n}\n": SamplesPriceSumByIdsQueryResult;
+    "\n*[_type == \"sample\" && _id == $id][0]{\n  highResFile {\n    s3Key,\n    fileName\n  }\n}\n": SampleDownloadByIdQueryResult;
   }
 }
