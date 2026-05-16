@@ -1,6 +1,6 @@
 'use client'
 
-import SampleActionButton from '@/components/samples/SampleActionButton'
+import SampleDownloadButton from '@/components/samples/SampleDownloadButton'
 import SamplePlayer from '@/components/samples/SamplePlayer'
 import { Badge } from '@/components/ui/badge'
 import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
@@ -59,7 +59,7 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
       </div>
 
       <div className="card-section">
-        <SampleActionButton state="download" sampleId={purchase.sampleId} purchaseId={purchase.id} />
+        <SampleDownloadButton purchaseId={purchase.id} />
       </div>
     </section>
   )

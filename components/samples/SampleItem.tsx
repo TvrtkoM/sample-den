@@ -6,7 +6,8 @@ import type { SampleActionState } from '@/lib/types'
 import { formatSecondsDuration } from '@/lib/utils'
 import { useState } from 'react'
 import { Badge } from '../ui/badge'
-import SampleActionButton from './SampleActionButton'
+import SampleCartToggleButton from './SampleCartToggleButton'
+import SampleDownloadButton from './SampleDownloadButton'
 import SamplePlayer from './SamplePlayer'
 
 type SampleItemProps = {
@@ -46,7 +47,10 @@ export default function SampleItem({ sample, purchaseId }: SampleItemProps) {
       </div>
 
       <div className="card-section">
-        <SampleActionButton state={actionState} sampleId={sample._id} purchaseId={purchaseId} />
+        {(actionState === 'buy' || actionState === 'in-cart') && (
+          <SampleCartToggleButton state={actionState} sampleId={sample._id} />
+        )}
+        {actionState === 'download' && <SampleDownloadButton purchaseId={purchaseId} />}
       </div>
     </li>
   )
