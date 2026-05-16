@@ -1,6 +1,9 @@
 import VerifyEmail from '@/components/auth/VerifyEmail'
+import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = { title: 'Verify Email' }
 
 export default async function VerifyPage() {
   const cookieStore = await cookies()

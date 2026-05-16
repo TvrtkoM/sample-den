@@ -4,7 +4,10 @@ import { GridContainer } from '@/components/ui/grid-container'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = { title: 'Library' }
 
 export default async function LibraryPage() {
   const session = await getSession()

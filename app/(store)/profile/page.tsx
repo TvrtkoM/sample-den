@@ -1,5 +1,8 @@
 import { Button } from '@/components/ui/button'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = { title: 'Profile' }
 
 export default function ProfilePage() {
   return (

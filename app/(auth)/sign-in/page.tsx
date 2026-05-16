@@ -2,7 +2,10 @@ import PublicGuard from '@/components/auth/PublicGuard'
 import SignInForm from '@/components/auth/SignInForm'
 import { BackButton } from '@/components/ui/back-button'
 import { Button } from '@/components/ui/button'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = { title: 'Sign In' }
 
 export default async function SignInPage() {
   return (

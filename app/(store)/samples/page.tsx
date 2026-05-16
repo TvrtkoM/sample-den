@@ -8,6 +8,9 @@ import { getQueryClient } from '@/lib/get-query-client'
 import { loadSamplesSearchParams } from '@/lib/search-params/loaders'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { cacheLife } from 'next/cache'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Samples' }
 
 type SearchParams = {
   page?: string

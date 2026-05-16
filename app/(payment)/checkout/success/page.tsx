@@ -1,7 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { stripe } from '@/lib/stripe/server'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = { title: 'Payment Successful' }
 
 type Props = {
   searchParams: Promise<{ session_id?: string }>

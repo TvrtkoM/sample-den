@@ -16,7 +16,10 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Sample Den',
+  title: {
+    default: 'Sample Den',
+    template: 'Sample Den | %s',
+  },
   description: 'All the wierd audio you could wish for',
 }
 
