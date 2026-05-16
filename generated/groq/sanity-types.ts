@@ -14,241 +14,261 @@
 
 // Source: schema.json
 export type Sample = {
-  _id: string;
-  _type: "sample";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  description?: string;
-  priceUsd?: number;
+  _id: string
+  _type: 'sample'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  slug?: Slug
+  description?: string
+  priceUsd?: number
   categories?: Array<{
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    _key: string;
-    [internalGroqTypeReferenceTo]?: "category";
-  }>;
-  highResFile?: HighResFile;
+    _ref: string
+    _type: 'reference'
+    _weak?: boolean
+    _key: string
+    [internalGroqTypeReferenceTo]?: 'category'
+  }>
+  highResFile?: HighResFile
   previewFile?: {
     asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-    };
-    media?: unknown;
-    _type: "file";
-  };
-};
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+    }
+    media?: unknown
+    _type: 'file'
+  }
+}
 
 export type HighResFile = {
-  _type: "highResFile";
-  fileName?: string;
-  s3Key?: string;
-  mp3AssetId?: string;
-  mp3Url?: string;
-};
+  _type: 'highResFile'
+  fileName?: string
+  s3Key?: string
+  mp3AssetId?: string
+  mp3Url?: string
+}
 
 export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
+  _type: 'slug'
+  current?: string
+  source?: string
+}
 
 export type Category = {
-  _id: string;
-  _type: "category";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-};
+  _id: string
+  _type: 'category'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  slug?: Slug
+}
 
 export type MediaTag = {
-  _id: string;
-  _type: "media.tag";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: Slug;
-};
+  _id: string
+  _type: 'media.tag'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: Slug
+}
 
 export type SanityImagePaletteSwatch = {
-  _type: "sanity.imagePaletteSwatch";
-  background?: string;
-  foreground?: string;
-  population?: number;
-  title?: string;
-};
+  _type: 'sanity.imagePaletteSwatch'
+  background?: string
+  foreground?: string
+  population?: number
+  title?: string
+}
 
 export type SanityImagePalette = {
-  _type: "sanity.imagePalette";
-  darkMuted?: SanityImagePaletteSwatch;
-  lightVibrant?: SanityImagePaletteSwatch;
-  darkVibrant?: SanityImagePaletteSwatch;
-  vibrant?: SanityImagePaletteSwatch;
-  dominant?: SanityImagePaletteSwatch;
-  lightMuted?: SanityImagePaletteSwatch;
-  muted?: SanityImagePaletteSwatch;
-};
+  _type: 'sanity.imagePalette'
+  darkMuted?: SanityImagePaletteSwatch
+  lightVibrant?: SanityImagePaletteSwatch
+  darkVibrant?: SanityImagePaletteSwatch
+  vibrant?: SanityImagePaletteSwatch
+  dominant?: SanityImagePaletteSwatch
+  lightMuted?: SanityImagePaletteSwatch
+  muted?: SanityImagePaletteSwatch
+}
 
 export type SanityImageDimensions = {
-  _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
-};
+  _type: 'sanity.imageDimensions'
+  height?: number
+  width?: number
+  aspectRatio?: number
+}
 
 export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
+  _type: 'sanity.imageMetadata'
+  location?: Geopoint
+  dimensions?: SanityImageDimensions
+  palette?: SanityImagePalette
+  lqip?: string
+  blurHash?: string
+  hasAlpha?: boolean
+  isOpaque?: boolean
+}
 
 export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
+  _type: 'sanity.imageHotspot'
+  x?: number
+  y?: number
+  height?: number
+  width?: number
+}
 
 export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
+  _type: 'sanity.imageCrop'
+  top?: number
+  bottom?: number
+  left?: number
+  right?: number
+}
 
 export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
+  _id: string
+  _type: 'sanity.fileAsset'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  originalFilename?: string
+  label?: string
+  title?: string
+  description?: string
+  altText?: string
+  sha1hash?: string
+  extension?: string
+  mimeType?: string
+  size?: number
+  assetId?: string
+  uploadId?: string
+  path?: string
+  url?: string
+  source?: SanityAssetSourceData
+}
 
 export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
+  _type: 'sanity.assetSourceData'
+  name?: string
+  id?: string
+  url?: string
+}
 
 export type SanityImageAsset = {
-  _id: string;
-  _type: "sanity.imageAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  metadata?: SanityImageMetadata;
-  source?: SanityAssetSourceData;
-};
+  _id: string
+  _type: 'sanity.imageAsset'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  originalFilename?: string
+  label?: string
+  title?: string
+  description?: string
+  altText?: string
+  sha1hash?: string
+  extension?: string
+  mimeType?: string
+  size?: number
+  assetId?: string
+  uploadId?: string
+  path?: string
+  url?: string
+  metadata?: SanityImageMetadata
+  source?: SanityAssetSourceData
+}
 
 export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
+  _type: 'geopoint'
+  lat?: number
+  lng?: number
+  alt?: number
+}
 
-export type AllSanitySchemaTypes = Sample | HighResFile | Slug | Category | MediaTag | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
-export declare const internalGroqTypeReferenceTo: unique symbol;
+export type AllSanitySchemaTypes =
+  | Sample
+  | HighResFile
+  | Slug
+  | Category
+  | MediaTag
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint
+export declare const internalGroqTypeReferenceTo: unique symbol
 // Source: ../sample-den-ui/groq/samples.ts
 // Variable: samplesPageQuery
 // Query: {  "samples": *[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)]    | order(_createdAt desc)    [$offset...$end]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }},  "totalCount": count(*[_type == "sample" && (    !defined($search) ||    $search == "" ||    title match $search ||    description match $search ||    categories[]->title match $search)])}
 export type SamplesPageQueryResult = {
   samples: Array<{
-    _id: string;
-    title: string | null;
-    description: string | null;
-    slug: Slug | null;
+    _id: string
+    title: string | null
+    description: string | null
+    slug: Slug | null
     highResFile: {
-      mp3Url: string | null;
-    } | null;
-    priceUsd: number | null;
+      mp3Url: string | null
+    } | null
+    priceUsd: number | null
     categories: Array<{
-      title: string | null;
-      slug: Slug | null;
-    }> | null;
-  }>;
-  totalCount: number;
-};
+      title: string | null
+      slug: Slug | null
+    }> | null
+  }>
+  totalCount: number
+}
 // Variable: samplesByIdsQuery
 // Query: {  "samples": *[_type == "sample" && _id in $ids]    {  _id,  title,  description,  slug,  highResFile {    mp3Url  },  priceUsd,  categories[]->{    title,    slug  }}}
 export type SamplesByIdsQueryResult = {
   samples: Array<{
-    _id: string;
-    title: string | null;
-    description: string | null;
-    slug: Slug | null;
+    _id: string
+    title: string | null
+    description: string | null
+    slug: Slug | null
     highResFile: {
-      mp3Url: string | null;
-    } | null;
-    priceUsd: number | null;
+      mp3Url: string | null
+    } | null
+    priceUsd: number | null
     categories: Array<{
-      title: string | null;
-      slug: Slug | null;
-    }> | null;
-  }>;
-};
+      title: string | null
+      slug: Slug | null
+    }> | null
+  }>
+}
+// Variable: samplesForCheckoutByIdsQuery
+// Query: {  "samples": *[_type == "sample" && _id in $ids]  {    _id,    title,    priceUsd,    highResFile {      s3Key,      fileName    }  }}
+export type SamplesForCheckoutByIdsQueryResult = {
+  samples: Array<{
+    _id: string
+    title: string | null
+    priceUsd: number | null
+    highResFile: {
+      s3Key: string | null
+      fileName: string | null
+    } | null
+  }>
+}
 // Variable: samplesPriceSumByIdsQuery
 // Query: {  "totalPrice": math::sum(*[_type == "sample" && _id in $ids].priceUsd)}
 export type SamplesPriceSumByIdsQueryResult = {
-  totalPrice: number;
-};
-// Variable: sampleDownloadByIdQuery
-// Query: *[_type == "sample" && _id == $id][0]{  highResFile {    s3Key,    fileName  }}
-export type SampleDownloadByIdQueryResult = {
-  highResFile: {
-    s3Key: string | null;
-    fileName: string | null;
-  } | null;
-} | null;
+  totalPrice: number
+}
 
 // Query TypeMap
-import "@sanity/client";
-declare module "@sanity/client" {
+import '@sanity/client'
+declare module '@sanity/client' {
   interface SanityQueries {
-    "\n{\n  \"samples\": \n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  \"totalCount\": count(\n*[_type == \"sample\" && (\n    !defined($search) ||\n    $search == \"\" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n": SamplesPageQueryResult;
-    "\n{\n  \"samples\": \n*[_type == \"sample\" && _id in $ids]\n\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n\n}\n": SamplesByIdsQueryResult;
-    "\n{\n  \"totalPrice\": math::sum(\n*[_type == \"sample\" && _id in $ids]\n.priceUsd)\n}\n": SamplesPriceSumByIdsQueryResult;
-    "\n*[_type == \"sample\" && _id == $id][0]{\n  highResFile {\n    s3Key,\n    fileName\n  }\n}\n": SampleDownloadByIdQueryResult;
+    '\n{\n  "samples": \n*[_type == "sample" && (\n    !defined($search) ||\n    $search == "" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n\n    | order(_createdAt desc)\n    [$offset...$end]\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n,\n  "totalCount": count(\n*[_type == "sample" && (\n    !defined($search) ||\n    $search == "" ||\n    title match $search ||\n    description match $search ||\n    categories[]->title match $search\n)]\n)\n}\n': SamplesPageQueryResult
+    '\n{\n  "samples": \n*[_type == "sample" && _id in $ids]\n\n    \n{\n  _id,\n  title,\n  description,\n  slug,\n  highResFile {\n    mp3Url\n  },\n  priceUsd,\n  categories[]->{\n    title,\n    slug\n  }\n}\n\n}\n': SamplesByIdsQueryResult
+    '\n{\n  "samples": \n*[_type == "sample" && _id in $ids]\n\n  {\n    _id,\n    title,\n    priceUsd,\n    highResFile {\n      s3Key,\n      fileName\n    }\n  }\n}\n': SamplesForCheckoutByIdsQueryResult
+    '\n{\n  "totalPrice": math::sum(\n*[_type == "sample" && _id in $ids]\n.priceUsd)\n}\n': SamplesPriceSumByIdsQueryResult
   }
 }

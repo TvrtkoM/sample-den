@@ -97,7 +97,9 @@ model Purchase {
   id              String    @id @default(cuid())
   userId          String
   sampleId        String
-  stripeSessionId String?
+  s3Key           String
+  filename        String
+  stripeSessionId String
   priceInCents    Int
 
   createdAt DateTime  @default(now())

@@ -1,6 +1,12 @@
 // safe to use on both server and client
 // - only fetching data
-import { sampleDownloadByIdQuery, samplesByIdsQuery, samplesPageQuery, samplesPriceSumByIdsQuery } from '@/groq/samples'
+// exception: fetchSamplesForCheckoutByIds exposes s3Key and is server-only
+import {
+  samplesByIdsQuery,
+  samplesForCheckoutByIdsQuery,
+  samplesPageQuery,
+  samplesPriceSumByIdsQuery,
+} from '@/groq/samples'
 import { defaultSamplesPageSize } from '../constants'
 import { sanityClient } from '../sanity-client'
 
@@ -35,7 +41,12 @@ export async function fetchSamplesPriceSumByIds(ids: string[]) {
   return res.totalPrice
 }
 
-// shouldn't be used on client so s3Key is not exposed
-export async function fetchSampleDownloadById(id: string) {
-  return await sanityClient.fetch(sampleDownloadByIdQuery, { id })
+// server-only: exposes s3Key, must not be used on client
+export async function fetchSamplesForCheckoutByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return []
+  }
+  const res = await sanityClient.fetch(samplesForCheckoutByIdsQuery, { ids })
+
+  return res.samples
 }

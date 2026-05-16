@@ -1,5 +1,5 @@
 import { getCartSamplesIds } from '@/lib/db'
-import { fetchSamplesByIds } from '@/lib/fetch/samples'
+import { fetchSamplesForCheckoutByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import { stripe } from '@/lib/stripe/server'
 import { headers } from 'next/headers'
@@ -18,7 +18,11 @@ export async function POST() {
       return NextResponse.json({ error: 'Your cart is empty' }, { status: 400 })
     }
 
-    const samples = await fetchSamplesByIds(cartSamplesIds)
+    const samples = await fetchSamplesForCheckoutByIds(cartSamplesIds)
+
+    if (samples.some((sample) => !sample.highResFile?.s3Key)) {
+      return NextResponse.json({ error: 'One or more items are not available for purchase' }, { status: 400 })
+    }
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = samples.map((sample) => ({
       price_data: {
@@ -27,6 +31,8 @@ export async function POST() {
           name: sample.title ?? 'Untitled Sample',
           metadata: {
             sampleId: sample._id,
+            s3Key: sample.highResFile!.s3Key!,
+            fileName: sample.highResFile!.fileName ?? '',
           },
         },
         unit_amount: Math.round((sample.priceUsd ?? 0) * 100),

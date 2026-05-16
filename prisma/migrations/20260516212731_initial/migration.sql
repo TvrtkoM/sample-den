@@ -7,6 +7,7 @@ CREATE TABLE "user" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isAnonymous" BOOLEAN DEFAULT false,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -56,6 +57,38 @@ CREATE TABLE "verification" (
     CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "cart_item" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "sampleId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "cart_item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "purchase" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "sampleId" TEXT NOT NULL,
+    "s3Key" TEXT NOT NULL,
+    "filename" TEXT NOT NULL,
+    "stripeSessionId" TEXT NOT NULL,
+    "priceInCents" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "purchase_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "processed-webhook-event" (
+    "stripeEventId" TEXT NOT NULL,
+    "processedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "processed-webhook-event_pkey" PRIMARY KEY ("stripeEventId")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -71,8 +104,23 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 -- CreateIndex
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
+-- CreateIndex
+CREATE INDEX "cart_item_userId_idx" ON "cart_item"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cart_item_userId_sampleId_key" ON "cart_item"("userId", "sampleId");
+
+-- CreateIndex
+CREATE INDEX "purchase_userId_idx" ON "purchase"("userId");
+
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "purchase" ADD CONSTRAINT "purchase_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

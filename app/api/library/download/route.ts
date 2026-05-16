@@ -1,4 +1,3 @@
-import { fetchSampleDownloadById } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
@@ -29,9 +28,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const sample = await fetchSampleDownloadById(purchase.sampleId)
-  const s3Key = sample?.highResFile?.s3Key
-  const fileName = sample?.highResFile?.fileName
+  const s3Key = purchase.s3Key
+  const fileName = purchase.filename
 
   if (!s3Key) {
     return NextResponse.json({ error: 'Download not available for this sample' }, { status: 410 })

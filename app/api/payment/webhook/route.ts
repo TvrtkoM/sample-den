@@ -75,6 +75,8 @@ export async function POST(req: Request) {
         return {
           userId,
           sampleId: product.metadata.sampleId,
+          s3Key: product.metadata.s3Key,
+          filename: product.metadata.fileName,
           priceInCents: item.amount_total,
           stripeSessionId: session.id,
           createdAt: now,
