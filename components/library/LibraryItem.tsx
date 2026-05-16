@@ -1,14 +1,11 @@
 'use client'
 
+import SampleActionButton from '@/components/samples/SampleActionButton'
 import SamplePlayer from '@/components/samples/SamplePlayer'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
 import { priceFromCents } from '@/lib/utils'
 import { format } from 'date-fns'
-import { Download } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
 
 type LibraryPurchase = {
   id: string
@@ -25,26 +22,6 @@ type LibraryItemProps = {
 }
 
 export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
-  const [isDownloading, setIsDownloading] = useState(false)
-
-  const handleDownload = async () => {
-    setIsDownloading(true)
-    try {
-      const res = await fetch(`/api/library/download?purchaseId=${encodeURIComponent(purchase.id)}`)
-      if (!res.ok) {
-        const { error } = await res.json().catch(() => ({ error: null }))
-        toast.error(error ?? 'Could not prepare download')
-        return
-      }
-      const { url } = (await res.json()) as { url: string }
-      window.location.href = url
-    } catch {
-      toast.error('Could not prepare download')
-    } finally {
-      setIsDownloading(false)
-    }
-  }
-
   if (!sample) {
     return (
       <div className="card-shadow-sm">
@@ -82,9 +59,7 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
       </div>
 
       <div className="card-section">
-        <Button className="w-full" onClick={handleDownload} disabled={isDownloading}>
-          <Download /> {isDownloading ? 'Preparing...' : 'Download .wav'}
-        </Button>
+        <SampleActionButton state="download" sampleId={purchase.sampleId} purchaseId={purchase.id} />
       </div>
     </section>
   )

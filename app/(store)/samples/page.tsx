@@ -2,7 +2,7 @@ import { ClearSignUpVerificationCookie } from '@/components/auth/ClearSignUpVeri
 import VerificationErrorToast from '@/components/auth/VerificationErrorToast'
 import SampleSearch from '@/components/samples/SampleSearch'
 import SamplesList from '@/components/samples/SamplesList'
-import { getCartSamplesIds } from '@/lib/db'
+import { getCartSamplesIds, getPurchasesMap } from '@/lib/db'
 import { fetchSamplesPage } from '@/lib/fetch/samples'
 import { getQueryClient } from '@/lib/get-query-client'
 import { loadSamplesSearchParams } from '@/lib/search-params/loaders'
@@ -30,14 +30,20 @@ async function PageImpl({ searchParams }: { searchParams: Promise<SearchParams> 
 
   const queryClient = getQueryClient()
 
+  const samplesResult = await fetchSamplesPageCached(page, search)
+  const sampleIds = samplesResult.samples.map((s) => s._id)
+  const sortedIds = [...sampleIds].sort()
+
+  queryClient.setQueryData(['samples', search, page], samplesResult)
+
   await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ['samples', search, page],
-      queryFn: () => fetchSamplesPageCached(page, search),
-    }),
     queryClient.prefetchQuery({
       queryKey: ['cart'],
       queryFn: async () => ({ items: await getCartSamplesIds() }),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['purchases', sortedIds],
+      queryFn: async () => ({ purchases: await getPurchasesMap(sampleIds) }),
     }),
   ])
 

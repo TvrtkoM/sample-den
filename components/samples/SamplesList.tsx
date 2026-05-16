@@ -1,6 +1,7 @@
 'use client'
 
 import { SamplesPageQueryResult } from '@/generated/groq/sanity-types'
+import { usePurchases } from '@/hooks/use-purchases'
 import { useSamplesPage } from '@/hooks/use-samples'
 import { defaultSamplesPageSize } from '@/lib/constants'
 import { useSamplesSearchParams } from '@/lib/search-params/hooks'
@@ -10,13 +11,16 @@ import { Skeleton } from '../ui/skeleton'
 import SampleItem from './SampleItem'
 
 const SamplesList = ({ samples }: { samples: SamplesPageQueryResult['samples'][number][] }) => {
+  const sampleIds = samples.map((s) => s._id)
+  const { data } = usePurchases(sampleIds)
+
   if (samples.length === 0) {
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>
   }
   return (
     <GridContainer className="py-8 sm:py-12">
       {samples.map((sample) => (
-        <SampleItem key={sample._id} sample={sample} />
+        <SampleItem key={sample._id} sample={sample} purchaseId={data?.purchases[sample._id] ?? null} />
       ))}
     </GridContainer>
   )

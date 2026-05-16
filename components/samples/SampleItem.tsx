@@ -1,23 +1,24 @@
 'use client'
 
 import { SamplesPageQueryResult } from '@/generated/groq/sanity-types'
-import { useIsInCart, useToggleCartItem } from '@/hooks/use-cart'
+import { useIsInCart } from '@/hooks/use-cart'
+import type { SampleActionState } from '@/lib/types'
 import { formatSecondsDuration } from '@/lib/utils'
-import { ShoppingCart } from 'lucide-react'
 import { useState } from 'react'
 import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import SampleActionButton from './SampleActionButton'
 import SamplePlayer from './SamplePlayer'
 
 type SampleItemProps = {
   sample: SamplesPageQueryResult['samples'][number]
+  purchaseId: string | null
 }
 
-export default function SampleItem({ sample }: SampleItemProps) {
+export default function SampleItem({ sample, purchaseId }: SampleItemProps) {
   const [duration, setDuration] = useState(0)
-  const toggleCartItem = useToggleCartItem()
   const isInCart = useIsInCart(sample._id)
-  const toggleButtonLabel = isInCart ? 'Remove from cart' : 'Add to cart'
+
+  const actionState: SampleActionState = purchaseId ? 'download' : isInCart ? 'in-cart' : 'buy'
 
   return (
     <li className="card-shadow-sm h-64 justify-between">
@@ -45,13 +46,7 @@ export default function SampleItem({ sample }: SampleItemProps) {
       </div>
 
       <div className="card-section">
-        <Button
-          className="w-full data-[in-cart=true]:bg-accent data-[in-cart=true]:text-foreground data-[in-cart=true]:border-foreground data-[in-cart=true]:border"
-          data-in-cart={isInCart}
-          onClick={() => toggleCartItem(sample._id)}
-        >
-          <ShoppingCart /> {toggleButtonLabel}
-        </Button>
+        <SampleActionButton state={actionState} sampleId={sample._id} purchaseId={purchaseId} />
       </div>
     </li>
   )
