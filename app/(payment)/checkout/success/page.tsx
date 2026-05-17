@@ -27,7 +27,9 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
     <main className="container-small">
       <h1 className="mb-8 mt-4">Payment Successful</h1>
       <div className="card-shadow-sm p-6">
-        <p className="mb-4">Thank you for your purchase! Your samples are now available in your library.</p>
+        <p className="mb-4">
+          Thank you for your purchase! Samples will be available for download in your library shortly.
+        </p>
         <Button asChild>
           <Link href="/profile/library">Go to Library</Link>
         </Button>
