@@ -9,6 +9,12 @@ import { migrateCart } from './db'
 import { sendEmail } from './email/send-email'
 import { getAnonymousUserIdCookie } from './utils'
 
+/**
+ * Server-side better-auth instance configured with Prisma, email/password,
+ * email verification, Google OAuth, and the anonymous user plugin.
+ * After sign-in or email verification, anonymous cart items are migrated to
+ * the authenticated user.
+ */
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',

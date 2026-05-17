@@ -1,9 +1,10 @@
-// safe to use on both client and server
-// - doesn't contain any secret env varialble - used only for fetching
-// - stateless
-// - recreating multiple instances has no real cost
 import { createClient } from '@sanity/client'
 
+/**
+ * Pre-configured Sanity client for GROQ queries.
+ * Safe to use on both server and client — contains no secret credentials.
+ * CDN delivery is enabled for optimal read performance.
+ */
 export const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,

@@ -4,6 +4,7 @@ import UserDropdown from './auth/UserDropdown'
 import CartIcon from './cart/CartIcon'
 import { NavButton } from './ui/nav-button'
 
+/** Top-level navigation bar containing the Store link, user dropdown, and cart icon. */
 const AppNavButtons = () => {
   const pathname = usePathname()
   return (

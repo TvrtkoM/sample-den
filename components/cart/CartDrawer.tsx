@@ -96,6 +96,11 @@ const CartDrawerImpl = () => {
   )
 }
 
+/**
+ * Slide-in cart drawer with a backdrop overlay.
+ * Renders only on the client to avoid hydration issues with persisted open state.
+ * On mobile it slides up from the bottom; on desktop it slides in from the right.
+ */
 const CartDrawer = () => {
   return (
     <ClientOnly>

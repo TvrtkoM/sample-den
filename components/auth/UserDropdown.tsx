@@ -58,6 +58,10 @@ const DropdownMenuSignedIn = ({ username }: { username: string }) => {
   )
 }
 
+/**
+ * Avatar button that opens a dropdown with sign-in/register links for guests
+ * or profile/sign-out links for authenticated users.
+ */
 const UserDropdown = () => {
   const { session } = useSession()
 

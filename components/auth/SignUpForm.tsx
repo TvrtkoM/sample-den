@@ -157,6 +157,12 @@ function SignUpFormImpl() {
   )
 }
 
+/**
+ * Email/password registration form with Google OAuth as a secondary option.
+ * On successful sign-up sets the verification cookie and redirects to `/verify`.
+ * Re-mounts on pathname changes (via `key`) to reset form state when navigating
+ * between auth pages.
+ */
 export default function SignUpForm() {
   const pathname = usePathname()
 

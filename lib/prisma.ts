@@ -2,6 +2,12 @@ import 'server-only'
 import { PrismaClient } from '@/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
+/**
+ * Singleton Prisma client for server-side database access.
+ * Re-uses the existing instance attached to `global` in development so that
+ * hot-module replacement does not exhaust the connection pool.
+ */
+
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
 })

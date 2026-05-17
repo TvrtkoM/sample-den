@@ -5,6 +5,7 @@ import { Button } from '../ui/button'
 import { startTransition } from 'react'
 import { useHideCart } from '@/lib/store/cart'
 
+/** Header bar of the cart drawer displaying the title and a close button. */
 const CartHeader = () => {
   const hideCart = useHideCart()
   return (

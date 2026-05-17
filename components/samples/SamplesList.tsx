@@ -67,4 +67,9 @@ const SamplesListContainer = () => {
   )
 }
 
+/**
+ * Top-level container for the samples listing page.
+ * Reads `page` and `search` from the URL, fetches the matching samples, and
+ * renders either a skeleton grid while loading or the paginated sample cards.
+ */
 export default SamplesListContainer

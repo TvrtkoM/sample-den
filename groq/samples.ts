@@ -27,6 +27,11 @@ const samplesSearchFragment = `
 )]
 `
 
+/**
+ * GROQ query for the paginated samples listing page.
+ * Accepts `$offset`, `$end`, and `$search` parameters.
+ * Returns `{ samples, totalCount }`.
+ */
 export const samplesPageQuery = defineQuery(`
 {
   "samples": ${samplesSearchFragment}
@@ -41,6 +46,10 @@ const samplesByIdsFragment = `
 *[_type == "sample" && _id in $ids]
 `
 
+/**
+ * GROQ query that fetches full sample documents for a given list of ids.
+ * Accepts `$ids: string[]`. Returns `{ samples }`.
+ */
 export const samplesByIdsQuery = defineQuery(`
 {
   "samples": ${samplesByIdsFragment}
@@ -48,6 +57,11 @@ export const samplesByIdsQuery = defineQuery(`
 }
 `)
 
+/**
+ * GROQ query that fetches minimal checkout data for a given list of ids.
+ * Includes `s3Key` and `fileName` — **server-only**, must not be used on the client.
+ * Accepts `$ids: string[]`. Returns `{ samples }`.
+ */
 export const samplesForCheckoutByIdsQuery = defineQuery(`
 {
   "samples": ${samplesByIdsFragment}
@@ -63,6 +77,10 @@ export const samplesForCheckoutByIdsQuery = defineQuery(`
 }
 `)
 
+/**
+ * GROQ query that sums `priceUsd` for a given list of sample ids.
+ * Accepts `$ids: string[]`. Returns `{ totalPrice }`.
+ */
 export const samplesPriceSumByIdsQuery = defineQuery(`
 {
   "totalPrice": math::sum(${samplesByIdsFragment}.priceUsd)

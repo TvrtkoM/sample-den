@@ -9,14 +9,27 @@ import {
   PaginationPrevious,
 } from './ui/pagination'
 
+/**
+ * Props for {@link AppPagination}.
+ */
 type AppPaginationProps = {
+  /** The currently active 1-based page number. */
   pageNum: number
+  /** Total number of pages available. */
   totalPages: number
+  /** Called with the new page number when the user navigates. */
   onPageChange: (page: number) => void
+  /** Optional function that builds an href for each page link (enables native browser navigation). */
   buildHref?: (page: number) => string
+  /** Additional CSS classes applied to the pagination root element. */
   className?: string
 }
 
+/**
+ * Generic pagination control that renders previous/next buttons and individual
+ * page number links. Prevents default anchor navigation and delegates page
+ * changes to `onPageChange`.
+ */
 const AppPagination: React.FC<AppPaginationProps> = ({
   pageNum,
   totalPages,

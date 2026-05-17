@@ -20,8 +20,20 @@ const sampleActionButtonVariants = cva('w-full transition-all', {
   },
 })
 
-type SampleDownloadButtonProps = { purchaseId: string | null; className?: string }
+/**
+ * Props for {@link SampleDownloadButton}.
+ */
+type SampleDownloadButtonProps = {
+  /** Purchase id used to request a pre-signed download URL. `null` disables the button. */
+  purchaseId: string | null
+  /** Additional CSS classes to merge onto the button. */
+  className?: string
+}
 
+/**
+ * Button that fetches a pre-signed S3 download URL for the purchased WAV file
+ * and redirects the browser to it. Shows a "Preparing…" label while the request is in flight.
+ */
 export default function SampleDownloadButton({ purchaseId, className }: SampleDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -58,4 +70,5 @@ export default function SampleDownloadButton({ purchaseId, className }: SampleDo
   )
 }
 
+/** CVA variant map for sample action buttons (buy / in-cart / download states). */
 export { sampleActionButtonVariants }

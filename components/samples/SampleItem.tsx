@@ -10,11 +10,21 @@ import SampleCartToggleButton from './SampleCartToggleButton'
 import SampleDownloadButton from './SampleDownloadButton'
 import SamplePlayer from './SamplePlayer'
 
+/**
+ * Props for {@link SampleItem}.
+ */
 type SampleItemProps = {
+  /** Sanity sample document for this card. */
   sample: SamplesPageQueryResult['samples'][number]
+  /** Purchase id when the current user owns this sample, or `null` otherwise. */
   purchaseId: string | null
 }
 
+/**
+ * Fixed-height card for a single sample in the store listing.
+ * Displays categories, an audio player, title, duration, price, and an
+ * action button whose appearance depends on the current {@link SampleActionState}.
+ */
 export default function SampleItem({ sample, purchaseId }: SampleItemProps) {
   const [duration, setDuration] = useState(0)
   const isInCart = useIsInCart(sample._id)

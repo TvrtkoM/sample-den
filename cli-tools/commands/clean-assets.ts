@@ -26,18 +26,31 @@ const s3 = new S3Client({
 
 const BUCKET = process.env.AWS_PRIVATE_BUCKET!
 
+/**
+ * Minimal Sanity sample document shape used by the clean-assets command.
+ */
 type SampleDoc = {
+  /** High-resolution WAV file metadata. */
   highResFile?: {
+    /** S3 object key for the WAV file. */
     s3Key?: string
+    /** Sanity file asset id for the MP3. */
     mp3AssetId?: string
   }
+  /** Preview MP3 file asset reference. */
   previewFile?: {
     asset?: {
+      /** Sanity asset document reference id. */
       _ref?: string
     }
   }
 }
 
+/**
+ * Commander command that removes orphaned WAV files from S3 and unused MP3
+ * file assets from Sanity. Supports `--dry-run`, `--force`, and
+ * `--include-drafts` flags.
+ */
 const cleanAssets = new Command('clean-assets')
   .description('Remove unused WAV files from S3 and unused MP3 file assets from Sanity')
   .option('--dry-run', 'Show what would be deleted, but perform no deletions')

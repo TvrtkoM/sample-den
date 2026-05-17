@@ -4,13 +4,23 @@ import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
 import { LoaderCircle, ShoppingCart } from 'lucide-react'
 import CartItem from './CartItem'
 
+/**
+ * Props for {@link Cart}.
+ */
 type CartProps = {
+  /** Samples to render as cart items for the current page. */
   samples: SamplesByIdsQueryResult['samples']
+  /** `true` while transitioning between pages so a spinner is shown instead of stale items. */
   isChangingPage: boolean
+  /** `true` during the initial data fetch. */
   isLoading: boolean
+  /** `true` when the cart contains no items at all. */
   isCartEmpty: boolean
 }
 
+/**
+ * Renders the scrollable cart item list, or an appropriate loading/empty state.
+ */
 export default function Cart({ samples, isChangingPage, isLoading, isCartEmpty }: CartProps) {
   if (isLoading || isChangingPage) {
     return (

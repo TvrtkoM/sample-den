@@ -8,10 +8,18 @@ import { useState } from 'react'
 import SamplePlayer from '../samples/SamplePlayer'
 import { Button } from '../ui/button'
 
+/**
+ * Props for {@link CartItem}.
+ */
 type CartItemProps = {
+  /** The sample document to display in the cart. */
   sample: SamplesByIdsQueryResult['samples'][number]
 }
 
+/**
+ * Single item row inside the cart drawer, showing the sample title, price, audio
+ * player, and a remove button. Dims itself while removal is in progress.
+ */
 export default function CartItem({ sample }: CartItemProps) {
   const [isRemoving, setIsRemoving] = useState(false)
   const removeFromCart = useRemoveFromCartInCart({

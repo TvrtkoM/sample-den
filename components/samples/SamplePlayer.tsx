@@ -5,11 +5,20 @@ import { Pause, Play } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Button } from '../ui/button'
 
+/**
+ * Props for {@link SamplePlayer}.
+ */
 type SamplePlayerProps = {
+  /** URL of the audio file to load into the waveform player. */
   src: string
+  /** Called once the waveform has decoded and the duration is known. */
   onReady?: (duration: number) => void
 }
 
+/**
+ * Waveform audio player powered by WaveSurfer.js.
+ * Renders a play/pause button alongside an interactive waveform visualisation.
+ */
 const SamplePlayer = ({ src, onReady }: SamplePlayerProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
 

@@ -7,6 +7,11 @@ import { Input } from '../ui/input'
 import { useDebouncedCallback } from '@mantine/hooks'
 import { useState } from 'react'
 
+/**
+ * Search input for the samples listing that debounces keystrokes and writes the
+ * search term to the URL query string. A "Clear" button resets both the input
+ * and the URL params.
+ */
 const SampleSearch = () => {
   const [{ search }, setSearchParams] = useSamplesSearchParams()
   const [searchVal, setSearchVal] = useState(search)

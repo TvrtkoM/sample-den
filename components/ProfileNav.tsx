@@ -8,6 +8,7 @@ const links = [
   { href: '/profile/library', label: 'Library' },
 ] as const
 
+/** Secondary navigation for the profile section with links to Overview and Library. */
 export default function ProfileNav() {
   const pathname = usePathname()
 

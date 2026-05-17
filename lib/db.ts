@@ -3,6 +3,12 @@ import { getSession } from './getSession'
 import prisma from './prisma'
 import type { PurchasesMap } from './types'
 
+/**
+ * Returns the ordered list of sample ids currently in the authenticated user's cart.
+ * Returns an empty array when there is no active session.
+ *
+ * @returns Ordered array of sample ids from the cart, oldest first.
+ */
 export async function getCartSamplesIds() {
   const session = await getSession()
 
@@ -45,7 +51,14 @@ export async function getPurchasesMap(sampleIds: string[]): Promise<PurchasesMap
   }, {})
 }
 
-// migrate cart from anonymous user to user, but only if there are items in cart of fromUserId
+/**
+ * Transfers all cart items from an anonymous user to a newly authenticated user.
+ * Deletes any existing items in the destination user's cart before transferring,
+ * and is a no-op when the source cart is empty.
+ *
+ * @param fromUserId - The anonymous user whose cart items are transferred.
+ * @param toUserId - The authenticated user who receives the cart items.
+ */
 export async function migrateCart(fromUserId: string, toUserId: string) {
   const items = await prisma.cartItem.findMany({ where: { userId: fromUserId } })
   if (items.length === 0) {

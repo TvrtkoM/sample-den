@@ -7,20 +7,38 @@ import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
 import { priceFromCents } from '@/lib/utils'
 import { format } from 'date-fns'
 
+/**
+ * Purchase record as returned by the library API.
+ */
 type LibraryPurchase = {
+  /** Purchase database id. */
   id: string
+  /** Amount paid in cents. */
   priceInCents: number
+  /** ISO timestamp of when the purchase was created. */
   createdAt: string
+  /** Sanity document id of the purchased sample. */
   sampleId: string
 }
 
+/** Sanity sample document shape used in the library view. */
 type LibrarySample = SamplesByIdsQueryResult['samples'][number]
 
+/**
+ * Props for {@link LibraryItem}.
+ */
 type LibraryItemProps = {
+  /** Purchase record from the database. */
   purchase: LibraryPurchase
+  /** Matching Sanity sample document, or `null` if the sample has been deleted from the CMS. */
   sample: LibrarySample | null
 }
 
+/**
+ * Displays a purchased sample in the user's library with its audio player,
+ * categories, purchase date, price, and a download button.
+ * Shows a graceful fallback card when the sample is no longer available in the CMS.
+ */
 export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
   if (!sample) {
     return (

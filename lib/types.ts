@@ -1,5 +1,6 @@
 import { auth } from './auth'
 
+/** Inferred better-auth session type, derived from the app's auth configuration. */
 export type Session = typeof auth.$Infer.Session
 
 /**

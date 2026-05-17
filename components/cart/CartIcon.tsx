@@ -7,6 +7,9 @@ import { Button } from '../ui/button'
 import { startTransition } from 'react'
 import { useShowCart } from '@/lib/store/cart'
 
+/**
+ * Navigation button that opens the cart drawer and displays the current item count as a badge.
+ */
 export default function CartIcon() {
   const cartSize = useCartSize()
   const showCart = useShowCart()

@@ -18,12 +18,18 @@ const sampleCartToggleButtonVariants = cva('w-full transition-all', {
   },
 })
 
+/**
+ * Button that adds a sample to the cart when `state` is `"buy"` or removes it
+ * when `state` is `"in-cart"`. Styling changes with each state via CVA variants.
+ */
 export default function SampleCartToggleButton({
   state,
   sampleId,
   className,
 }: {
+  /** Sanity document id of the sample being toggled. */
   sampleId: string
+  /** Additional CSS classes to merge onto the button. */
   className?: string
 } & VariantProps<typeof sampleCartToggleButtonVariants>) {
   const addToCart = useAddToCart()

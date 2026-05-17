@@ -6,6 +6,11 @@ import { getAnonymousUserIdCookie } from '@/lib/utils'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 
+/**
+ * Button that initiates a Google OAuth sign-in flow.
+ * Stores the anonymous user id in a cookie before redirecting so the cart can
+ * be migrated after the OAuth callback completes.
+ */
 export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false)
   const { session } = useSession()

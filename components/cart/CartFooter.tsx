@@ -65,12 +65,22 @@ const CartTotalPrice = () => {
   )
 }
 
+/**
+ * Props for {@link CartFooter}.
+ */
 type CartFooterProps = {
+  /** The currently active cart page number. */
   pageNum: number
+  /** Called with the new page number when the user changes pages. */
   setPageNum: (pageNum: number) => void
+  /** Total number of cart pages. */
   totalPages: number
 }
 
+/**
+ * Footer section of the cart drawer showing pagination, total price, and the checkout button.
+ * Pagination is hidden when there is only a single page of items.
+ */
 const CartFooter = ({ pageNum, setPageNum, totalPages }: CartFooterProps) => {
   return (
     <div className="flex flex-col">

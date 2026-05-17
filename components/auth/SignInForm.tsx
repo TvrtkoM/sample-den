@@ -121,6 +121,11 @@ function SignInFormImpl() {
   )
 }
 
+/**
+ * Email/password sign-in form with Google OAuth as a secondary option.
+ * Re-mounts on pathname changes (via `key`) to reset form state when navigating
+ * between auth pages.
+ */
 export default function SignInForm() {
   const pathname = usePathname()
 

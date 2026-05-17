@@ -15,6 +15,11 @@ const makeQueryClient = () => {
 
 let browserQueryClient: QueryClient | null = null
 
+/**
+ * Returns the shared React Query `QueryClient` instance.
+ * On the server a fresh client is created per request; on the browser a single
+ * instance is reused for the lifetime of the tab.
+ */
 export const getQueryClient = () => {
   if (environmentManager.isServer()) {
     return makeQueryClient()

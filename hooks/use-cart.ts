@@ -7,6 +7,7 @@ import { defaultCartPageSize } from '@/lib/constants'
 
 const CART_QUERY_KEY = ['cart']
 
+/** Fetches the raw cart data (list of sample ids) and keeps it fresh on window focus. */
 export function useCart() {
   return useQuery({
     queryKey: CART_QUERY_KEY,
@@ -15,16 +16,19 @@ export function useCart() {
   })
 }
 
+/** Returns the flat array of sample ids currently in the cart. */
 export function useCartIds() {
   const { data } = useCart()
   return data?.items ?? []
 }
 
+/** Returns the total number of distinct samples in the cart. */
 export function useCartTotalCount() {
   const allIds = useCartIds()
   return allIds.length
 }
 
+/** Fetches and returns the summed price of all samples in the cart. */
 export function useCartTotalPrice() {
   const ids = useCartIds()
 
@@ -38,6 +42,13 @@ export function useCartTotalPrice() {
   })
 }
 
+/**
+ * Fetches the full sample documents for the given page of the cart.
+ * Returns samples in cart insertion order.
+ *
+ * @param pageNumber - 1-based page index within the cart.
+ * @defaultValue pageNumber `1`
+ */
 export function useCartItems(pageNumber = 1) {
   const allIds = useCartIds()
 
@@ -58,16 +69,26 @@ export function useCartItems(pageNumber = 1) {
   })
 }
 
+/** Returns the number of items currently in the cart. */
 export function useCartSize() {
   const items = useCartIds()
   return items.length
 }
 
+/**
+ * Returns `true` when the given sample is currently in the cart.
+ *
+ * @param sampleId - Sanity document id of the sample to check.
+ */
 export function useIsInCart(sampleId: string) {
   const items = useCartIds()
   return items.includes(sampleId)
 }
 
+/**
+ * Returns a mutation that adds a sample to the cart with optimistic updates.
+ * Automatically creates an anonymous session when the user is not signed in.
+ */
 export function useAddToCart() {
   const queryClient = useQueryClient()
   const { session } = useSession()
@@ -101,6 +122,10 @@ export function useAddToCart() {
   })
 }
 
+/**
+ * Returns a mutation that removes a sample from the cart with optimistic updates.
+ * Intended for use outside the cart drawer (e.g. the store listing toggle button).
+ */
 export function useRemoveFromCart() {
   const queryClient = useQueryClient()
 
@@ -127,10 +152,21 @@ export function useRemoveFromCart() {
   })
 }
 
+/**
+ * Options for {@link useRemoveFromCartInCart}.
+ */
 type UseRemoveFromCartInCartOptions = {
+  /** Called immediately before the optimistic cart update, useful for triggering removal animations. */
   onRemoveStart?: () => void
 }
 
+/**
+ * Returns a mutation that removes a sample from the cart for use inside the
+ * cart drawer. Calls `onRemoveStart` before applying the optimistic update so
+ * the item can animate out before disappearing.
+ *
+ * @param options - Callback hooks for the removal lifecycle.
+ */
 export function useRemoveFromCartInCart({ onRemoveStart }: UseRemoveFromCartInCartOptions) {
   const queryClient = useQueryClient()
   return useMutation({
@@ -152,6 +188,12 @@ export function useRemoveFromCartInCart({ onRemoveStart }: UseRemoveFromCartInCa
   })
 }
 
+/**
+ * Returns a callback that adds or removes a sample from the cart depending on
+ * whether it is currently present.
+ *
+ * @returns `(sampleId: string) => void` toggle function.
+ */
 export function useToggleCartItem() {
   const { data } = useCart()
   const addToCart = useAddToCart()
