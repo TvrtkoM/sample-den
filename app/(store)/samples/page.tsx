@@ -2,13 +2,13 @@ import { ClearSignUpVerificationCookie } from '@/components/auth/ClearSignUpVeri
 import VerificationErrorToast from '@/components/auth/VerificationErrorToast'
 import SampleSearch from '@/components/samples/SampleSearch'
 import SamplesList from '@/components/samples/SamplesList'
-import { getCartSamplesIds, getPurchasesMap } from '@/lib/db'
+import { getPurchasesMap } from '@/lib/db'
 import { fetchSamplesPage } from '@/lib/fetch/samples'
 import { getQueryClient } from '@/lib/get-query-client'
 import { loadSamplesSearchParams } from '@/lib/search-params/loaders'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { cacheLife } from 'next/cache'
 import type { Metadata } from 'next'
+import { cacheLife } from 'next/cache'
 
 export const metadata: Metadata = { title: 'Samples' }
 
@@ -36,16 +36,10 @@ async function PageImpl({ searchParams }: { searchParams: Promise<SearchParams> 
 
   queryClient.setQueryData(['samples', search, page], samplesResult)
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ['cart'],
-      queryFn: async () => ({ items: await getCartSamplesIds() }),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ['purchases', sortedIds],
-      queryFn: async () => ({ purchases: await getPurchasesMap(sampleIds) }),
-    }),
-  ])
+  await queryClient.prefetchQuery({
+    queryKey: ['purchases', sortedIds],
+    queryFn: async () => ({ purchases: await getPurchasesMap(sampleIds) }),
+  })
 
   const dehydrated = dehydrate(queryClient)
 
