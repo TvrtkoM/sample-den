@@ -6,6 +6,7 @@ import { useSamplesPage } from '@/hooks/use-samples'
 import { defaultSamplesPageSize } from '@/lib/constants'
 import { useSamplesSearchParams } from '@/lib/search-params/hooks'
 import AppPagination from '../AppPagination'
+import ErrorState from '../error/ErrorState'
 import { GridContainer } from '../ui/grid-container'
 import { Skeleton } from '../ui/skeleton'
 import SampleItem from './SampleItem'
@@ -39,7 +40,12 @@ const SamplesSkeleton = () => {
 const SamplesListContainer = () => {
   const [searchParams, setSearchParams] = useSamplesSearchParams()
   const { search, page } = searchParams
-  const { data: { samples, totalCount } = { totalCount: 0, samples: [] }, isFetching } = useSamplesPage(page, search)
+  const {
+    data: { samples, totalCount } = { totalCount: 0, samples: [] },
+    isFetching,
+    isError,
+    refetch,
+  } = useSamplesPage(page, search)
 
   const totalPages = totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize)
 
@@ -54,7 +60,18 @@ const SamplesListContainer = () => {
 
   return (
     <>
-      {isFetching ? <SamplesSkeleton /> : <SamplesList samples={samples} />}
+      {isError && !isFetching ? (
+        <ErrorState
+          title="Failed to load samples"
+          message="There was a problem loading the samples. Please try again."
+          onRetry={() => refetch()}
+          className="container my-8"
+        />
+      ) : isFetching ? (
+        <SamplesSkeleton />
+      ) : (
+        <SamplesList samples={samples} />
+      )}
       {totalPages > 0 && (
         <AppPagination
           buildHref={(page) => `/samples?page=${page}${search ? `&search=${search}` : ''}`}

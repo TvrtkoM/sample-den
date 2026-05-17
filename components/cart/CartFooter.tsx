@@ -7,6 +7,7 @@ import { Button } from '../ui/button'
 import { useSession } from '@/hooks/use-session'
 import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
+import { toast } from 'sonner'
 
 const CheckoutButton = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -16,13 +17,22 @@ const CheckoutButton = () => {
 
   const checkout = async () => {
     setIsSubmitting(true)
-    const res = await fetch('/api/payment/checkout-sessions', {
-      method: 'POST',
-    })
-    const response: { url: string } = await res.json()
-    const url = response.url
-    window.location.href = url
-    //setIsSubmitting(false);
+    try {
+      const res = await fetch('/api/payment/checkout-sessions', {
+        method: 'POST',
+      })
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: null }))
+        toast.error(error ?? 'Checkout failed')
+        setIsSubmitting(false)
+        return
+      }
+      const { url }: { url: string } = await res.json()
+      window.location.href = url
+    } catch {
+      toast.error('Checkout failed')
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -52,10 +62,14 @@ const CheckoutButton = () => {
 }
 
 const CartTotalPrice = () => {
-  const { data: totalPrice, isLoading } = useCartTotalPrice()
+  const { data: totalPrice, isLoading, isError } = useCartTotalPrice()
 
   if (isLoading) {
     return <Skeleton className="h-7 w-1/2 mx-auto" />
+  }
+
+  if (isError) {
+    return <p className="text-sm text-red-600 mx-auto h-7 flex items-center">Couldn&apos;t load total</p>
   }
 
   return (

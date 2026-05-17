@@ -39,6 +39,7 @@ export function useCartTotalPrice() {
     queryKey: ['cartTotalPrice', sortedIds],
     queryFn: () => fetchSamplesPriceSumByIds(sortedIds),
     placeholderData: keepPreviousData,
+    meta: { suppressToast: true },
   })
 }
 
@@ -125,6 +126,7 @@ export function useAddToCart() {
 /**
  * Returns a mutation that removes a sample from the cart with optimistic updates.
  * Intended for use outside the cart drawer (e.g. the store listing toggle button).
+ * Rolls back the optimistic update on failure.
  */
 export function useRemoveFromCart() {
   const queryClient = useQueryClient()
@@ -164,6 +166,7 @@ type UseRemoveFromCartInCartOptions = {
  * Returns a mutation that removes a sample from the cart for use inside the
  * cart drawer. Calls `onRemoveStart` before applying the optimistic update so
  * the item can animate out before disappearing.
+ * Rolls back the optimistic update on failure.
  *
  * @param options - Callback hooks for the removal lifecycle.
  */

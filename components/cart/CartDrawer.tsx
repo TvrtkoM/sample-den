@@ -6,6 +6,7 @@ import { useCartPageNum, useCartVisible, useHideCart, useSetCartPageNum } from '
 import { useMediaQuery } from '@mantine/hooks'
 import { startTransition, useDeferredValue, useEffect, useState, ViewTransition } from 'react'
 import ClientOnly from '../ClientOnly'
+import ErrorState from '../error/ErrorState'
 import Cart from './Cart'
 import CartFooter from './CartFooter'
 import CartHeader from './CartHeader'
@@ -14,7 +15,7 @@ const CartDrawerContent = () => {
   const pageNum = useCartPageNum()
   const setPageNum = useSetCartPageNum()
   const [prevPageNum, setPrevPageNum] = useState(pageNum)
-  const { data, isLoading, isFetching } = useCartItems(pageNum)
+  const { data, isLoading, isFetching, isError, refetch } = useCartItems(pageNum)
   const totalCount = useCartTotalCount()
 
   const totalPages = Math.ceil(totalCount / defaultCartPageSize)
@@ -35,12 +36,23 @@ const CartDrawerContent = () => {
   return (
     <>
       <CartHeader />
-      <Cart
-        samples={samples}
-        isChangingPage={isChangingPage}
-        isLoading={isLoading}
-        isCartEmpty={samples.length === 0 && totalPages === 0}
-      />
+      {isError && !isLoading ? (
+        <div className="flex flex-1 items-center justify-center p-6">
+          <ErrorState
+            title="Failed to load cart"
+            message="There was a problem loading your cart items."
+            onRetry={() => refetch()}
+            className="w-full"
+          />
+        </div>
+      ) : (
+        <Cart
+          samples={samples}
+          isChangingPage={isChangingPage}
+          isLoading={isLoading}
+          isCartEmpty={samples.length === 0 && totalPages === 0}
+        />
+      )}
       {totalCount && (
         <CartFooter
           pageNum={pageNum}

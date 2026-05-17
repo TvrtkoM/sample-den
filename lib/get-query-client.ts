@@ -1,7 +1,34 @@
-import { defaultShouldDehydrateQuery, environmentManager, QueryClient } from '@tanstack/react-query'
+import {
+  defaultShouldDehydrateQuery,
+  environmentManager,
+  MutationCache,
+  QueryCache,
+  QueryClient,
+} from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 const makeQueryClient = () => {
   return new QueryClient({
+    mutationCache: new MutationCache({
+      onError: (error, _vars, _onMutateResult, mutation) => {
+        if (typeof window !== 'undefined') {
+          if (mutation.meta?.suppressToast) {
+            return
+          }
+          toast.error(error.message || 'Something went wrong')
+        }
+      },
+    }),
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        if (typeof window !== 'undefined') {
+          if (query.meta?.suppressToast) {
+            return
+          }
+          toast.error(error.message || 'Something went wrong while loading data')
+        }
+      },
+    }),
     defaultOptions: {
       dehydrate: {
         shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
