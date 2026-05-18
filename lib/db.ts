@@ -16,8 +16,18 @@ export async function getCartSamplesIds() {
     return []
   }
 
+  return getCartSamplesIdsForUser(session.user.id)
+}
+
+/**
+ * Returns the ordered list of sample IDs in the cart for a given user.
+ *
+ * @param userId - The ID of the user whose cart items are fetched.
+ * @returns An array of sample IDs ordered by the time they were added to the cart.
+ */
+export async function getCartSamplesIdsForUser(userId: string) {
   const cartItems = await prisma.cartItem.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     orderBy: { createdAt: 'asc' },
   })
 

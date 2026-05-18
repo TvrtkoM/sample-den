@@ -1,65 +1,9 @@
 'use client'
 
 import { useCartTotalPrice } from '@/hooks/use-cart'
-import { useState } from 'react'
 import AppPagination from '../AppPagination'
-import { Button } from '../ui/button'
-import { useSession } from '@/hooks/use-session'
-import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
-import { toast } from 'sonner'
-
-const CheckoutButton = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { session } = useSession()
-
-  const isAuth = session != null && session.user.isAnonymous === false
-
-  const checkout = async () => {
-    setIsSubmitting(true)
-    try {
-      const res = await fetch('/api/payment/checkout-sessions', {
-        method: 'POST',
-      })
-      if (!res.ok) {
-        const { error } = await res.json().catch(() => ({ error: null }))
-        toast.error(error ?? 'Checkout failed')
-        setIsSubmitting(false)
-        return
-      }
-      const { url }: { url: string } = await res.json()
-      window.location.href = url
-    } catch {
-      toast.error('Checkout failed')
-      setIsSubmitting(false)
-    }
-  }
-
-  return (
-    <>
-      {isAuth ? (
-        <Button size={'lg'} className="text-xl" onClick={() => checkout()} disabled={isSubmitting}>
-          Checkout
-        </Button>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <Button size={'lg'} className="text-xl" asChild>
-            <Link
-              href={{
-                pathname: '/sign-in',
-              }}
-            >
-              Sign in to continue
-            </Link>
-          </Button>
-          <Button size={'lg'} className="text-xl" asChild>
-            <Link href={{ pathname: '/sign-up' }}>Create an account</Link>
-          </Button>
-        </div>
-      )}
-    </>
-  )
-}
+import CheckoutButton from './CheckoutButton'
 
 const CartTotalPrice = () => {
   const { data: totalPrice, isLoading, isError } = useCartTotalPrice()
