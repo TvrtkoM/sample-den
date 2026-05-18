@@ -11,7 +11,7 @@ const PublicGuard = async ({ children }: { children: ReactNode }) => {
   await connection()
   const sessionData_ = await getSession()
 
-  if (!sessionData_ || sessionData_?.user.isAnonymous === true) {
+  if (!sessionData_ || sessionData_.user.isAnonymous === true) {
     return children
   }
 
