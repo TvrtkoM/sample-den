@@ -1,25 +1,11 @@
 'use client'
 
 import { Mail } from 'lucide-react'
-import { useEffect } from 'react'
 
 /**
  * Page component displayed after sign-up prompting the user to check their inbox.
- * Replaces the browser history entry so the back button reloads rather than
- * navigating back to the sign-up form.
  */
 export default function VerifyEmail() {
-  useEffect(() => {
-    history.pushState(null, '', window.location.pathname)
-
-    const onPopState = () => {
-      window.location.reload()
-    }
-
-    window.addEventListener('popstate', onPopState)
-
-    return () => window.removeEventListener('popstate', onPopState)
-  }, [])
   return (
     <>
       <h1 className="mb-8 mt-4">Verify Your Email</h1>
