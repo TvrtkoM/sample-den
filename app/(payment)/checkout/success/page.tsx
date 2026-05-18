@@ -31,7 +31,7 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
           Thank you for your purchase! Samples will be available for download in your library shortly.
         </p>
         <Button asChild>
-          <Link href="/profile/library">Go to Library</Link>
+          <Link href="/profile/library?cartOpen=false">Go to Library</Link>
         </Button>
       </div>
       <p className="mt-3">
