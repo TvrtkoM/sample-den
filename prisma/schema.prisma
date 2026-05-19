@@ -114,5 +114,5 @@ model ProcessedWebhookEvent {
   stripeEventId String    @id
   processedAt   DateTime  @default(now())
 
-  @@map("processed-webhook-event")
+  @@map("processed_webhook_event")
 }
