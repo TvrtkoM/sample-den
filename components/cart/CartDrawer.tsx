@@ -2,8 +2,9 @@
 
 import { useCartItems, useCartTotalCount } from '@/hooks/use-cart'
 import { defaultCartPageSize } from '@/lib/constants'
-import { useCartPageNum, useCartVisible, useHideCart, useSetCartPageNum } from '@/lib/store/cart'
+import { useCartPageNum, useCartVisible, useSetCartPageNum, useSetCartVisible } from '@/lib/store/cart'
 import { useMediaQuery } from '@mantine/hooks'
+import { parseAsBoolean, useQueryState } from 'nuqs'
 import { startTransition, useDeferredValue, useEffect, useState, ViewTransition } from 'react'
 import ClientOnly from '../ClientOnly'
 import ErrorState from '../error/ErrorState'
@@ -68,9 +69,16 @@ const CartDrawerContent = () => {
 }
 
 const CartDrawerImpl = () => {
-  const cartOpen = useCartVisible()
-  const hideCart = useHideCart()
+  const [cartOpenQueryParam] = useQueryState('cartOpen', parseAsBoolean)
+  const cartOpenStorage = useCartVisible()
+  const setCartVisible = useSetCartVisible()
   const isMobile = useMediaQuery('(max-width: 768px)')
+
+  const cartOpen = cartOpenQueryParam ?? cartOpenStorage
+
+  if (cartOpenQueryParam != null && cartOpenQueryParam !== cartOpenStorage) {
+    setCartVisible(cartOpenQueryParam)
+  }
 
   const deferredCartOpen = useDeferredValue(cartOpen)
 
@@ -93,7 +101,7 @@ const CartDrawerImpl = () => {
             className="fixed inset-0 z-9 bg-black/40"
             onClick={() => {
               startTransition(() => {
-                hideCart()
+                setCartVisible(false)
               })
             }}
           ></div>

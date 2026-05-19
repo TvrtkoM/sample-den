@@ -1,13 +1,13 @@
 'use client'
 
+import { useSetCartVisible } from '@/lib/store/cart'
 import { X } from 'lucide-react'
-import { Button } from '../ui/button'
 import { startTransition } from 'react'
-import { useHideCart } from '@/lib/store/cart'
+import { Button } from '../ui/button'
 
 /** Header bar of the cart drawer displaying the title and a close button. */
 const CartHeader = () => {
-  const hideCart = useHideCart()
+  const setCartVisible = useSetCartVisible()
   return (
     <div className="flex items-center justify-between p-4 border-b">
       <h2 className="text-lg font-semibold">Your Cart</h2>
@@ -16,7 +16,7 @@ const CartHeader = () => {
         size="icon"
         onClick={() => {
           startTransition(() => {
-            hideCart()
+            setCartVisible(false)
           })
         }}
       >

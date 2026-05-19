@@ -1,7 +1,6 @@
 import 'client-only'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { parseAsBoolean, useQueryState } from 'nuqs'
 
 const cartPageNumAtom = atom(1)
 
@@ -19,27 +18,18 @@ const cartVisibleAtom = atomWithStorage('showCart', false, undefined, { getOnIni
 
 /** Returns `true` when the cart drawer is currently visible. */
 export const useCartVisible = () => {
-  const [cartOpenQueryParam] = useQueryState('cartOpen', parseAsBoolean)
   const cartOpenFromStorage = useAtomValue(cartVisibleAtom)
-  return cartOpenQueryParam ?? cartOpenFromStorage
+  return cartOpenFromStorage
 }
 
-/** Returns a callback that closes the cart drawer. */
-export const useHideCart = () => {
+/**
+ * Returns a callback that sets the cart drawer's visibility.
+ *
+ * @returns A callback accepting `open` — `true` shows the cart drawer, `false` hides it.
+ */
+export const useSetCartVisible = () => {
   const setCartVisible = useSetAtom(cartVisibleAtom)
-  const [, setCartOpenQueryParam] = useQueryState('cartOpen', parseAsBoolean)
-  return () => {
-    setCartVisible(false)
-    setCartOpenQueryParam(null)
-  }
-}
-
-/** Returns a callback that opens the cart drawer. */
-export const useShowCart = () => {
-  const setCartVisible = useSetAtom(cartVisibleAtom)
-  const [, setCartOpenQueryParam] = useQueryState('cartOpen', parseAsBoolean)
-  return () => {
-    setCartVisible(true)
-    setCartOpenQueryParam(null)
+  return (open: boolean) => {
+    setCartVisible(open)
   }
 }
