@@ -112,18 +112,19 @@ enum PurchaseStatus {
   ACTIVE
   DISPUTED
   REFUNDED
-  MANUAL_REVOKED
+  REVOKED
 }
 
 model Purchase {
-  id                Int            @id @default(autoincrement())
-  userId            String
-  stripeSessionId   String         @unique
-  createdAt         DateTime       @default(now())
-  revokedAt         DateTime?
-  status            PurchaseStatus @default(ACTIVE)
-  checkoutIp        String
-  checkoutUserAgent String
+  id                    Int            @id @default(autoincrement())
+  userId                String
+  stripeSessionId       String         @unique
+  stripePaymentIntentId String?        @unique
+  createdAt             DateTime       @default(now())
+  revokedAt             DateTime?
+  status                PurchaseStatus @default(ACTIVE)
+  checkoutIp            String
+  checkoutUserAgent     String
 
   items PurchaseItem[]
 

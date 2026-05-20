@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "PurchaseStatus" AS ENUM ('ACTIVE', 'DISPUTED', 'REFUNDED', 'MANUAL_REVOKED');
+CREATE TYPE "PurchaseStatus" AS ENUM ('ACTIVE', 'DISPUTED', 'REFUNDED', 'REVOKED');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -88,6 +88,7 @@ CREATE TABLE "purchase" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "stripeSessionId" TEXT NOT NULL,
+    "stripePaymentIntentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "revokedAt" TIMESTAMP(3),
     "status" "PurchaseStatus" NOT NULL DEFAULT 'ACTIVE',
@@ -131,6 +132,9 @@ CREATE INDEX "purchase_item_purchaseId_idx" ON "purchase_item"("purchaseId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "purchase_stripeSessionId_key" ON "purchase"("stripeSessionId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "purchase_stripePaymentIntentId_key" ON "purchase"("stripePaymentIntentId");
 
 -- CreateIndex
 CREATE INDEX "purchase_userId_idx" ON "purchase"("userId");
