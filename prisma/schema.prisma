@@ -108,11 +108,22 @@ model PurchaseItem {
   @@map("purchase_item")
 }
 
+enum PurchaseStatus {
+  ACTIVE
+  DISPUTED
+  REFUNDED
+  MANUAL_REVOKED
+}
+
 model Purchase {
-  id              Int      @id @default(autoincrement())
-  userId          String
-  stripeSessionId String
-  createdAt       DateTime @default(now())
+  id                Int            @id @default(autoincrement())
+  userId            String
+  stripeSessionId   String         @unique
+  createdAt         DateTime       @default(now())
+  revokedAt         DateTime?
+  status            PurchaseStatus @default(ACTIVE)
+  checkoutIp        String
+  checkoutUserAgent String
 
   items PurchaseItem[]
 

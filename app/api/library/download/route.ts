@@ -21,8 +21,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing purchaseId' }, { status: 400 })
   }
 
+  const id = Number(purchaseId)
+  if (!Number.isInteger(id) || id < 1) {
+    return NextResponse.json({ error: 'Invalid purchaseId' }, { status: 400 })
+  }
+
   const purchase = await prisma.purchaseItem.findFirst({
-    where: { id: Number(purchaseId) },
+    where: { id, purchase: { userId: session.user.id, status: 'ACTIVE' } },
   })
   if (!purchase) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -30,10 +35,6 @@ export async function GET(req: NextRequest) {
 
   const s3Key = purchase.s3Key
   const fileName = purchase.filename
-
-  if (!s3Key) {
-    return NextResponse.json({ error: 'Download not available for this sample' }, { status: 410 })
-  }
 
   const command = new GetObjectCommand({
     Bucket: process.env.AWS_PRIVATE_BUCKET!,

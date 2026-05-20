@@ -2,15 +2,14 @@ import { getCartSamplesIdsForUser } from '@/lib/db'
 import { fetchSamplesForCheckoutByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import { stripe } from '@/lib/stripe/server'
-import { headers } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession()
-    if (!session || session.user.isAnonymous) {
-      return NextResponse.json({ error: 'You must be logged in to checkout' }, { status: 401 })
+    if (!session || session.user.isAnonymous || !session.user.emailVerified) {
+      return NextResponse.json(null, { status: 401 })
     }
 
     const cartSamplesIds = await getCartSamplesIdsForUser(session.user.id)
@@ -40,18 +39,23 @@ export async function POST(request: NextRequest) {
       quantity: 1,
     }))
 
-    const reqHeaders = await headers()
-    const origin = reqHeaders.get('origin') ?? ''
+    const origin = request.headers.get('origin') ?? ''
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? 'unknown'
+    const userAgent = request.headers.get('user-agent')?.slice(0, 500) ?? 'unknown'
 
     const { cancelPath } = (await request.json()) as { cancelPath?: string }
     const cancel_url = cancelPath ? `${origin}/${cancelPath}` : `${origin}/samples`
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',
+      payment_method_types: ['card'],
       customer_email: session.user.email,
       line_items: lineItems,
       metadata: {
         userId: session.user.id,
+        checkoutIp: ip,
+        checkoutUserAgent: userAgent,
       },
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url,

@@ -1,3 +1,4 @@
+import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import { stripe } from '@/lib/stripe/server'
 import { headers } from 'next/headers'
@@ -60,15 +61,18 @@ export async function POST(req: Request) {
       }
 
       const session = event.data.object
+
+      if (session.payment_status !== 'paid') {
+        return NextResponse.json({ received: true }, { status: 200 })
+      }
+
       const meta = session.metadata
-      if (!meta?.userId) {
-        console.error('Missing userId in checkout session:', session.id)
+      if (!meta?.userId || !meta?.checkoutIp || !meta?.checkoutUserAgent) {
+        console.error('Missing required metadata in checkout session:', session.id)
         return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
       }
-      const userId = meta.userId
 
       const lineItems = await getAllLineItems(session.id)
-      const now = new Date()
 
       const purchases = lineItems.map((item) => {
         const product = item.price?.product as Stripe.Product
@@ -82,14 +86,20 @@ export async function POST(req: Request) {
 
       const sampleIds = purchases.map((p) => p.sampleId)
 
+      const userId = meta.userId
+      const checkoutIp = meta.checkoutIp
+      const checkoutUserAgent = meta.checkoutUserAgent
+
       await prisma.$transaction(async (tx) => {
         await tx.processedWebhookEvent.create({
-          data: { stripeEventId: event.id, processedAt: now },
+          data: { stripeEventId: event.id },
         })
         await tx.purchase.create({
           data: {
             userId,
             stripeSessionId: session.id,
+            checkoutIp,
+            checkoutUserAgent,
             items: { create: purchases },
           },
         })
@@ -100,6 +110,10 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ received: true }, { status: 200 })
   } catch (err) {
+    // in case db transaction fails - purchase already recorded in case 2 concurrent events happen
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+      return NextResponse.json({ received: true }, { status: 200 })
+    }
     console.error('Webhook processing error:', err)
     return NextResponse.json({ error: 'Processing failed' }, { status: 500 })
   }
