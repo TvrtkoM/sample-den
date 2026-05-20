@@ -4,22 +4,14 @@ import SampleDownloadButton from '@/components/samples/SampleDownloadButton'
 import SamplePlayer from '@/components/samples/SamplePlayer'
 import { Badge } from '@/components/ui/badge'
 import { SamplesByIdsQueryResult } from '@/generated/groq/sanity-types'
+import { PurchaseItem } from '@/generated/prisma/client'
 import { priceFromCents } from '@/lib/utils'
 import { format } from 'date-fns'
 
 /**
- * Purchase record as returned by the library API.
+ * Purchase item record
  */
-type LibraryPurchase = {
-  /** Purchase database id. */
-  id: string
-  /** Amount paid in cents. */
-  priceInCents: number
-  /** ISO timestamp of when the purchase was created. */
-  createdAt: string
-  /** Sanity document id of the purchased sample. */
-  sampleId: string
-}
+type LibraryPurchase = Pick<PurchaseItem, 'id' | 'priceInCents' | 'sampleId'> & { createdAt: string }
 
 /** Sanity sample document shape used in the library view. */
 type LibrarySample = SamplesByIdsQueryResult['samples'][number]

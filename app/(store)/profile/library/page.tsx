@@ -12,8 +12,8 @@ export const metadata: Metadata = { title: 'Library' }
 export default async function LibraryPage() {
   const session = await getSession()
 
-  const purchases = await prisma.purchase.findMany({
-    where: { userId: session!.user.id },
+  const purchases = await prisma.purchaseItem.findMany({
+    where: { purchase: { userId: session!.user.id } },
     orderBy: { createdAt: 'desc' },
   })
 

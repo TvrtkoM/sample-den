@@ -73,25 +73,28 @@ export async function POST(req: Request) {
       const purchases = lineItems.map((item) => {
         const product = item.price?.product as Stripe.Product
         return {
-          userId,
           sampleId: product.metadata.sampleId,
           s3Key: product.metadata.s3Key,
           filename: product.metadata.fileName,
           priceInCents: item.amount_total,
-          stripeSessionId: session.id,
-          createdAt: now,
         }
       })
 
       const sampleIds = purchases.map((p) => p.sampleId)
 
-      await prisma.$transaction([
-        prisma.processedWebhookEvent.create({
+      await prisma.$transaction(async (tx) => {
+        await tx.processedWebhookEvent.create({
           data: { stripeEventId: event.id, processedAt: now },
-        }),
-        prisma.purchase.createMany({ data: purchases }),
-        prisma.cartItem.deleteMany({ where: { userId, sampleId: { in: sampleIds } } }),
-      ])
+        })
+        await tx.purchase.create({
+          data: {
+            userId,
+            stripeSessionId: session.id,
+            items: { create: purchases },
+          },
+        })
+        await tx.cartItem.deleteMany({ where: { userId, sampleId: { in: sampleIds } } })
+      })
 
       console.log(`Checkout completed for user ${userId}, cleared ${sampleIds.length} cart items`)
     }

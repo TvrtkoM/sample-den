@@ -59,7 +59,7 @@ CREATE TABLE "verification" (
 
 -- CreateTable
 CREATE TABLE "cart_item" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "sampleId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -68,25 +68,34 @@ CREATE TABLE "cart_item" (
 );
 
 -- CreateTable
-CREATE TABLE "purchase" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+CREATE TABLE "purchase_item" (
+    "id" SERIAL NOT NULL,
+    "purchaseId" INTEGER NOT NULL,
     "sampleId" TEXT NOT NULL,
     "s3Key" TEXT NOT NULL,
     "filename" TEXT NOT NULL,
-    "stripeSessionId" TEXT NOT NULL,
     "priceInCents" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "purchase_item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "purchase" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "stripeSessionId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "purchase_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "processed-webhook-event" (
+CREATE TABLE "processed_webhook_event" (
     "stripeEventId" TEXT NOT NULL,
     "processedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "processed-webhook-event_pkey" PRIMARY KEY ("stripeEventId")
+    CONSTRAINT "processed_webhook_event_pkey" PRIMARY KEY ("stripeEventId")
 );
 
 -- CreateIndex
@@ -111,6 +120,9 @@ CREATE INDEX "cart_item_userId_idx" ON "cart_item"("userId");
 CREATE UNIQUE INDEX "cart_item_userId_sampleId_key" ON "cart_item"("userId", "sampleId");
 
 -- CreateIndex
+CREATE INDEX "purchase_item_purchaseId_idx" ON "purchase_item"("purchaseId");
+
+-- CreateIndex
 CREATE INDEX "purchase_userId_idx" ON "purchase"("userId");
 
 -- AddForeignKey
@@ -121,6 +133,9 @@ ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "purchase_item" ADD CONSTRAINT "purchase_item_purchaseId_fkey" FOREIGN KEY ("purchaseId") REFERENCES "purchase"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "purchase" ADD CONSTRAINT "purchase_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

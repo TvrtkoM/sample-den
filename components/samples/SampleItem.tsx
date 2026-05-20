@@ -1,6 +1,7 @@
 'use client'
 
 import { SamplesPageQueryResult } from '@/generated/groq/sanity-types'
+import { PurchaseItem } from '@/generated/prisma/client'
 import { useIsInCart } from '@/hooks/use-cart'
 import type { SampleActionState } from '@/lib/types'
 import { formatSecondsDuration } from '@/lib/utils'
@@ -17,7 +18,7 @@ type SampleItemProps = {
   /** Sanity sample document for this card. */
   sample: SamplesPageQueryResult['samples'][number]
   /** Purchase id when the current user owns this sample, or `null` otherwise. */
-  purchaseId: string | null
+  purchaseId: PurchaseItem['id'] | null
 }
 
 /**
@@ -29,7 +30,7 @@ export default function SampleItem({ sample, purchaseId }: SampleItemProps) {
   const [duration, setDuration] = useState(0)
   const isInCart = useIsInCart(sample._id)
 
-  const actionState: SampleActionState = purchaseId ? 'download' : isInCart ? 'in-cart' : 'buy'
+  const actionState: SampleActionState = purchaseId != null ? 'download' : isInCart ? 'in-cart' : 'buy'
 
   return (
     <li className="card-shadow-sm h-64 justify-between">

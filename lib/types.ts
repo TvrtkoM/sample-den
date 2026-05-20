@@ -1,3 +1,4 @@
+import { PurchaseItem } from '@/generated/prisma/client'
 import { auth } from './auth'
 
 /** Inferred better-auth session type, derived from the app's auth configuration. */
@@ -21,4 +22,4 @@ export type SampleActionState = 'buy' | 'in-cart' | 'download'
  * (no key). A sample is "owned" if and only if its id is a key in this map,
  * so there are no `null` values to disambiguate.
  */
-export type PurchasesMap = Record<string, string>
+export type PurchasesMap = Record<string, PurchaseItem['id']>

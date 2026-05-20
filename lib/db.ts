@@ -50,8 +50,8 @@ export async function getPurchasesMap(sampleIds: string[]): Promise<PurchasesMap
     return {}
   }
 
-  const purchases = await prisma.purchase.findMany({
-    where: { userId: session.user.id, sampleId: { in: sampleIds } },
+  const purchases = await prisma.purchaseItem.findMany({
+    where: { purchase: { userId: session.user.id }, sampleId: { in: sampleIds } },
     select: { id: true, sampleId: true },
     orderBy: { createdAt: 'asc' },
   })

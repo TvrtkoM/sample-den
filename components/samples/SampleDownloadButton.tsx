@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { PurchaseItem } from '@/generated/prisma/client'
 import { cn } from '@/lib/utils'
 import { cva } from 'class-variance-authority'
 import { Download } from 'lucide-react'
@@ -25,7 +26,7 @@ const sampleActionButtonVariants = cva('w-full transition-all', {
  */
 type SampleDownloadButtonProps = {
   /** Purchase id used to request a pre-signed download URL. `null` disables the button. */
-  purchaseId: string | null
+  purchaseId: PurchaseItem['id'] | null
   /** Additional CSS classes to merge onto the button. */
   className?: string
 }
@@ -41,7 +42,7 @@ export default function SampleDownloadButton({ purchaseId, className }: SampleDo
     if (!purchaseId) return
     setIsDownloading(true)
     try {
-      const res = await fetch(`/api/library/download?purchaseId=${encodeURIComponent(purchaseId)}`)
+      const res = await fetch(`/api/library/download?purchaseId=${purchaseId}`)
       if (!res.ok) {
         const { error } = await res.json().catch(() => ({ error: null }))
         toast.error(error ?? 'Could not prepare download')

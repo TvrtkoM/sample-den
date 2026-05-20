@@ -81,7 +81,7 @@ model Verification {
 }
 
 model CartItem {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   userId    String
   sampleId  String
   createdAt DateTime @default(now())
@@ -93,16 +93,28 @@ model CartItem {
   @@map("cart_item")
 }
 
-model Purchase {
-  id              String    @id @default(cuid())
-  userId          String
-  sampleId        String
-  s3Key           String
-  filename        String
-  stripeSessionId String
-  priceInCents    Int
+model PurchaseItem {
+  id           Int      @id @default(autoincrement())
+  purchaseId   Int
+  sampleId     String
+  s3Key        String
+  filename     String
+  priceInCents Int
+  createdAt    DateTime @default(now())
 
-  createdAt DateTime  @default(now())
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([purchaseId])
+  @@map("purchase_item")
+}
+
+model Purchase {
+  id              Int      @id @default(autoincrement())
+  userId          String
+  stripeSessionId String
+  createdAt       DateTime @default(now())
+
+  items PurchaseItem[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -111,8 +123,8 @@ model Purchase {
 }
 
 model ProcessedWebhookEvent {
-  stripeEventId String    @id
-  processedAt   DateTime  @default(now())
+  stripeEventId String   @id
+  processedAt   DateTime @default(now())
 
   @@map("processed_webhook_event")
 }

@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing purchaseId' }, { status: 400 })
   }
 
-  const purchase = await prisma.purchase.findFirst({
-    where: { id: purchaseId, userId: session.user.id },
+  const purchase = await prisma.purchaseItem.findFirst({
+    where: { id: Number(purchaseId) },
   })
   if (!purchase) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
