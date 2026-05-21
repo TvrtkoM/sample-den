@@ -56,6 +56,7 @@ function SignUpFormImpl() {
       name,
       email,
       password,
+      callbackURL: '/samples',
     })
 
     if (res.error) {
