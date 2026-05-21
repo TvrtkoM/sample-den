@@ -10,18 +10,22 @@ import ErrorState from '../error/ErrorState'
 import { GridContainer } from '../ui/grid-container'
 import { Skeleton } from '../ui/skeleton'
 import SampleItem from './SampleItem'
+import { PurchasesMap } from '@/lib/types'
 
-const SamplesList = ({ samples }: { samples: SamplesPageQueryResult['samples'][number][] }) => {
-  const sampleIds = samples.map((s) => s._id)
-  const { data } = usePurchases(sampleIds)
-
+const SamplesList = ({
+  samples,
+  purchases,
+}: {
+  samples: SamplesPageQueryResult['samples'][number][]
+  purchases: PurchasesMap
+}) => {
   if (samples.length === 0) {
     return <h1 className="container py-8 sm:py-12">No samples found.</h1>
   }
   return (
     <GridContainer className="py-8 sm:py-12">
       {samples.map((sample) => (
-        <SampleItem key={sample._id} sample={sample} purchaseId={data?.purchases[sample._id] ?? null} />
+        <SampleItem key={sample._id} sample={sample} purchaseId={purchases[sample._id] ?? null} />
       ))}
     </GridContainer>
   )
@@ -42,10 +46,12 @@ const SamplesListContainer = () => {
   const { search, page } = searchParams
   const {
     data: { samples, totalCount } = { totalCount: 0, samples: [] },
-    isFetching,
+    isFetching: isSamplesFetching,
     isError,
     refetch,
   } = useSamplesPage(page, search)
+  const sampleIds = samples.map((s) => s._id)
+  const { data: { purchases } = { purchases: {} }, isFetching: isPurchasesFetching } = usePurchases(sampleIds)
 
   const totalPages = totalCount === 0 ? 0 : Math.ceil(totalCount / defaultSamplesPageSize)
 
@@ -57,6 +63,8 @@ const SamplesListContainer = () => {
       { history: 'push' },
     )
   }
+
+  const isFetching = isSamplesFetching || isPurchasesFetching
 
   return (
     <>
@@ -70,7 +78,7 @@ const SamplesListContainer = () => {
       ) : isFetching ? (
         <SamplesSkeleton />
       ) : (
-        <SamplesList samples={samples} />
+        <SamplesList samples={samples} purchases={purchases} />
       )}
       {totalPages > 0 && (
         <AppPagination
