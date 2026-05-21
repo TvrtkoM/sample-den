@@ -11,6 +11,7 @@ import { getAnonymousUserIdCookie } from '@/lib/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import ErrorState from '../error/ErrorState'
 
 type FormData = {
   email: string
@@ -99,11 +100,12 @@ function SignInFormImpl() {
           {errors.password && <FieldError>{errors.password.message}</FieldError>}
         </Field>
 
+        {authError && <ErrorState title={authError} className="p-4" />}
+
         <Field orientation="horizontal">
           <Button type="submit" disabled={!isValid || isSubmitPending}>
             Sign In
           </Button>
-          {authError && <FieldError>{authError}</FieldError>}
         </Field>
 
         <div className="relative my-4">

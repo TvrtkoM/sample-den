@@ -1,5 +1,5 @@
 import { ClearSignUpVerificationCookie } from '@/components/auth/ClearSignUpVerificationCookie'
-import VerificationErrorToast from '@/components/auth/VerificationErrorToast'
+import VerificationMessageHandler from '@/components/auth/VerificationMessageHandler'
 import SampleSearch from '@/components/samples/SampleSearch'
 import SamplesList from '@/components/samples/SamplesList'
 import { getPurchasesMap } from '@/lib/db'
@@ -46,7 +46,7 @@ async function PageImpl({ searchParams }: { searchParams: Promise<SearchParams> 
   return (
     <HydrationBoundary state={dehydrated}>
       <ClearSignUpVerificationCookie />
-      <VerificationErrorToast />
+      <VerificationMessageHandler />
       <SampleSearch />
       <SamplesList />
     </HydrationBoundary>

@@ -1,5 +1,6 @@
 import { PurchaseItem } from '@/generated/prisma/client'
 import { auth } from './auth'
+import { ReactNode } from 'react'
 
 /** Inferred better-auth session type, derived from the app's auth configuration. */
 export type Session = typeof auth.$Infer.Session
@@ -23,3 +24,20 @@ export type SampleActionState = 'buy' | 'in-cart' | 'download'
  * so there are no `null` values to disambiguate.
  */
 export type PurchasesMap = Record<string, PurchaseItem['id']>
+
+/**
+ * Visual severity level of a top bar message, used to control styling and intent.
+ */
+export type TopMessageSeverity = 'warning' | 'error' | 'info'
+
+/**
+ * Describes a single message rendered in the top message bar.
+ */
+export type TopMessageData = {
+  /** The React node or string rendered as the message content. */
+  Content: ReactNode | string
+  /** Visual severity level that controls styling. */
+  severity?: TopMessageSeverity
+  /** When `true`, the message is removed on the next navigation event. */
+  dismissOnNavigate?: boolean
+}

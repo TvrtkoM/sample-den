@@ -10,6 +10,7 @@ import { getAnonymousUserIdCookie, getSignUpVerificationCookie } from '@/lib/uti
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
+import ErrorState from '../error/ErrorState'
 
 type FormData = {
   name: string
@@ -136,11 +137,13 @@ function SignUpFormImpl() {
           />
           {errors.repeatPassword && <FieldError>{errors.repeatPassword.message}</FieldError>}
         </Field>
+
+        {authError && <ErrorState title={authError} className="p-4" />}
+
         <Field orientation="horizontal">
           <Button type="submit" disabled={!isValid || isSubmitting}>
             Submit
           </Button>
-          {authError && <FieldError>{authError}</FieldError>}
         </Field>
 
         <div className="relative my-4">

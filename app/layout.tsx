@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
+import TopMessages from '@/components/TopMessages'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppProvider sessionPromise={sessionPromise}>
+          <TopMessages />
           <Toaster position="top-right" />
           {children}
         </AppProvider>
