@@ -8,6 +8,10 @@ Web shop for selling digital audio files. Sanity Studio (separate repo) is the C
 
 All environment variables are available in `.env.example` and this is only environment file that can be read by LLMs, all other `.env` files like `.env` or `.env.*` are forbidden to both read and write operations in any way!
 
+## Package manager
+
+Use `npm` command for installing dependencies or running _package.json_ scripts. This may change in future.
+
 ## Technology stack
 
 ### Backend
