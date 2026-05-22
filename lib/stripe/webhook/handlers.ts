@@ -4,6 +4,7 @@ import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import { stripe } from '@/lib/stripe/server'
 import Stripe from 'stripe'
+import { keyOf } from './ref'
 
 /**
  * Fetches every line item on a Stripe Checkout Session, transparently paging
@@ -56,27 +57,6 @@ async function recordEventProcessed(client: Prisma.TransactionClient, eventId: s
   return client.processedWebhookEvent.create({
     data: { stripeEventId: eventId },
   })
-}
-
-/**
- * Resolves a Stripe API reference that may be either an ID string or an
- * expanded object back to a single property (typically `'id'`).
- *
- * Stripe fields like `payment_intent` and `charge` are typed as
- * `string | Stripe.X | null` depending on whether the caller used `expand`.
- * This helper collapses that union into the field value without forcing
- * every call site to write the same `typeof === 'string' ? ... : ...` check.
- *
- * @param ref - The Stripe reference: an ID, an expanded object, or nullish.
- * @param key - The property to extract when `ref` is an expanded object.
- * @returns The resolved value, or `undefined` if `ref` is null/undefined.
- */
-function keyOf<T extends Record<K, string>, K extends keyof T>(
-  ref: string | T | null | undefined,
-  key: K,
-): string | undefined {
-  if (!ref) return undefined
-  return typeof ref === 'string' ? ref : ref[key]
 }
 
 /**

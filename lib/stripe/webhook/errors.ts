@@ -3,6 +3,7 @@ import 'server-only'
 import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import Stripe from 'stripe'
+import { keyOf } from './ref'
 
 /**
  * Discriminated, JSON-serializable description of an error caught in the
@@ -124,6 +125,27 @@ export function describeError(err: unknown): ErrorDescription {
 }
 
 /**
+ * Best-effort extraction of the `payment_intent` ID from any Stripe event
+ * object that carries one. Indexed on `WebhookEventFailure.paymentIntentId`
+ * so an operator can answer "did we see any webhook failures touching this
+ * PI?" from a customer complaint alone.
+ *
+ * The extraction is intentionally untyped (`object as Record<string, unknown>`)
+ * rather than discriminating on `event.type`: failures can happen on event
+ * types we don't explicitly handle, and the shape `{ payment_intent: ... }`
+ * is consistent enough across Stripe's API that a duck-typed read is safer
+ * than an exhaustive switch that silently misses new event types.
+ *
+ * @param event - The verified Stripe event whose processing failed.
+ * @returns The PI ID if present, otherwise `null`.
+ */
+function extractPaymentIntentId(event: Stripe.Event): string | null {
+  const object = event.data.object as unknown as Record<string, unknown>
+  const ref = object.payment_intent as string | { id: string } | null | undefined
+  return keyOf(ref, 'id') ?? null
+}
+
+/**
  * Writes one `WebhookEventFailure` row per retry-triggering error so the
  * database carries an audit trail of every 500 returned to Stripe. Swallows
  * its own errors — if persistence itself fails we still want to return 500
@@ -139,6 +161,7 @@ export async function persistFailure(event: Stripe.Event, err: unknown) {
       data: {
         stripeEventId: event.id,
         eventType: event.type,
+        paymentIntentId: extractPaymentIntentId(event),
         ...description,
         meta: meta ?? Prisma.JsonNull,
       },

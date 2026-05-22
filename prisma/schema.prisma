@@ -142,20 +142,22 @@ model ProcessedWebhookEvent {
 }
 
 model WebhookEventFailure {
-  id            Int      @id @default(autoincrement())
-  stripeEventId String?
-  eventType     String?
-  source        String
-  errorName     String
-  errorCode     String?
-  statusCode    Int?
-  requestId     String?
-  meta          Json?
-  message       String
-  stack         String?
-  createdAt     DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  stripeEventId   String?
+  eventType       String?
+  paymentIntentId String?
+  source          String
+  errorName       String
+  errorCode       String?
+  statusCode      Int?
+  requestId       String?
+  meta            Json?
+  message         String
+  stack           String?
+  createdAt       DateTime @default(now())
 
   @@index([stripeEventId])
+  @@index([paymentIntentId])
   @@index([createdAt])
   @@map("webhook_event_failure")
 }
