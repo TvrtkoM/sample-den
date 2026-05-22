@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { NavButton } from './ui/nav-button'
+import { NavButton } from '../ui/nav-button'
 
 const links = [
   { href: '/profile', label: 'Overview' },

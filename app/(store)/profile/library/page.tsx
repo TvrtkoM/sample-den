@@ -1,4 +1,4 @@
-import LibraryItem from '@/components/library/LibraryItem'
+import LibraryItem from '@/components/profile/LibraryItem'
 import { Button } from '@/components/ui/button'
 import { GridContainer } from '@/components/ui/grid-container'
 import { fetchSamplesByIds } from '@/lib/fetch/samples'
