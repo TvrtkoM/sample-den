@@ -1,7 +1,19 @@
-import { NextResponse } from 'next/server'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { aj, protectOrAllow } from '@/lib/arcjet/server'
+import { slidingWindow } from '@arcjet/next'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { createClient } from '@sanity/client'
+import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
+
+const MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+
+const protect = aj.withRule(
+  slidingWindow({
+    mode: 'LIVE',
+    interval: '1m',
+    max: 3,
+  }),
+)
 
 // ---------- AWS S3 ----------
 const s3 = new S3Client({
@@ -52,8 +64,19 @@ export async function OPTIONS() {
 }
 
 // ---------- POST ----------
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const arcjetResponse = await protectOrAllow(() => protect.protect(req))
+    if (arcjetResponse) return arcjetResponse
+
+    const contentLength = Number(req.headers.get('content-length'))
+    if (!Number.isFinite(contentLength) || contentLength <= 0) {
+      return new NextResponse('Missing or invalid Content-Length', { status: 411, headers })
+    }
+    if (contentLength > MAX_UPLOAD_BYTES) {
+      return new NextResponse('Payload too large', { status: 413, headers })
+    }
+
     const formData = await req.formData()
     const documentId = formData.get('documentId') as string | null
 
@@ -150,18 +173,17 @@ export async function POST(req: Request) {
     await sanity.transaction().patch(documentId, patch).commit()
 
     // ----- 4. Respond -----
-    return new NextResponse(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         success: true,
         s3Key,
         assetId: asset._id,
         url: asset.url,
-      }),
+      },
       { status: 200, headers },
     )
   } catch (err: unknown) {
     console.error('[UPLOAD ERROR]', err)
-    const message = err instanceof Error ? err.message : 'Unknown error'
-    return new NextResponse(JSON.stringify({ error: message }), { status: 500, headers })
+    return NextResponse.json(null, { status: 500, headers })
   }
 }
