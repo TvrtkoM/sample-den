@@ -1,9 +1,21 @@
+import { aj, protectOrAllow } from '@/lib/arcjet/server'
 import { getCartSamplesIdsForUser } from '@/lib/db'
 import { fetchSamplesForCheckoutByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import { stripe } from '@/lib/stripe/server'
+import { detectBot, tokenBucket } from '@arcjet/next'
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+
+const checkoutProtect = aj.withRule(detectBot({ mode: 'LIVE', allow: [] })).withRule(
+  tokenBucket({
+    mode: 'LIVE',
+    characteristics: ['userId'],
+    refillRate: 3,
+    interval: '1m',
+    capacity: 5,
+  }),
+)
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +23,14 @@ export async function POST(request: NextRequest) {
     if (!session || session.user.isAnonymous || !session.user.emailVerified) {
       return NextResponse.json(null, { status: 401 })
     }
+
+    const arcJetResponse = await protectOrAllow(() => {
+      return checkoutProtect.protect(request, {
+        userId: session.user.id,
+        requested: 1,
+      })
+    })
+    if (arcJetResponse) return arcJetResponse
 
     const cartSamplesIds = await getCartSamplesIdsForUser(session.user.id)
     if (cartSamplesIds.length === 0) {

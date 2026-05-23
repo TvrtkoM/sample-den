@@ -1,5 +1,7 @@
+import { aj, protectOrAllow } from '@/lib/arcjet/server'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
+import { slidingWindow } from '@arcjet/next'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { NextRequest, NextResponse } from 'next/server'
@@ -10,11 +12,25 @@ const s3 = new S3Client({
 
 const DOWNLOAD_EXPIRY_SECONDS = 60
 
+const downloadProtect = aj.withRule(
+  slidingWindow({
+    mode: 'LIVE',
+    characteristics: ['userId'],
+    interval: '1m',
+    max: 5,
+  }),
+)
+
 export async function GET(req: NextRequest) {
   const session = await getSession()
   if (!session || session.user.isAnonymous === true) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const arcjetResponse = protectOrAllow(() => {
+    return downloadProtect.protect(req, { userId: session.user.id })
+  })
+  if (arcjetResponse) return arcjetResponse
 
   const purchaseId = req.nextUrl.searchParams.get('purchaseId')
   if (!purchaseId) {
