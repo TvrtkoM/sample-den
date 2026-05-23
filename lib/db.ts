@@ -46,12 +46,29 @@ export async function getCartSamplesIdsForUser(userId: string) {
 export async function getPurchasesMap(sampleIds: string[]): Promise<PurchasesMap> {
   const session = await getSession()
 
-  if (!session || session.user.isAnonymous || sampleIds.length === 0) {
+  if (!session || session.user.isAnonymous) {
+    return {}
+  }
+
+  return await getPurchaseMapForUser(sampleIds.sort(), session.user.id)
+}
+
+/**
+ * Resolves which of the given sample ids the specified user has actively purchased.
+ *
+ * @param sampleIds - Sample ids to check against the user's active purchases.
+ * @param userId - The id of the user whose purchases are queried.
+ * @returns A sparse {@link PurchasesMap}: only purchased sample ids are present,
+ * mapped to their purchase item id. Empty when `sampleIds` is empty or the user
+ * has no matching active purchases.
+ */
+export async function getPurchaseMapForUser(sampleIds: string[], userId: string): Promise<PurchasesMap> {
+  if (sampleIds.length === 0) {
     return {}
   }
 
   const purchases = await prisma.purchaseItem.findMany({
-    where: { purchase: { userId: session.user.id, status: 'ACTIVE' }, sampleId: { in: sampleIds } },
+    where: { purchase: { userId, status: 'ACTIVE' }, sampleId: { in: sampleIds } },
     select: { id: true, sampleId: true },
     orderBy: { createdAt: 'asc' },
   })

@@ -1,11 +1,33 @@
-import { getPurchasesMap } from '@/lib/db'
+import { aj, protectOrAllow } from '@/lib/arcjet/server'
+import { getPurchaseMapForUser } from '@/lib/db'
+import { getSession } from '@/lib/getSession'
+import { detectBot, slidingWindow } from '@arcjet/next'
 import { NextRequest, NextResponse } from 'next/server'
 
+const protect = aj.withRule(detectBot({ mode: 'LIVE', allow: [] })).withRule(
+  slidingWindow({
+    mode: 'LIVE',
+    interval: '1m',
+    max: 30,
+  }),
+)
+
 export async function GET(request: NextRequest) {
+  const arcjetIpResponse = await protectOrAllow(() => {
+    return protect.protect(request)
+  })
+  if (arcjetIpResponse) return arcjetIpResponse
+
+  const session = await getSession()
+  if (!session || session.user.isAnonymous) {
+    return NextResponse.json({ purchases: {} })
+  }
+
   const ids = (request.nextUrl.searchParams.get('ids') ?? '')
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean)
+    .sort()
 
-  return NextResponse.json({ purchases: await getPurchasesMap(ids) })
+  return NextResponse.json({ purchases: await getPurchaseMapForUser(ids, session.user.id) })
 }
