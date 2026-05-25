@@ -97,6 +97,7 @@ model PurchaseItem {
   id           Int      @id @default(autoincrement())
   purchaseId   Int
   sampleId     String
+  sampleTitle  String
   s3Key        String
   filename     String
   priceInCents Int

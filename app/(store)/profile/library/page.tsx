@@ -46,6 +46,7 @@ export default async function LibraryPage() {
               priceInCents: purchase.priceInCents,
               createdAt: purchase.createdAt.toISOString(),
               sampleId: purchase.sampleId,
+              sampleTitle: purchase.sampleTitle,
             }}
             sample={sampleById.get(purchase.sampleId) ?? null}
           />

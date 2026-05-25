@@ -75,6 +75,7 @@ CREATE TABLE "purchase_item" (
     "id" SERIAL NOT NULL,
     "purchaseId" INTEGER NOT NULL,
     "sampleId" TEXT NOT NULL,
+    "sampleTitle" TEXT NOT NULL,
     "s3Key" TEXT NOT NULL,
     "filename" TEXT NOT NULL,
     "priceInCents" INTEGER NOT NULL,
@@ -104,6 +105,25 @@ CREATE TABLE "processed_webhook_event" (
     "processedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "processed_webhook_event_pkey" PRIMARY KEY ("stripeEventId")
+);
+
+-- CreateTable
+CREATE TABLE "webhook_event_failure" (
+    "id" SERIAL NOT NULL,
+    "stripeEventId" TEXT,
+    "eventType" TEXT,
+    "paymentIntentId" TEXT,
+    "source" TEXT NOT NULL,
+    "errorName" TEXT NOT NULL,
+    "errorCode" TEXT,
+    "statusCode" INTEGER,
+    "requestId" TEXT,
+    "meta" JSONB,
+    "message" TEXT NOT NULL,
+    "stack" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "webhook_event_failure_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -138,6 +158,15 @@ CREATE UNIQUE INDEX "purchase_stripePaymentIntentId_key" ON "purchase"("stripePa
 
 -- CreateIndex
 CREATE INDEX "purchase_userId_idx" ON "purchase"("userId");
+
+-- CreateIndex
+CREATE INDEX "webhook_event_failure_stripeEventId_idx" ON "webhook_event_failure"("stripeEventId");
+
+-- CreateIndex
+CREATE INDEX "webhook_event_failure_paymentIntentId_idx" ON "webhook_event_failure"("paymentIntentId");
+
+-- CreateIndex
+CREATE INDEX "webhook_event_failure_createdAt_idx" ON "webhook_event_failure"("createdAt");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
           name: sample.title ?? 'Untitled Sample',
           metadata: {
             sampleId: sample._id,
+            sampleTitle: sample.title,
             s3Key: sample.highResFile!.s3Key!,
             fileName: sample.highResFile!.fileName ?? '',
           },

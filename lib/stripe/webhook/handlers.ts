@@ -109,6 +109,7 @@ export async function handleCheckoutComplete(event: Stripe.CheckoutSessionComple
     return {
       sampleId: product.metadata.sampleId,
       s3Key: product.metadata.s3Key,
+      sampleTitle: product.metadata.sampleTitle,
       filename: product.metadata.fileName,
       priceInCents: item.amount_total,
     }

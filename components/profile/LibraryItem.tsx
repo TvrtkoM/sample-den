@@ -11,7 +11,7 @@ import { format } from 'date-fns'
 /**
  * Purchase item record
  */
-type LibraryPurchase = Pick<PurchaseItem, 'id' | 'priceInCents' | 'sampleId'> & { createdAt: string }
+type LibraryPurchase = Pick<PurchaseItem, 'id' | 'priceInCents' | 'sampleId' | 'sampleTitle'> & { createdAt: string }
 
 /** Sanity sample document shape used in the library view. */
 type LibrarySample = SamplesByIdsQueryResult['samples'][number]
@@ -34,12 +34,13 @@ type LibraryItemProps = {
 export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
   if (!sample) {
     return (
-      <div className="card-shadow-sm">
+      <section className="card-shadow-sm">
         <div className="card-section justify-between text-sm">
+          <h4>{purchase.sampleTitle}</h4>
           <span className="text-muted-foreground">Sample no longer available</span>
           <span>{format(new Date(purchase.createdAt), 'PP')}</span>
         </div>
-      </div>
+      </section>
     )
   }
 
@@ -60,7 +61,7 @@ export default function LibraryItem({ purchase, sample }: LibraryItemProps) {
       )}
 
       <div className="card-section">
-        <h4>{sample.title}</h4>
+        <h4>{purchase.sampleTitle}</h4>
       </div>
 
       <div className="card-section justify-between text-sm text-muted-foreground">

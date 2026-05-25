@@ -1,6 +1,5 @@
 import PurchasesAccordion from '@/components/profile/PurchasesAccordion'
 import { Button } from '@/components/ui/button'
-import { fetchSamplesByIds } from '@/lib/fetch/samples'
 import { getSession } from '@/lib/getSession'
 import prisma from '@/lib/prisma'
 import type { Metadata } from 'next'
@@ -31,21 +30,22 @@ export default async function PurchasesPage() {
     )
   }
 
-  const allSampleIds = [...new Set(purchases.flatMap((p) => p.items.map((i) => i.sampleId)))]
-  const samples = await fetchSamplesByIds(allSampleIds)
-  const sampleTitles = Object.fromEntries(samples.map((s) => [s._id, s.title ?? '']))
-
   const purchaseRows = purchases.map((p) => ({
     id: p.id,
     createdAt: p.createdAt.toISOString(),
     status: p.status,
-    items: p.items.map((i) => ({ id: i.id, sampleId: i.sampleId, priceInCents: i.priceInCents })),
+    items: p.items.map((i) => ({
+      id: i.id,
+      sampleId: i.sampleId,
+      priceInCents: i.priceInCents,
+      sampleTitle: i.sampleTitle,
+    })),
   }))
 
   return (
     <section>
       <h2 className="mb-6">Purchases</h2>
-      <PurchasesAccordion purchases={purchaseRows} sampleTitles={sampleTitles} />
+      <PurchasesAccordion purchases={purchaseRows} />
     </section>
   )
 }

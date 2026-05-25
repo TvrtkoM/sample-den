@@ -10,6 +10,7 @@ type PurchaseItemRow = {
   id: number
   sampleId: string
   priceInCents: number
+  sampleTitle: string
 }
 
 type PurchaseRow = {
@@ -23,8 +24,6 @@ type NonActivePurchaseStatus = Exclude<PurchaseStatus, 'ACTIVE'>
 
 type PurchasesAccordionProps = {
   purchases: PurchaseRow[]
-  /** Map of sampleId to display title; missing entries render a fallback. */
-  sampleTitles: Record<string, string>
 }
 
 const statusMessages: Record<Exclude<PurchaseStatus, 'ACTIVE'>, string> = {
@@ -45,7 +44,7 @@ const statusLabels: Record<NonActivePurchaseStatus, string> = {
   REVOKED: 'Revoked',
 }
 
-export default function PurchasesAccordion({ purchases, sampleTitles }: PurchasesAccordionProps) {
+export default function PurchasesAccordion({ purchases }: PurchasesAccordionProps) {
   return (
     <div className="card-shadow-sm px-6">
       <Accordion type="single" collapsible>
@@ -72,7 +71,7 @@ export default function PurchasesAccordion({ purchases, sampleTitles }: Purchase
                 <ul className="space-y-2">
                   {purchase.items.map((item) => (
                     <li key={item.id} className="flex justify-between text-sm">
-                      <span>{sampleTitles[item.sampleId] ?? 'Sample no longer available'}</span>
+                      <span>{item.sampleTitle}</span>
                       <span className="text-muted-foreground">{priceFromCents(item.priceInCents)}</span>
                     </li>
                   ))}
