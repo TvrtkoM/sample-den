@@ -18,7 +18,7 @@ export default function CartIcon() {
     <Button
       type="button"
       aria-label="View cart"
-      className="relative rounded-full h-9 flex items-center"
+      className="relative rounded-full h-9 flex items-center cursor-pointer"
       onClick={() => {
         startTransition(() => {
           setCartVisible(true)

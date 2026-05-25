@@ -6,7 +6,7 @@ import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { cva, VariantProps } from 'class-variance-authority'
 
-const sampleCartToggleButtonVariants = cva('w-full transition-all', {
+const sampleCartToggleButtonVariants = cva('w-full transition-all cursor-pointer', {
   variants: {
     state: {
       buy: 'bg-primary text-primary-foreground hover:bg-primary/90',

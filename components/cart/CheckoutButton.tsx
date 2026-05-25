@@ -40,12 +40,12 @@ const CheckoutButton = () => {
   return (
     <>
       {isAuth ? (
-        <Button size={'lg'} className="text-xl" onClick={() => checkout()} disabled={isSubmitting}>
+        <Button size={'lg'} className="text-xl cursor-pointer" onClick={() => checkout()} disabled={isSubmitting}>
           Checkout
         </Button>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <Button size={'lg'} className="text-xl" asChild>
+          <Button size={'lg'} className="text-xl cursor-pointer" asChild>
             <Link
               href={{
                 pathname: '/sign-in',
@@ -54,7 +54,7 @@ const CheckoutButton = () => {
               Sign in to continue
             </Link>
           </Button>
-          <Button size={'lg'} className="text-xl" asChild>
+          <Button size={'lg'} className="text-xl cursor-pointer" asChild>
             <Link href={{ pathname: '/sign-up' }}>Create an account</Link>
           </Button>
         </div>

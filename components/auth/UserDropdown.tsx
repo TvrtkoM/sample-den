@@ -70,7 +70,7 @@ const UserDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-full w-9 h-9 overflow-hidden">
+        <Button variant="outline" className="rounded-full w-9 h-9 overflow-hidden cursor-pointer">
           {session?.user.image ? (
             <Image src={session.user.image} alt="user avatar" width={36} height={36} className="w-9 h-9 min-w-9" />
           ) : (

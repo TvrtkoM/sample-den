@@ -3,23 +3,9 @@
 import { Button } from '@/components/ui/button'
 import { PurchaseItem } from '@/generated/prisma/client'
 import { cn } from '@/lib/utils'
-import { cva } from 'class-variance-authority'
 import { Download } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-
-const sampleActionButtonVariants = cva('w-full transition-all', {
-  variants: {
-    state: {
-      buy: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      'in-cart': 'bg-accent text-foreground border-foreground border hover:bg-accent/80 hover:text-foreground',
-      download: 'bg-accent text-foreground border-foreground border hover:bg-accent/80 hover:text-foreground',
-    },
-  },
-  defaultVariants: {
-    state: 'buy',
-  },
-})
 
 /**
  * Props for {@link SampleDownloadButton}.
@@ -60,7 +46,7 @@ export default function SampleDownloadButton({ purchaseId, className }: SampleDo
   return (
     <Button
       className={cn(
-        'w-full transition-all bg-accent text-foreground border-foreground border hover:bg-accent/80 hover:text-foreground',
+        'w-full transition-all bg-accent text-foreground border-foreground border hover:bg-accent/80 hover:text-foreground cursor-pointer',
         className,
       )}
       onClick={handleDownload}
@@ -70,6 +56,3 @@ export default function SampleDownloadButton({ purchaseId, className }: SampleDo
     </Button>
   )
 }
-
-/** CVA variant map for sample action buttons (buy / in-cart / download states). */
-export { sampleActionButtonVariants }

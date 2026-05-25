@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const arcjetResponse = protectOrAllow(() => {
+  const arcjetResponse = await protectOrAllow(() => {
     return downloadProtect.protect(req, { userId: session.user.id })
   })
   if (arcjetResponse) return arcjetResponse
@@ -62,5 +62,5 @@ export async function GET(req: NextRequest) {
     expiresIn: DOWNLOAD_EXPIRY_SECONDS,
   })
 
-  return NextResponse.json({ url })
+  return NextResponse.json({ url }, { status: 200 })
 }
