@@ -1,9 +1,15 @@
 #!/usr/bin/env ts-node
 
+import { loadEnvConfig } from '@next/env'
 import { Command } from 'commander'
-import dotenv from 'dotenv'
 
-dotenv.config({ path: '.env.development' })
+let env = process.env.NODE_ENV
+if (!env) {
+  env = 'development'
+}
+
+const projectDir = process.cwd()
+loadEnvConfig(projectDir, env === 'development')
 
 import cleanAssets from './commands/clean-assets'
 
