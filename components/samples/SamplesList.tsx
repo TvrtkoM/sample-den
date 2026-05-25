@@ -20,7 +20,7 @@ const SamplesList = ({
   purchases: PurchasesMap
 }) => {
   if (samples.length === 0) {
-    return <h1 className="container py-8 sm:py-12">No samples found.</h1>
+    return <h2 className="py-8 sm:py-12">No samples found.</h2>
   }
   return (
     <GridContainer className="py-8 sm:py-12">
