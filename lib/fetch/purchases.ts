@@ -1,5 +1,6 @@
 import 'client-only'
 import type { PurchasesMap } from '../types'
+import { HttpError } from './http-error'
 
 /**
  * Fetches purchase status for the given sample ids from the API.
@@ -20,7 +21,7 @@ export async function fetchPurchases(sampleIds: string[]): Promise<{ purchases: 
     body: JSON.stringify({ ids: sampleIds }),
   })
 
-  if (!res.ok) throw new Error('Failed to fetch purchases')
+  if (!res.ok) throw new HttpError('Failed to fetch purchases', res.status)
 
   return res.json()
 }

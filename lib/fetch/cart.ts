@@ -1,4 +1,5 @@
 import 'client-only'
+import { HttpError } from './http-error'
 
 /**
  * Fetches the current user's cart from the API.
@@ -8,7 +9,7 @@ import 'client-only'
  */
 export async function fetchCart(): Promise<{ items: string[] }> {
   const res = await fetch('/api/cart')
-  if (!res.ok) throw new Error('Failed to fetch cart')
+  if (!res.ok) throw new HttpError('Failed to fetch cart', res.status)
   return res.json()
 }
 
@@ -24,7 +25,7 @@ export async function addToCart(sampleId: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sampleId }),
   })
-  if (!res.ok) throw new Error('Failed to add to cart')
+  if (!res.ok) throw new HttpError('Failed to add to cart', res.status)
   return res.json()
 }
 
@@ -40,6 +41,6 @@ export async function removeFromCart(sampleId: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sampleId }),
   })
-  if (!res.ok) throw new Error('Failed to remove from cart')
+  if (!res.ok) throw new HttpError('Failed to remove from cart', res.status)
   return res.json()
 }

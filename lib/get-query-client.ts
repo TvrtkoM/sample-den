@@ -6,6 +6,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { HttpError } from './fetch/http-error'
 
 const makeQueryClient = () => {
   return new QueryClient({
@@ -35,6 +36,19 @@ const makeQueryClient = () => {
       },
       queries: {
         staleTime: 60 * 1000,
+        retryDelay: (attempt) => {
+          const exp = Math.min(1000 * 2 ** attempt, 30000)
+          return exp * (0.5 + Math.random() * 0.5)
+        },
+        retry: (count, error) => {
+          if (count >= 3) {
+            return false
+          }
+          if (error instanceof HttpError) {
+            return error.isRetryable
+          }
+          return false
+        },
       },
     },
   })
