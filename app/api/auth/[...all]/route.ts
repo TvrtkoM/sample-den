@@ -23,14 +23,17 @@ export async function POST(req: NextRequest) {
   const path = req.nextUrl.pathname
 
   if (path.endsWith('/sign-up/email')) {
-    const body = (await req.clone().json()) as { email?: string }
-    const arcjetResponse = await protectOrAllow(
-      () => {
-        return signupProtect.protect(req, { email: body.email ?? '' })
-      },
-      { isAuth: true },
-    )
-    if (arcjetResponse) return arcjetResponse
+    if (process.env.NODE_ENV === 'production') {
+      const body = (await req.clone().json()) as { email?: string }
+
+      const arcjetResponse = await protectOrAllow(
+        () => {
+          return signupProtect.protect(req, { email: body.email ?? '' })
+        },
+        { isAuth: true },
+      )
+      if (arcjetResponse) return arcjetResponse
+    }
   } else if (path.endsWith('/sign-in/email')) {
     const arcjetResponse = await protectOrAllow(
       () => {
