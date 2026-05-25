@@ -8,7 +8,8 @@ const authClient = createAuthClient({ plugins: [anonymousClient()] })
  * Client-side auth actions: sign in, sign up, sign out, get session, and send a
  * verification email. Backed by better-auth with the anonymous plugin enabled.
  */
-export const { signIn, signUp, signOut, getSession, sendVerificationEmail } = authClient
+export const { signIn, signUp, signOut, getSession, sendVerificationEmail, requestPasswordReset, resetPassword } =
+  authClient
 
 /**
  * React hook that returns the current better-auth session for the signed-in user.

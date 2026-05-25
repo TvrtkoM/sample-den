@@ -1,3 +1,4 @@
+import ResetPasswordEmail from '@/emails/ResetPasswordEmail'
 import VerificationEmail from '@/emails/VerificationEmail'
 import prisma from '@/lib/prisma'
 import { betterAuth } from 'better-auth'
@@ -27,6 +28,7 @@ export const auth = betterAuth({
       if (process.env.NODE_ENV === 'development') {
         console.log(`password reset for ${user.email}: ${url}`)
       }
+      sendEmail(user.email, 'Reset your password', ResetPasswordEmail({ resetUrl: url, username: user.name }))
     },
   },
   emailVerification: {

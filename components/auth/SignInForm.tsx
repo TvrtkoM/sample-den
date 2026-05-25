@@ -1,5 +1,6 @@
 'use client'
 
+import ForgotPasswordDialog from '@/components/auth/ForgotPasswordDialog'
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -20,6 +21,7 @@ type FormData = {
 
 function SignInFormImpl() {
   const [authError, setAuthError] = useState<string | null>(null)
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
@@ -64,62 +66,68 @@ function SignInFormImpl() {
   const isSubmitPending = isPending || isSubmitting
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: emailRegex,
-                message: 'Enter a valid email address',
-              },
-            })}
-            placeholder="Email"
-            type="email"
-            autoComplete="off"
-            id="email"
-            aria-invalid={Boolean(errors.email)}
-          />
-          {errors.email && <FieldError>{errors.email.message}</FieldError>}
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input
-            {...register('password', {
-              required: 'Password is required',
-            })}
-            type="password"
-            placeholder="Password"
-            autoComplete="off"
-            id="password"
-            aria-invalid={Boolean(errors.password)}
-          />
-          {errors.password && <FieldError>{errors.password.message}</FieldError>}
-        </Field>
-
-        {authError && <ErrorState title={authError} className="p-4" />}
-
-        <Field orientation="horizontal">
-          <Button type="submit" disabled={!isValid || isSubmitPending}>
-            Sign In
-          </Button>
-        </Field>
-
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+    <>
+      <form onSubmit={handleSubmit(submit)} className="card-shadow-sm p-6">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: emailRegex,
+                  message: 'Enter a valid email address',
+                },
+              })}
+              placeholder="Email"
+              type="email"
+              autoComplete="off"
+              id="email"
+              aria-invalid={Boolean(errors.email)}
+            />
+            {errors.email && <FieldError>{errors.email.message}</FieldError>}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              {...register('password', {
+                required: 'Password is required',
+              })}
+              type="password"
+              placeholder="Password"
+              autoComplete="off"
+              id="password"
+              aria-invalid={Boolean(errors.password)}
+            />
+            {errors.password && <FieldError>{errors.password.message}</FieldError>}
+          </Field>
+          {authError && <ErrorState title={authError} className="p-4" />}
+          <Field orientation="horizontal">
+            <Button type="submit" disabled={!isValid || isSubmitPending}>
+              Sign In
+            </Button>
+            <Button
+              type="button"
+              variant="link"
+              className="ml-auto self-end p-0 h-auto cursor-pointer"
+              onClick={() => setForgotPasswordOpen(true)}
+            >
+              Forgot password?
+            </Button>
+          </Field>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">Or</span>
+            </div>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or</span>
-          </div>
-        </div>
-
-        <GoogleSignInButton />
-      </FieldGroup>
-    </form>
+          <GoogleSignInButton />
+        </FieldGroup>
+      </form>
+      <ForgotPasswordDialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen} />
+    </>
   )
 }
 
