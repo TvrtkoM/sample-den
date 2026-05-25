@@ -85,7 +85,7 @@ const cleanAssets = new Command('clean-assets')
     const wavList = await s3.send(
       new ListObjectsV2Command({
         Bucket: BUCKET,
-        Prefix: 'file/',
+        Prefix: 'samples/',
       }),
     )
 
