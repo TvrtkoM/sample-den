@@ -12,7 +12,7 @@ const protect = aj.withRule(detectBot({ mode: 'LIVE', allow: [] })).withRule(
   }),
 )
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const arcjetIpResponse = await protectOrAllow(() => {
     return protect.protect(request)
   })
@@ -23,11 +23,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ purchases: {} })
   }
 
-  const ids = (request.nextUrl.searchParams.get('ids') ?? '')
-    .split(',')
-    .map((id) => id.trim())
-    .filter(Boolean)
-    .sort()
+  const payload = (await request.json()) as { ids: string[] }
+
+  const ids = [...new Set(payload.ids)].sort()
 
   return NextResponse.json({ purchases: await getPurchaseMapForUser(ids, session.user.id) })
 }

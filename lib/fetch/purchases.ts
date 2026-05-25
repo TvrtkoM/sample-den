@@ -14,7 +14,13 @@ export async function fetchPurchases(sampleIds: string[]): Promise<{ purchases: 
     return { purchases: {} }
   }
 
-  const res = await fetch('/api/purchases?ids=' + encodeURIComponent(sampleIds.join(',')))
+  const res = await fetch('/api/purchases', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids: sampleIds }),
+  })
+
   if (!res.ok) throw new Error('Failed to fetch purchases')
+
   return res.json()
 }
