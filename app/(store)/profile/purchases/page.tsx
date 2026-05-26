@@ -10,8 +10,12 @@ export const metadata: Metadata = { title: 'Purchases' }
 export default async function PurchasesPage() {
   const session = await getSession()
 
+  if (!session) {
+    return null
+  }
+
   const purchases = await prisma.purchase.findMany({
-    where: { userId: session!.user.id },
+    where: { userId: session.user.id },
     include: { items: true },
     orderBy: { createdAt: 'desc' },
   })

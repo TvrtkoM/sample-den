@@ -17,7 +17,7 @@ export default async function LibraryPage() {
   }
 
   const purchases = await prisma.purchaseItem.findMany({
-    where: { purchase: { userId: session!.user.id, status: 'ACTIVE' } },
+    where: { purchase: { userId: session.user.id, status: 'ACTIVE' } },
     orderBy: { createdAt: 'desc' },
   })
 
