@@ -1,4 +1,5 @@
 import AppNavButtons from '@/components/AppNavButtons'
+import ReloadOnAuthAction from '@/components/auth/ReloadOnSessionChange'
 import CartDrawer from '@/components/cart/CartDrawer'
 import { getCartSamplesIds } from '@/lib/db'
 import { getQueryClient } from '@/lib/get-query-client'
@@ -24,6 +25,7 @@ export default async function StoreLayout({ children }: { children: ReactNode })
       </header>
       <main className="container">{children}</main>
       <CartDrawer />
+      <ReloadOnAuthAction />
     </HydrationBoundary>
   )
 }

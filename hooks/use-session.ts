@@ -2,6 +2,19 @@ import { useSessionContext } from '@/context/SessionContext'
 import { useSessionAuth } from '@/lib/auth-client'
 import { useSyncExternalStore } from 'react'
 
+let _isSessionHydrated = false
+
+const isSessionHydrated = (isClient: boolean) => {
+  if (!isClient) {
+    return false
+  }
+  return _isSessionHydrated
+}
+
+const setIsSessionHydrated = () => {
+  _isSessionHydrated = true
+}
+
 /**
  * Returns the current session, merging the SSR-provided initial value from
  * {@link SessionContext} with the live client-side session from better-auth.
@@ -12,17 +25,21 @@ import { useSyncExternalStore } from 'react'
  */
 export function useSession() {
   const initialSession = useSessionContext()
-  const { data: clientSession, isPending, refetch } = useSessionAuth()
+  const { data: clientSession, isPending, isRefetching, refetch } = useSessionAuth()
 
-  const isHydrated = useSyncExternalStore(
+  const isClient = useSyncExternalStore(
     () => () => {},
     () => true,
     () => false,
   )
 
-  if (!isHydrated || isPending) {
-    return { session: initialSession, refetch: undefined, isPending: true }
+  if (isClient && !isPending && !isSessionHydrated(isClient)) {
+    setIsSessionHydrated()
   }
 
-  return { session: clientSession, refetch, isPending }
+  if (isSessionHydrated(isClient)) {
+    return { session: clientSession, refetch, isPending, isRefetching }
+  }
+
+  return { session: initialSession, refetch: undefined, isPending: true, isRefetching: true }
 }

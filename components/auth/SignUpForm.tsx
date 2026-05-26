@@ -7,7 +7,7 @@ import { useSession } from '@/hooks/use-session'
 import { signUp } from '@/lib/auth-client'
 import { emailRegex, passwordRegex } from '@/lib/constants'
 import { getAnonymousUserIdCookie, getSignUpVerificationCookie } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import ErrorState from '../error/ErrorState'
@@ -22,6 +22,7 @@ type FormData = {
 function SignUpFormImpl() {
   const [authError, setAuthError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
 
   const { session } = useSession()
 
@@ -66,8 +67,7 @@ function SignUpFormImpl() {
     } else {
       // eslint-disable-next-line react-hooks/immutability
       document.cookie = getSignUpVerificationCookie()
-      // eslint-disable-next-line react-hooks/immutability
-      window.location.href = '/verify'
+      router.push('/verify')
     }
   }
 

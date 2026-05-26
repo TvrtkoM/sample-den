@@ -1,4 +1,3 @@
-import PublicGuard from '@/components/auth/PublicGuard'
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm'
 import ErrorState from '@/components/error/ErrorState'
 import { Button } from '@/components/ui/button'
@@ -16,22 +15,20 @@ export default async function ResetPasswordPage({ searchParams }: Props) {
   const { token } = await searchParams
 
   return (
-    <PublicGuard>
-      <main className="container-small">
-        <div className="flex justify-between mb-8 mt-4">
-          <h1>Reset Password</h1>
-          <Button variant={'link'} asChild>
-            <Link href={'/sign-in'} className="flex items-center">
-              <ChevronLeft /> Back to sign in
-            </Link>
-          </Button>
-        </div>
-        {token ? (
-          <ResetPasswordForm token={token} />
-        ) : (
-          <ErrorState title="Missing reset token" message="The reset link is invalid or has expired." className="p-6" />
-        )}
-      </main>
-    </PublicGuard>
+    <main className="container-small">
+      <div className="flex justify-between mb-8 mt-4">
+        <h1>Reset Password</h1>
+        <Button variant={'link'} asChild>
+          <Link href={'/sign-in'} className="flex items-center">
+            <ChevronLeft /> Back to sign in
+          </Link>
+        </Button>
+      </div>
+      {token ? (
+        <ResetPasswordForm token={token} />
+      ) : (
+        <ErrorState title="Missing reset token" message="The reset link is invalid or has expired." className="p-6" />
+      )}
+    </main>
   )
 }

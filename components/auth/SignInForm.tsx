@@ -9,8 +9,8 @@ import { useSession } from '@/hooks/use-session'
 import { signIn } from '@/lib/auth-client'
 import { emailRegex } from '@/lib/constants'
 import { getAnonymousUserIdCookie } from '@/lib/utils'
-import { usePathname, useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import ErrorState from '../error/ErrorState'
 
@@ -22,15 +22,14 @@ type FormData = {
 function SignInFormImpl() {
   const [authError, setAuthError] = useState<string | null>(null)
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { session } = useSession()
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       email: '',
@@ -41,6 +40,7 @@ function SignInFormImpl() {
 
   const submit: SubmitHandler<FormData> = async (data) => {
     setAuthError(null)
+    setIsSubmitting(true)
 
     const { email, password } = data
 
@@ -55,15 +55,13 @@ function SignInFormImpl() {
     })
 
     if (res.error) {
+      setIsSubmitting(false)
       setAuthError(res.error.message ?? 'Something went wrong')
     } else {
-      startTransition(() => {
-        router.refresh()
-      })
+      // page reloads automatically from within ReloadOnAuthAction component
+      // PublicGuard auto-redirects to store page
     }
   }
-
-  const isSubmitPending = isPending || isSubmitting
 
   return (
     <>
@@ -103,7 +101,7 @@ function SignInFormImpl() {
           </Field>
           {authError && <ErrorState title={authError} className="p-4" />}
           <Field orientation="horizontal">
-            <Button type="submit" disabled={!isValid || isSubmitPending}>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
               Sign In
             </Button>
             <Button

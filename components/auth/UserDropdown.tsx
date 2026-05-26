@@ -46,9 +46,6 @@ const DropdownMenuSignedIn = ({ username }: { username: string }) => {
           onClick={async () => {
             queryClient.setQueryData(['cart'], { items: [] })
             await signOut()
-            // this fixes bug in which after sign out we need to
-            // trigger sign-in button twice to open sign-in form
-            window.location.reload()
           }}
         >
           Sign out

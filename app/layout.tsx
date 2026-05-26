@@ -1,10 +1,10 @@
+import TopMessages from '@/components/TopMessages'
 import AppProvider from '@/components/providers/AppProvider'
 import { getSession } from '@/lib/getSession'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
-import TopMessages from '@/components/TopMessages'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
